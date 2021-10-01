@@ -26,7 +26,7 @@ class AXIRemixCharacter : public ACharacter, public IAbilitySystemInterface
 	class UAbilitySystemComponent* AbilitySystemComp;
 
 	UPROPERTY()
-	class UPlayerAttributeSet* Attributes;
+	class UHeroAttributeSet* Attributes;
 
 public:
 	AXIRemixCharacter();

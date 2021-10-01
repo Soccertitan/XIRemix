@@ -28,7 +28,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-//#pragma region ResourceAttributes // Defines HP, MP, TP resources
+#pragma region ResourceAttributes // Defines HP, MP, TP resources
 
 	UPROPERTY(BlueprintReadOnly, Category = "ResourceAttributes", ReplicatedUsing = OnRep_HitPoints)
 	FGameplayAttributeData HitPoints;
@@ -66,7 +66,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_TechPointsMax(const FGameplayAttributeData& OldTechPointsMax);
 
-//#pragma endregion ResourceAttributes
+#pragma endregion ResourceAttributes
 
 #pragma region MainAttributes //Defines the main attributes Str, Dex, Agi, Vit, Int, Mnd, Chr
 

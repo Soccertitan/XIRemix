@@ -9,7 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HeroAbilitySystemComponent.h"
-#include "PlayerAttributeSet.h"
+#include "Abilities/Hero/HeroAttributeSet.h"
 #include "GASGameplayAbility.h"
 #include "GameplayEffectTypes.h"
 
@@ -51,7 +51,7 @@ AXIRemixCharacter::AXIRemixCharacter()
 	AbilitySystemComp->SetIsReplicated(true);
 	AbilitySystemComp->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	Attributes = CreateDefaultSubobject<UPlayerAttributeSet>("Attributes");
+	Attributes = CreateDefaultSubobject<UHeroAttributeSet>("Attributes");
 	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
