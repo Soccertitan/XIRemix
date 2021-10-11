@@ -135,7 +135,7 @@ public:
 	void TargetActor();
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetEnemyActor();
+	void TargetPerceievedActor(TArray<AActor*> PerceivedActors);
 
 	// Function to call to manually untarget.
 	UFUNCTION(BlueprintCallable, Category = "Target System")
@@ -148,6 +148,9 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActorWithAxisInput(float AxisValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	void SwitchTargetActor(TArray<AActor*> PerceivedActors);
 
 	// Function to get TargetLocked private variable status
 	UFUNCTION(BlueprintCallable, Category = "Target System")
@@ -214,6 +217,7 @@ private:
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
 
 	AActor* FindNearestTarget(TArray<AActor*> Actors) const;
+	AActor* FindNearestPerceivedActor(TArray<AActor*> Actors);
 
 	bool LineTrace(FHitResult& HitResult, const AActor* OtherActor, TArray<AActor*> ActorsToIgnore = TArray<AActor*>()) const;
 	bool LineTraceForActor(AActor* OtherActor, TArray<AActor*> ActorsToIgnore = TArray<AActor*>()) const;

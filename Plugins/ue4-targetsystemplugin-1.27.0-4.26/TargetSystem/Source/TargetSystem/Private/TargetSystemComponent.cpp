@@ -11,6 +11,7 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 
@@ -103,24 +104,141 @@ void UTargetSystemComponent::TargetActor()
 	}
 }
 
-void UTargetSystemComponent::TargetEnemyActor()
+void UTargetSystemComponent::TargetPerceievedActor(TArray<AActor*> PerceivedActors)
 {
-	ClosestTargetDistance = MinimumDistanceToEnable;
-
 	if (bTargetLocked)
 	{
-		TargetActorWithAxisInput(1.0f);
+		SwitchTargetActor(PerceivedActors);
 	}
 	else
 	{
-		const TArray<AActor*> Actors = GetAllActorsOfClassFaction(TargetableActors, EnemyFactionTag);
-		
-		LockedOnTargetActor = FindNearestTarget(Actors);
-		if(IsValid(LockedOnTargetActor))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Actor Name: %s"), *LockedOnTargetActor->GetName());
-		}
+		UE_LOG(LogTemp, Warning, TEXT("Did we make it here?"))
+		LockedOnTargetActor = FindNearestPerceivedActor(PerceivedActors);
 		TargetLockOn(LockedOnTargetActor);
+	}
+}
+
+void UTargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors)
+{
+	UCameraComponent* CameraComponent = OwnerActor->FindComponentByClass<UCameraComponent>();
+	if(!IsValid(CameraComponent))
+	{
+		//Perhaps add actor location like in Find by Axis.
+		return;
+	}
+	if(!IsValid(LockedOnTargetActor))
+	{
+		return;
+	}
+
+	FVector ReferenceLocation = CameraComponent->GetComponentLocation();
+	FVector ReferenceActor = LockedOnTargetActor->GetActorLocation();
+	FVector2D ReferenceVector = {ReferenceActor.X - ReferenceLocation.X , ReferenceActor.Y - ReferenceLocation.Y};
+	ReferenceVector.Normalize();
+
+	float RightComparison;
+	float LeftComparison; 
+	float ZRotation;
+	AActor* RightActor = nullptr;
+	AActor* LeftActor = nullptr;
+
+	// Initialize Comparison values for cycling targets to the Right if true.
+	if(true)
+	{
+		RightComparison = 180.f;
+		LeftComparison = 0.f;
+	}
+	else
+	{
+		RightComparison = 0.f;
+		LeftComparison = -180.f;
+	}
+
+	for (AActor* Actor : PerceivedActors)
+	{
+		FVector ActorLocation = Actor->GetActorLocation();
+		FVector2D ComparisonActorVector = {ActorLocation.X - ReferenceLocation.X , ActorLocation.Y - ReferenceLocation.Y};
+		ComparisonActorVector.Normalize();
+
+		ZRotation = FMath::RadiansToDegrees(FGenericPlatformMath::Acos(FVector2D::DotProduct(ReferenceVector, ComparisonActorVector))) * FMath::Sign(FVector2D::CrossProduct(ReferenceVector, ComparisonActorVector));
+
+		//Cycle targets to the right if true.
+		if(true)
+		{
+			if (ZRotation > 0 && ZRotation < RightComparison)
+			{
+				RightComparison = ZRotation;
+				RightActor = Actor;
+			}
+			else if (ZRotation < 0 && ZRotation < LeftComparison)
+			{
+				LeftComparison = ZRotation;
+				LeftActor = Actor;
+			}
+		}
+		else
+		{
+			if (ZRotation > 0 && ZRotation > RightComparison)
+			{
+				RightComparison = ZRotation;
+				RightActor = Actor;
+			}
+			else if (ZRotation < 0 && ZRotation > LeftComparison)
+			{
+				LeftComparison = ZRotation;
+				LeftActor = Actor;
+			}
+		}
+	}
+	
+	if (IsValid(RightActor) | IsValid(LeftActor))
+	{
+		if (SwitchingTargetTimerHandle.IsValid())
+		{
+			SwitchingTargetTimerHandle.Invalidate();
+		}
+
+		// Selects targets to the right if true. 
+		if(true)
+		{
+			if(IsValid(RightActor))
+			{
+				TargetLockOff();
+				LockedOnTargetActor = RightActor;
+				TargetLockOn(RightActor);
+			}
+			else if (IsValid(LeftActor))
+			{
+				TargetLockOff();
+				LockedOnTargetActor = LeftActor;
+				TargetLockOn(LeftActor);
+			}
+		}
+		else
+		{
+			if(IsValid(LeftActor))
+			{
+				TargetLockOff();
+				LockedOnTargetActor = LeftActor;
+				TargetLockOn(LeftActor);
+			}
+			else if (IsValid(RightActor))
+			{
+				TargetLockOff();
+				LockedOnTargetActor = RightActor;
+				TargetLockOn(RightActor);
+			}
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(
+			SwitchingTargetTimerHandle,
+			this,
+			&UTargetSystemComponent::ResetIsSwitchingTarget,
+			// Less sticky if still switching
+			bIsSwitchingTarget ? 0.25f : 0.5f
+		);
+
+		bIsSwitchingTarget = true;
 	}
 }
 
@@ -523,6 +641,27 @@ AActor* UTargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors) const
 	return Target;
 }
 
+AActor* UTargetSystemComponent::FindNearestPerceivedActor(TArray<AActor*> Actors)
+{
+	float ClosestDistance = ClosestTargetDistance;
+	AActor* Target = nullptr;
+	for (AActor* Actor : Actors)
+	{
+		const float Distance = GetDistanceFromCharacter(Actor);
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			Target = Actor;
+		}
+	}
+	
+	if(IsValid(Target))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("We got an Actor!! %s"), *Target->GetName());
+		return Target;
+	}
+		return nullptr;
+}
 
 bool UTargetSystemComponent::LineTraceForActor(AActor* OtherActor, const TArray<AActor*> ActorsToIgnore) const
 {
