@@ -6,7 +6,7 @@
 APlayerControllerTeam::APlayerControllerTeam()
 {
   PrimaryActorTick.bCanEverTick = true;
-  TeamId = FGenericTeamId(10);
+  TeamId = FGenericTeamId(2);
 }
 
 FGenericTeamId APlayerControllerTeam::GetGenericTeamId() const

@@ -150,7 +150,7 @@ public:
 	void TargetActorWithAxisInput(float AxisValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void SwitchTargetActor(TArray<AActor*> PerceivedActors);
+	void SwitchPerceivedTargetActor(TArray<AActor*> PerceivedActors, float Direction);
 
 	// Function to get TargetLocked private variable status
 	UFUNCTION(BlueprintCallable, Category = "Target System")

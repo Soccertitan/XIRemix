@@ -106,20 +106,18 @@ void UTargetSystemComponent::TargetActor()
 
 void UTargetSystemComponent::TargetPerceievedActor(TArray<AActor*> PerceivedActors)
 {
-	if (bTargetLocked)
-	{
-		SwitchTargetActor(PerceivedActors);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Did we make it here?"))
-		LockedOnTargetActor = FindNearestPerceivedActor(PerceivedActors);
-		TargetLockOn(LockedOnTargetActor);
-	}
+	LockedOnTargetActor = FindNearestPerceivedActor(PerceivedActors);
+	TargetLockOn(LockedOnTargetActor);
 }
 
-void UTargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors)
+void UTargetSystemComponent::SwitchPerceivedTargetActor(TArray<AActor*> PerceivedActors, float Direction)
 {
+	if (!bTargetLocked)
+	{
+		TargetPerceievedActor(PerceivedActors);
+		return;
+	}
+
 	UCameraComponent* CameraComponent = OwnerActor->FindComponentByClass<UCameraComponent>();
 	if(!IsValid(CameraComponent))
 	{
@@ -143,7 +141,7 @@ void UTargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors)
 	AActor* LeftActor = nullptr;
 
 	// Initialize Comparison values for cycling targets to the Right if true.
-	if(true)
+	if(Direction > 0)
 	{
 		RightComparison = 180.f;
 		LeftComparison = 0.f;
@@ -163,7 +161,7 @@ void UTargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors)
 		ZRotation = FMath::RadiansToDegrees(FGenericPlatformMath::Acos(FVector2D::DotProduct(ReferenceVector, ComparisonActorVector))) * FMath::Sign(FVector2D::CrossProduct(ReferenceVector, ComparisonActorVector));
 
 		//Cycle targets to the right if true.
-		if(true)
+		if(Direction > 0)
 		{
 			if (ZRotation > 0 && ZRotation < RightComparison)
 			{
@@ -199,7 +197,7 @@ void UTargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors)
 		}
 
 		// Selects targets to the right if true. 
-		if(true)
+		if(Direction > 0)
 		{
 			if(IsValid(RightActor))
 			{
@@ -643,7 +641,7 @@ AActor* UTargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors) const
 
 AActor* UTargetSystemComponent::FindNearestPerceivedActor(TArray<AActor*> Actors)
 {
-	float ClosestDistance = ClosestTargetDistance;
+	float ClosestDistance = MinimumDistanceToEnable;
 	AActor* Target = nullptr;
 	for (AActor* Actor : Actors)
 	{
