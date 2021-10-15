@@ -13,3 +13,13 @@ FGenericTeamId APlayerControllerTeam::GetGenericTeamId() const
 {
   return TeamId;
 }
+
+// ETeamAttitude::Type APlayerControllerTeam::GetTeamAttitudeTowards(const AActor& Other) const
+// {
+//   // DEFAULT BEHAVIOR---------------------------------------------------
+//   if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(OtherPawn->GetController()))
+//   {
+//     return Super::GetTeamAttitudeTowards(*OtherPawn->GetController());
+//   }
+
+// }

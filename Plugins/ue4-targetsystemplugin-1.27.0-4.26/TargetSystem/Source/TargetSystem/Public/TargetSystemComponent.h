@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 
 #include "Components/ActorComponent.h"
-#include "AbilitySystemComponent.h"
 #include "TargetSystemComponent.generated.h"
 
 class UUserWidget;
@@ -194,6 +193,8 @@ private:
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;
+	AActor* MainTargetActor;
+	AActor* SubTargetActor;
 
 	FTimerHandle LineOfSightBreakTimerHandle;
 	FTimerHandle SwitchingTargetTimerHandle;
@@ -206,14 +207,9 @@ private:
 	bool bDesireToSwitch = false;
 	float StartRotatingStack = 0.0f;
 
-	// Targeting Filters
-	FGameplayTag EnemyFactionTag = FGameplayTag::RequestGameplayTag("Faction.Enemy");
-	FGameplayTag PlayerFactionTag = FGameplayTag::RequestGameplayTag("Faction.Player");
-
 	//~ Actors search / trace
 
 	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
-	TArray<AActor*> GetAllActorsOfClassFaction(TSubclassOf<AActor> ActorClass, FGameplayTag FactionTag);
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
 
 	AActor* FindNearestTarget(TArray<AActor*> Actors) const;

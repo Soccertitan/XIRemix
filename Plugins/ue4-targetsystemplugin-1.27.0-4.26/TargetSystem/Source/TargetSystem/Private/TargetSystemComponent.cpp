@@ -12,8 +12,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystemComponent.h"
 
 // Sets default values for this component's properties
 UTargetSystemComponent::UTargetSystemComponent()
@@ -121,7 +119,6 @@ void UTargetSystemComponent::SwitchPerceivedTargetActor(TArray<AActor*> Perceive
 	UCameraComponent* CameraComponent = OwnerActor->FindComponentByClass<UCameraComponent>();
 	if(!IsValid(CameraComponent))
 	{
-		//Perhaps add actor location like in Find by Axis.
 		return;
 	}
 	if(!IsValid(LockedOnTargetActor))
@@ -154,37 +151,41 @@ void UTargetSystemComponent::SwitchPerceivedTargetActor(TArray<AActor*> Perceive
 
 	for (AActor* Actor : PerceivedActors)
 	{
-		FVector ActorLocation = Actor->GetActorLocation();
-		FVector2D ComparisonActorVector = {ActorLocation.X - ReferenceLocation.X , ActorLocation.Y - ReferenceLocation.Y};
-		ComparisonActorVector.Normalize();
-
-		ZRotation = FMath::RadiansToDegrees(FGenericPlatformMath::Acos(FVector2D::DotProduct(ReferenceVector, ComparisonActorVector))) * FMath::Sign(FVector2D::CrossProduct(ReferenceVector, ComparisonActorVector));
-
-		//Cycle targets to the right if true.
-		if(Direction > 0)
+		if(LineTraceForActor(Actor) && IsInViewport(Actor))
 		{
-			if (ZRotation > 0 && ZRotation < RightComparison)
+			// Gets the positive/ negative rotation from the source Actor to the next potentail targetable Actor.
+			FVector ActorLocation = Actor->GetActorLocation();
+			FVector2D ComparisonActorVector = {ActorLocation.X - ReferenceLocation.X , ActorLocation.Y - ReferenceLocation.Y};
+			ComparisonActorVector.Normalize();
+
+			ZRotation = FMath::RadiansToDegrees(FGenericPlatformMath::Acos(FVector2D::DotProduct(ReferenceVector, ComparisonActorVector))) * FMath::Sign(FVector2D::CrossProduct(ReferenceVector, ComparisonActorVector));
+
+			// Get the target closest to the right and furthest from the left of the original target if we choose targets to the right.
+			if(Direction > 0)
 			{
-				RightComparison = ZRotation;
-				RightActor = Actor;
+				if (ZRotation > 0 && ZRotation < RightComparison)
+				{
+					RightComparison = ZRotation;
+					RightActor = Actor;
+				}
+				else if (ZRotation < 0 && ZRotation < LeftComparison)
+				{
+					LeftComparison = ZRotation;
+					LeftActor = Actor;
+				}
 			}
-			else if (ZRotation < 0 && ZRotation < LeftComparison)
+			else
 			{
-				LeftComparison = ZRotation;
-				LeftActor = Actor;
-			}
-		}
-		else
-		{
-			if (ZRotation > 0 && ZRotation > RightComparison)
-			{
-				RightComparison = ZRotation;
-				RightActor = Actor;
-			}
-			else if (ZRotation < 0 && ZRotation > LeftComparison)
-			{
-				LeftComparison = ZRotation;
-				LeftActor = Actor;
+				if (ZRotation > 0 && ZRotation > RightComparison)
+				{
+					RightComparison = ZRotation;
+					RightActor = Actor;
+				}
+				else if (ZRotation < 0 && ZRotation > LeftComparison)
+				{
+					LeftComparison = ZRotation;
+					LeftActor = Actor;
+				}
 			}
 		}
 	}
@@ -561,27 +562,6 @@ TArray<AActor*> UTargetSystemComponent::GetAllActorsOfClass(const TSubclassOf<AA
 	return Actors;
 }
 
-TArray<AActor*> UTargetSystemComponent::GetAllActorsOfClassFaction(const TSubclassOf<AActor> ActorClass, FGameplayTag FactionTag)
-{
-	TArray<AActor*> Actors;
-	for (TActorIterator<AActor> ActorIterator(GetWorld(), ActorClass); ActorIterator; ++ActorIterator)
-	{
-		AActor* Actor = *ActorIterator;
-		UAbilitySystemComponent* AbilitySystemComp = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
-
-		if(AbilitySystemComp)
-		{
-			FGameplayTagContainer TagContainer;
-			AbilitySystemComp->GetOwnedGameplayTags(TagContainer);
-			if (TagContainer.HasTag(FactionTag))
-			{
-				Actors.Add(Actor);
-			}
-		}
-	}
-	return Actors;
-}
-
 bool UTargetSystemComponent::TargetIsTargetable(const AActor* Actor)
 {
 	const bool bIsImplemented = Actor->GetClass()->ImplementsInterface(UTargetSystemTargetableInterface::StaticClass());
@@ -589,7 +569,6 @@ bool UTargetSystemComponent::TargetIsTargetable(const AActor* Actor)
 	{
 		return ITargetSystemTargetableInterface::Execute_IsTargetable(Actor);
 	}
-
 	return true;
 }
 
@@ -645,17 +624,19 @@ AActor* UTargetSystemComponent::FindNearestPerceivedActor(TArray<AActor*> Actors
 	AActor* Target = nullptr;
 	for (AActor* Actor : Actors)
 	{
-		const float Distance = GetDistanceFromCharacter(Actor);
-		if (Distance < ClosestDistance)
+		if(LineTraceForActor(Actor) && IsInViewport(Actor))
 		{
-			ClosestDistance = Distance;
-			Target = Actor;
+			const float Distance = GetDistanceFromCharacter(Actor);
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				Target = Actor;
+			}
 		}
 	}
 	
 	if(IsValid(Target))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("We got an Actor!! %s"), *Target->GetName());
 		return Target;
 	}
 		return nullptr;

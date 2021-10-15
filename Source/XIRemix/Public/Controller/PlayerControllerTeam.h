@@ -22,4 +22,6 @@ private:
   // Implement The Generic Team Interface 
   FGenericTeamId TeamId;
   FGenericTeamId GetGenericTeamId() const;
+
+  // ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 };

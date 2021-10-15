@@ -18,5 +18,5 @@ class XIREMIX_API AEnemyAIController : public AAIController
 
 public:
 
-	// ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+	ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 };

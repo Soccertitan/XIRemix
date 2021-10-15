@@ -7,3 +7,17 @@ AFriendlyAIController::AFriendlyAIController()
 {
     SetGenericTeamId(FGenericTeamId(2));
 }
+
+ETeamAttitude::Type AFriendlyAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+    if (const APawn* OtherPawn = Cast<APawn>(&Other)) 
+    {
+     
+        // DEFAULT BEHAVIOR---------------------------------------------------
+        if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(OtherPawn->GetController()))
+        {
+            return Super::GetTeamAttitudeTowards(*OtherPawn->GetController());
+        }
+    }
+    return ETeamAttitude::Neutral;
+}
