@@ -193,7 +193,9 @@ private:
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;
+	UPROPERTY()
 	AActor* MainTargetActor;
+	UPROPERTY()
 	AActor* SubTargetActor;
 
 	FTimerHandle LineOfSightBreakTimerHandle;

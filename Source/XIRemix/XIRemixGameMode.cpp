@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "XIRemixGameMode.h"
-#include "XIRemixCharacter.h"
+#include "Characters/HeroCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AXIRemixGameMode::AXIRemixGameMode()
