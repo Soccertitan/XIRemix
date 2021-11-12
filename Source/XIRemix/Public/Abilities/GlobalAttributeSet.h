@@ -54,17 +54,17 @@ public:
 	UFUNCTION()
 	virtual void OnRep_ManaPointsMax(const FGameplayAttributeData& OldManaPointsMax);
 
-	UPROPERTY(BlueprintReadOnly, Category = "ResourceAttributes", ReplicatedUsing = OnRep_TechPoints)
-	FGameplayAttributeData TechPoints;
-	ATTRIBUTE_ACCESSORS(UGlobalAttributeSet, TechPoints);
+	UPROPERTY(BlueprintReadOnly, Category = "ResourceAttributes", ReplicatedUsing = OnRep_TacticalPoints)
+	FGameplayAttributeData TacticalPoints;
+	ATTRIBUTE_ACCESSORS(UGlobalAttributeSet, TacticalPoints);
 	UFUNCTION()
-	virtual void OnRep_TechPoints(const FGameplayAttributeData& OldTechPoints);
+	virtual void OnRep_TacticalPoints(const FGameplayAttributeData& OldTacticalPoints);
 
-	UPROPERTY(BlueprintReadOnly, Category = "ResourceAttributes", ReplicatedUsing = OnRep_TechPointsMax)
-	FGameplayAttributeData TechPointsMax;
-	ATTRIBUTE_ACCESSORS(UGlobalAttributeSet, TechPointsMax);
+	UPROPERTY(BlueprintReadOnly, Category = "ResourceAttributes", ReplicatedUsing = OnRep_TacticalPointsMax)
+	FGameplayAttributeData TacticalPointsMax;
+	ATTRIBUTE_ACCESSORS(UGlobalAttributeSet, TacticalPointsMax);
 	UFUNCTION()
-	virtual void OnRep_TechPointsMax(const FGameplayAttributeData& OldTechPointsMax);
+	virtual void OnRep_TacticalPointsMax(const FGameplayAttributeData& OldTacticalPointsMax);
 
 #pragma endregion ResourceAttributes
 
@@ -114,7 +114,7 @@ public:
 
 #pragma endregion MainAttributes
 	
-#pragma region PhysicalSubAttributes //Defines Attack, Accuracy, Defense, Evasion, and Crits
+#pragma region PhysicalSubAttributes //Defines Attack, Accuracy, Defense, Evasion, Crits, and Movement
 
 	UPROPERTY(BlueprintReadOnly, Category = "SubAttributesPhysical", ReplicatedUsing = OnRep_Attack)
 	FGameplayAttributeData Attack;
@@ -182,6 +182,12 @@ public:
 	UFUNCTION()
 	virtual void OnRep_RangedAttackSpeed(const FGameplayAttributeData& OldRangedAttackSpeed);
 
+	UPROPERTY(BlueprintReadOnly, Category = "MoveSpeed", ReplicatedUsing = OnRep_MoveSpeed)
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(UGlobalAttributeSet, MoveSpeed);
+	UFUNCTION()
+	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed);
+
 #pragma endregion MeleeSubAttributes
 
 #pragma region MagicSubAttributes //Defines Magic Attack, Accuracy, Defense, Evasion, and Crits
@@ -230,7 +236,7 @@ public:
 
 #pragma endregion MagicSubAttributes
 
-#pragma region ElementalResistances
+#pragma region ElementalResistances //Defines Fire, Ice, Lightning, Water, Earth, Wind, Dark, and Light Resistance
 
 	UPROPERTY(BlueprintReadOnly, Category = "ElementalAttributes", ReplicatedUsing = OnRep_FireResistance)
 	FGameplayAttributeData FireResistance;

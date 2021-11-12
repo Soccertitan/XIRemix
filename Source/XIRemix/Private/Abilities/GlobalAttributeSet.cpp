@@ -19,8 +19,8 @@ void UGlobalAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, HitPointsMax, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, ManaPoints, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, ManaPointsMax, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, TechPoints, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, TechPointsMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, TacticalPoints, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, TacticalPointsMax, COND_None, REPNOTIFY_Always);
 
     // Main Attributes
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, Strength, COND_None, REPNOTIFY_Always);
@@ -43,6 +43,7 @@ void UGlobalAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedCriticalHitBonus, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedAttackSpeed, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MoveSpeed, COND_None, REPNOTIFY_Always);
 
     // Magical Sub Attributes
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicAttack, COND_None, REPNOTIFY_Always);
@@ -86,14 +87,14 @@ void UGlobalAttributeSet::OnRep_ManaPointsMax(const FGameplayAttributeData& OldM
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, ManaPointsMax, OldManaPointsMax);
 }
 
-void UGlobalAttributeSet::OnRep_TechPoints(const FGameplayAttributeData& OldTechPoints) 
+void UGlobalAttributeSet::OnRep_TacticalPoints(const FGameplayAttributeData& OldTacticalPoints) 
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, TechPoints, OldTechPoints);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, TacticalPoints, OldTacticalPoints);
 }
 
-void UGlobalAttributeSet::OnRep_TechPointsMax(const FGameplayAttributeData& OldTechPointsMax) 
+void UGlobalAttributeSet::OnRep_TacticalPointsMax(const FGameplayAttributeData& OldTacticalPointsMax) 
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, TechPointsMax, OldTechPointsMax);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, TacticalPointsMax, OldTacticalPointsMax);
 }
 
 #pragma endregion
@@ -192,6 +193,11 @@ void UGlobalAttributeSet::OnRep_AttackSpeed(const FGameplayAttributeData& OldAtt
 void UGlobalAttributeSet::OnRep_RangedAttackSpeed(const FGameplayAttributeData& OldRangedAttackSpeed) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, RangedAttackSpeed, OldRangedAttackSpeed);
+}
+
+void UGlobalAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, MoveSpeed, OldMoveSpeed);
 }
 
 #pragma endregion
