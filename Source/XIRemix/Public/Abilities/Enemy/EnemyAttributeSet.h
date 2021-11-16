@@ -26,19 +26,19 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Enemy", ReplicatedUsing = OnRep_Level)
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes | Enemy", ReplicatedUsing = OnRep_Level)
 	FGameplayAttributeData Level;
 	ATTRIBUTE_ACCESSORS(UEnemyAttributeSet, Level);
 	UFUNCTION()
 	virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Enemy|Bounty", ReplicatedUsing = OnRep_ExpBounty)
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes | Enemy", ReplicatedUsing = OnRep_ExpBounty)
 	FGameplayAttributeData ExpBounty;
 	ATTRIBUTE_ACCESSORS(UEnemyAttributeSet, ExpBounty);
 	UFUNCTION()
 	virtual void OnRep_ExpBounty(const FGameplayAttributeData& OldExpBounty);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Enemy|Bounty", ReplicatedUsing = OnRep_GilBounty)
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes | Enemy", ReplicatedUsing = OnRep_GilBounty)
 	FGameplayAttributeData GilBounty;
 	ATTRIBUTE_ACCESSORS(UEnemyAttributeSet, GilBounty);
 	UFUNCTION()

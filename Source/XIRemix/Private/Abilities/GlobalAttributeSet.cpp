@@ -36,6 +36,7 @@ void UGlobalAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedAttack, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, Defense, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, Accuracy, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedAccuracy, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, Evasion, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, CriticalHitRate, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, CriticalHitBonus, COND_None, REPNOTIFY_Always);
@@ -43,11 +44,9 @@ void UGlobalAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedCriticalHitBonus, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, RangedAttackSpeed, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MoveSpeed, COND_None, REPNOTIFY_Always);
 
     // Magical Sub Attributes
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicAttack, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicDefense, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicAccuracy, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicEvasion, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MagicCriticalHitRate, COND_None, REPNOTIFY_Always);
@@ -63,6 +62,27 @@ void UGlobalAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, WaterResistance, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, LightResistance, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, DarkResistance, COND_None, REPNOTIFY_Always);
+
+    // Resist Status
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, AmnesiaResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, BindResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, BlindResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, GravityResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, ParalyzeResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, PetrifyResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, PoisonResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, SilenceResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, SleepResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, SlowResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, VirusResistance, COND_None, REPNOTIFY_Always);
+
+    // Other Attributes
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, MoveSpeed, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, CurePotency, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, CureReceivedPotency, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, DamageResist, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, Enmity, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UGlobalAttributeSet, SpellInterruption, COND_None, REPNOTIFY_Always);
 }
 
 #pragma region ResourceAttributesFunctions
@@ -160,6 +180,11 @@ void UGlobalAttributeSet::OnRep_Accuracy(const FGameplayAttributeData& OldAccura
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, Accuracy, OldAccuracy);
 }
 
+void UGlobalAttributeSet::OnRep_RangedAccuracy(const FGameplayAttributeData& OldRangedAccuracy) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, RangedAccuracy, OldRangedAccuracy);
+}
+
 void UGlobalAttributeSet::OnRep_Evasion(const FGameplayAttributeData& OldEvasion) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, Evasion, OldEvasion);
@@ -195,11 +220,6 @@ void UGlobalAttributeSet::OnRep_RangedAttackSpeed(const FGameplayAttributeData& 
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, RangedAttackSpeed, OldRangedAttackSpeed);
 }
 
-void UGlobalAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, MoveSpeed, OldMoveSpeed);
-}
-
 #pragma endregion
 
 #pragma region MagicalSubAttributes
@@ -207,11 +227,6 @@ void UGlobalAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveS
 void UGlobalAttributeSet::OnRep_MagicAttack(const FGameplayAttributeData& OldMagicAttack) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, MagicAttack, OldMagicAttack);
-}
-
-void UGlobalAttributeSet::OnRep_MagicDefense(const FGameplayAttributeData& OldMagicDefense) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, MagicDefense, OldMagicDefense);
 }
 
 void UGlobalAttributeSet::OnRep_MagicAccuracy(const FGameplayAttributeData& OldMagicAccuracy) 
@@ -285,3 +300,95 @@ void UGlobalAttributeSet::OnRep_DarkResistance(const FGameplayAttributeData& Old
 
 #pragma endregion
 
+#pragma region ResistStatus
+
+void UGlobalAttributeSet::OnRep_AmnesiaResistance(const FGameplayAttributeData& OldAmnesiaResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, AmnesiaResistance, OldAmnesiaResistance);
+}
+
+void UGlobalAttributeSet::OnRep_BindResistance(const FGameplayAttributeData& OldBindResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, BindResistance, OldBindResistance);
+}
+
+void UGlobalAttributeSet::OnRep_BlindResistance(const FGameplayAttributeData& OldBlindResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, BlindResistance, OldBlindResistance);
+}
+
+void UGlobalAttributeSet::OnRep_GravityResistance(const FGameplayAttributeData& OldGravityResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, GravityResistance, OldGravityResistance);
+}
+
+void UGlobalAttributeSet::OnRep_ParalyzeResistance(const FGameplayAttributeData& OldParalyzeResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, ParalyzeResistance, OldParalyzeResistance);
+}
+
+void UGlobalAttributeSet::OnRep_PetrifyResistance(const FGameplayAttributeData& OldPetrifyResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, PetrifyResistance, OldPetrifyResistance);
+}
+
+void UGlobalAttributeSet::OnRep_PoisonResistance(const FGameplayAttributeData& OldPoisonResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, PoisonResistance, OldPoisonResistance);
+}
+
+void UGlobalAttributeSet::OnRep_SilenceResistance(const FGameplayAttributeData& OldSilenceResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, SilenceResistance, OldSilenceResistance);
+}
+
+void UGlobalAttributeSet::OnRep_SleepResistance(const FGameplayAttributeData& OldSleepResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, SleepResistance, OldSleepResistance);
+}
+
+void UGlobalAttributeSet::OnRep_SlowResistance(const FGameplayAttributeData& OldSlowResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, SlowResistance, OldSlowResistance);
+}
+
+void UGlobalAttributeSet::OnRep_VirusResistance(const FGameplayAttributeData& OldVirusResistance) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, VirusResistance, OldVirusResistance);
+}
+
+#pragma endregion ResistStatus
+
+#pragma region OtherAttributes
+
+void UGlobalAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, MoveSpeed, OldMoveSpeed);
+}
+
+void UGlobalAttributeSet::OnRep_CurePotency(const FGameplayAttributeData& OldCurePotency) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, CurePotency, OldCurePotency);
+}
+
+void UGlobalAttributeSet::OnRep_CureReceivedPotency(const FGameplayAttributeData& OldCureReceivedPotency) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, CureReceivedPotency, OldCureReceivedPotency);
+}
+
+void UGlobalAttributeSet::OnRep_Enmity(const FGameplayAttributeData& OldEnmity) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, Enmity, OldEnmity);
+}
+
+void UGlobalAttributeSet::OnRep_DamageResist(const FGameplayAttributeData& OldDamageResist) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, DamageResist, OldDamageResist);
+}
+
+void UGlobalAttributeSet::OnRep_SpellInterruption(const FGameplayAttributeData& OldSpellInterruption) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UGlobalAttributeSet, SpellInterruption, OldSpellInterruption);
+}
+
+#pragma endregion OtherAttributes
