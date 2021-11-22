@@ -52,7 +52,7 @@ void UXITargetSystemComponent::BeginPlay()
 	SphereComponent = OwnerActor->FindComponentByClass<USphereComponent>();
 	if(!IsValid(SphereComponent))
 	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get the sphere component to find targets for ..."), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get the sphere component for ..."), *GetName());
 	}
 
 	SetupLocalPlayerController();

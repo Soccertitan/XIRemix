@@ -6,14 +6,11 @@
 #include "Engine/AssetManager.h"
 #include "XIAssetManager.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class XIREMIX_API UXIAssetManager : public UAssetManager
 {
 	GENERATED_BODY()
-
+	
 public:
 
 	static UXIAssetManager& Get();

@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
 
-	// The Widget Draw Size for the Widget class to use when locked on Target.
+	// // The Widget Draw Size for the Widget class to use when locked on Target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	float LockedOnWidgetDrawSize = 32.0f;
 
@@ -56,7 +56,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FName LockedOnWidgetParentSocket = FName("spine_03");
 
-	// The Relative Location to apply on Target LockedOn Widget when attached to a target.
+	// // The Relative Location to apply on Target LockedOn Widget when attached to a target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 
