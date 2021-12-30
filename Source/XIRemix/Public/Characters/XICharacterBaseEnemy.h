@@ -14,4 +14,19 @@ class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase
 {
 	GENERATED_BODY()
 	
+	AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer);
+
+	// Only called on the Server. Calls before Server's AcknowledgePossession.
+	virtual void PossessedBy(AController* NewController) override;
+
+protected:
+	
+	UPROPERTY()
+	class UAttributeSetEnemy* AttributeSetEnemy;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	// Client only
+	virtual void OnRep_PlayerState() override;	
 };

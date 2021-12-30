@@ -13,5 +13,7 @@ UCLASS()
 class XIREMIX_API UAbilitySystemComponentGlobal : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	bool StartupEffectsApplied = false;
 };

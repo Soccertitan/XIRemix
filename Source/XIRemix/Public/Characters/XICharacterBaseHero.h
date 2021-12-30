@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/XICharacterBase.h"
+#include "Components/SphereComponent.h"
 #include "XICharacterBaseHero.generated.h"
 
 /**
@@ -13,6 +14,14 @@ UCLASS()
 class XIREMIX_API AXICharacterBaseHero : public AXICharacterBase
 {
 	GENERATED_BODY()
+
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 
 public:
 	AXICharacterBaseHero(const class FObjectInitializer& ObjectInitializer);
@@ -30,6 +39,9 @@ protected:
 	
 	UPROPERTY()
 	class UAttributeSetHero* AttributeSetHero;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class USphereComponent* XITargetSphere;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

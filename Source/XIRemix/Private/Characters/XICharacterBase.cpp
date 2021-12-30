@@ -5,6 +5,7 @@
 #include "Abilities/AttributeSetGlobal.h"
 #include "Abilities/AbilitySystemComponentGlobal.h"
 #include "Abilities/GameplayAbilityGlobal.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
 #include "Characters/XICharacterMovementComponent.h"
 
@@ -12,9 +13,8 @@
 AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UXICharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
+	bReplicates = true;
 	bAlwaysRelevant = true;
 
 	// Cache Tags
@@ -31,6 +31,12 @@ AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitial
 void AXICharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (AbilitySystemComponent)
+	{
+		HitPointsChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHitPointsAttribute()).AddUObject(this, &AXICharacterBase::HitPointsChanged);
+		HitPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHitPointsMaxAttribute()).AddUObject(this, &AXICharacterBase::HitPointsMaxChanged);
+	}
 }
 
 UAbilitySystemComponent * AXICharacterBase::GetAbilitySystemComponent() const
@@ -65,6 +71,32 @@ void AXICharacterBase::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
 	}
+}
+
+void AXICharacterBase::AddStartupEffects()
+{
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->StartupEffectsApplied)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Startup Effects Will not Apply"));
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attempting to apply GE Spec to Self"));
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 0, EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+			UE_LOG(LogTemp, Warning, TEXT("Applied GE Spec to Self"));
+		}
+		UE_LOG(LogTemp, Warning, TEXT("GE Handle Invalid"));
+	}
+
+	AbilitySystemComponent->StartupEffectsApplied = true;
 }
 
 #pragma region AttributeGetters
@@ -140,3 +172,42 @@ float AXICharacterBase::GetMoveSpeed() const
 
 #pragma endregion AttributeGetters
 
+#pragma region CharacterName
+
+FText AXICharacterBase::GetCharacterName() const
+{
+	return CharacterName;
+}
+
+bool AXICharacterBase::Server_SetCharacterName_Validate(FText Name)
+{
+	return true;
+}
+
+void AXICharacterBase::Server_SetCharacterName_Implementation(FText Name)
+{
+	CharacterName = Name;
+}
+
+#pragma endregion CharacterName
+
+#pragma region AttributeChangeCallbacks
+
+void AXICharacterBase::HitPointsChanged(const FOnAttributeChangeData & Data)
+{
+	float HitPoints = Data.NewValue;
+}
+
+void AXICharacterBase::HitPointsMaxChanged(const FOnAttributeChangeData & Data)
+{
+	float HitPointsMax = Data.NewValue;
+}
+
+#pragma endregion AttributeChangeCallbacks
+
+void AXICharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const 
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AXICharacterBase, CharacterName);
+}
