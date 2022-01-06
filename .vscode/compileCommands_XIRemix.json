@@ -55,6 +55,11 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
 	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\MeshMergeFunctionLibrary.cpp",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\Player\\\\XIPlayerControllerAction.cpp",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
@@ -121,6 +126,11 @@
 	},
 	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\GameModes\\\\XIGameModeAction.h",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\MeshMergeFunctionLibrary.h",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
