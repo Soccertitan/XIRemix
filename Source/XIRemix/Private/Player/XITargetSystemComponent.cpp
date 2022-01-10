@@ -73,6 +73,7 @@ void UXITargetSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	if (bCameraLocked)
 	{
 		SetControlRotationOnTarget(TargetedActor);
+		Server_SetActorRotation(OwnerActor, OwnerActor->GetActorRotation());
 	}
 	
 	if (GetDistanceFromCharacter(TargetedActor) > MinimumDistanceToEnable)
@@ -260,74 +261,6 @@ void UXITargetSystemComponent::SetupLocalPlayerController()
 	}
 
 	OwnerPlayerController = Cast<APlayerController>(OwnerPawn->GetController());
-}
-
-void UXITargetSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
-{
-	if (!IsValid(OwnerPlayerController))
-	{
-		return;
-	}
-
-	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
-	OwnerPlayerController->SetControlRotation(ControlRotation);
-}
-
-FRotator UXITargetSystemComponent::GetControlRotationOnTarget(const AActor* OtherActor) const
-{
-	if (!IsValid(OwnerPlayerController))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
-		return FRotator::ZeroRotator;
-	}
-
-	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
-
-	const FVector CharacterLocation = OwnerActor->GetActorLocation();
-	const FVector OtherActorLocation = OtherActor->GetActorLocation();
-
-	// Find look at rotation
-	const FRotator LookRotation = FRotationMatrix::MakeFromX(OtherActorLocation - CharacterLocation).Rotator();
-	float Pitch = LookRotation.Pitch;
-	FRotator TargetRotation;
-	if (bAdjustPitchBasedOnDistanceToTarget)
-	{
-		const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
-		const float PitchInRange = (DistanceToTarget * PitchDistanceCoefficient + PitchDistanceOffset) * -1.0f;
-		const float PitchOffset = FMath::Clamp(PitchInRange, PitchMin, PitchMax);
-
-		Pitch = Pitch + PitchOffset;
-		TargetRotation = FRotator(Pitch, LookRotation.Yaw, ControlRotation.Roll);
-	}
-	else
-	{
-		if (bIgnoreLookInput)
-		{
-			TargetRotation = FRotator(Pitch, LookRotation.Yaw, ControlRotation.Roll);
-		}
-		else
-		{
-			TargetRotation = FRotator(ControlRotation.Pitch, LookRotation.Yaw, ControlRotation.Roll);
-		}
-	}
-
-	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
-}
-
-void UXITargetSystemComponent::ControlRotation(const bool ShouldControlRotation) const
-{
-	if (!IsValid(OwnerPawn))
-	{
-		return;
-	}
-
-	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
-
-	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
-	if (CharacterMovementComponent)
-	{
-		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
-	}
 }
 
 float UXITargetSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
@@ -519,3 +452,90 @@ void UXITargetSystemComponent::RemoveTargetedActor()
 	TargetedActor = nullptr;
 	LockCamera();
 }
+
+#pragma region ActorRotation
+
+void UXITargetSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
+{
+	if (!IsValid(OwnerPlayerController))
+	{
+		return;
+	}
+
+	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
+	OwnerPlayerController->SetControlRotation(ControlRotation);
+}
+
+FRotator UXITargetSystemComponent::GetControlRotationOnTarget(const AActor* OtherActor) const
+{
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
+		return FRotator::ZeroRotator;
+	}
+
+	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
+
+	const FVector CharacterLocation = OwnerActor->GetActorLocation();
+	const FVector OtherActorLocation = OtherActor->GetActorLocation();
+
+	// Find look at rotation
+	const FRotator LookRotation = FRotationMatrix::MakeFromX(OtherActorLocation - CharacterLocation).Rotator();
+	float Pitch = LookRotation.Pitch;
+	FRotator TargetRotation;
+	if (bAdjustPitchBasedOnDistanceToTarget)
+	{
+		const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
+		const float PitchInRange = (DistanceToTarget * PitchDistanceCoefficient + PitchDistanceOffset) * -1.0f;
+		const float PitchOffset = FMath::Clamp(PitchInRange, PitchMin, PitchMax);
+
+		Pitch = Pitch + PitchOffset;
+		TargetRotation = FRotator(Pitch, LookRotation.Yaw, ControlRotation.Roll);
+	}
+	else
+	{
+		if (bIgnoreLookInput)
+		{
+			TargetRotation = FRotator(Pitch, LookRotation.Yaw, ControlRotation.Roll);
+		}
+		else
+		{
+			TargetRotation = FRotator(ControlRotation.Pitch, LookRotation.Yaw, ControlRotation.Roll);
+		}
+	}
+
+	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+}
+
+void UXITargetSystemComponent::ControlRotation(const bool ShouldControlRotation) const
+{
+	if (!IsValid(OwnerPawn))
+	{
+		return;
+	}
+
+	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
+
+	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
+	}
+}
+
+bool UXITargetSystemComponent::Server_SetActorRotation_Validate(AActor* TargetActor, FRotator ActorRotation)
+{
+	if (TargetActor)
+	{
+		return true;
+	}
+	return false;
+}
+
+void UXITargetSystemComponent::Server_SetActorRotation_Implementation(AActor* TargetActor, FRotator ActorRotation)
+{
+	TargetActor->SetActorRotation(FMath::RInterpTo((TargetActor->GetActorRotation()), ActorRotation, 1, 2));
+}
+
+#pragma endregion ActorRotation
+

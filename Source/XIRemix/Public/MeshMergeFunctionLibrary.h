@@ -15,7 +15,7 @@ struct XIREMIX_API FSkelMeshMergeSectionMapping_BP
     GENERATED_BODY()
         /** Indices to final section entries of the merged skeletal mesh */
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh Merge Params")
-        TArray <int32> SectionIDs;
+        TArray < int32 > SectionIDs;
 };
 /**
 * Used to wrap a set of UV Transforms for one mesh.

@@ -159,6 +159,11 @@ private:
 	void SetControlRotationOnTarget(AActor* TargetActor) const;
 	void ControlRotation(bool ShouldControlRotation) const;
 
+	UFUNCTION(Server, WithValidation, UnReliable)
+	void Server_SetActorRotation(AActor* TargetActor, FRotator ActorRotation);
+	bool Server_SetActorRotation_Validate(AActor* TargetActor, FRotator ActorRotation);
+	void Server_SetActorRotation_Implementation(AActor* TargetActor, FRotator ActorRotation);
+
 	//~ Targeting
 	void TargetSelected(AActor* TargetActor);
 
