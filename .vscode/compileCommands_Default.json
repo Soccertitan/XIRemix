@@ -5,6 +5,11 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
 	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\Abilities\\\\AbilityTasks\\\\XIAT_PlayMontageAndWaitForEvent.cpp",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\Abilities\\\\AttributeSetGlobal.cpp",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
@@ -51,6 +56,11 @@
 	},
 	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\Characters\\\\XICharacterMovementComponent.cpp",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Private\\\\FunctionLibrary\\\\CombatFunctionLibrary.cpp",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
@@ -115,6 +125,11 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
 	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\Abilities\\\\AbilityTasks\\\\XIAT_PlayMontageAndWaitForEvent.h",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\Abilities\\\\AttributeSetGlobal.h",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
@@ -161,6 +176,11 @@
 	},
 	{
 		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\Characters\\\\XICharacterMovementComponent.h",
+		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
+		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
+	},
+	{
+		"file": "C:\\\\Users\\\\trist\\\\OneDrive\\\\Documents\\\\GitHub\\\\XIRemix\\\\Source\\\\XIRemix\\\\Public\\\\FunctionLibrary\\\\CombatFunctionLibrary.h",
 		"command": "cl.exe @\"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_Default\\XIRemix.173.rsp\"",
 		"directory": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Source"
 	},
