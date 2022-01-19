@@ -15,5 +15,6 @@ class XIREMIX_API UAbilitySystemComponentGlobal : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
+	bool CharacterAbilitiesGiven = false;
 	bool StartupEffectsApplied = false;
 };

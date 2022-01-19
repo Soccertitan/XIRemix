@@ -46,6 +46,7 @@ void AXICharacterBaseHero::PossessedBy(AController * NewController)
 
 	// Initialize GAS
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	AddCharacterAbilities();
 	InitializeAttributes();
 	AddStartupEffects();
 }

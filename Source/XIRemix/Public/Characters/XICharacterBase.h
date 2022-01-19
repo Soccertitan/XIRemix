@@ -8,16 +8,35 @@
 #include "GameplayTagContainer.h"
 #include "GameplayEffectTypes.h"
 #include "XIEnums.h"
+#include "XIRemix/XIRemix.h"
+#include "Interfaces/XICharacterInterface.h"
 #include "XICharacterBase.generated.h"
 
 UCLASS()
-class XIREMIX_API AXICharacterBase : public ACharacter, public IAbilitySystemInterface
+class XIREMIX_API AXICharacterBase : public ACharacter, public IAbilitySystemInterface, public IXICharacterInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	AXICharacterBase(const class FObjectInitializer& ObjectInitializer);
+
+	// Implements the IXICharacter Interface
+	// GetAutoAtkMontage is Implemented in C++
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Montage")
+	UAnimMontage* GetAutoAttackMontage(); virtual UAnimMontage* GetAutoAttackMontage_Implementation() override;
+
+	// GetCharacterName is Implemented in C++
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
+	FText GetCharacterName(); virtual FText GetCharacterName_Implementation() override;
+
+	// GetMainTarget is Implemented in C++
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
+	AActor* GetMainTarget(); virtual AActor* GetMainTarget_Implementation() override;
+
+	// GetMainTarget is Implemented in C++
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
+	AActor* GetSubTarget(); virtual AActor* GetSubTarget_Implementation() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -31,7 +50,11 @@ public:
 	virtual bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable, Category = "XICharacter|Name")
-	FText GetCharacterName() const;
+	FText GetCharName() const;
+
+	// Switch on AbilityID to return individual ability levels. Hardcoded to 1 for every ability in this project.
+	UFUNCTION(BlueprintCallable, Category = "XICharacter|Abilities")
+	virtual int32 GetAbilityLevel(EXIAbilityInputID AbilityID) const;
 
 	// // Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
 	// virtual void RemoveCharacterAbilities();
@@ -62,7 +85,7 @@ public:
 	float GetMoveSpeed() const;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
-	UAnimMontage* GetAutoAttackMontage();
+	UAnimMontage* GetAutoAttackMontage_CPP();
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatStartMontage();
@@ -79,6 +102,11 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Replicated, Category = "XICharacter")
 	FText CharacterName;
+
+	UPROPERTY(BlueprintReadWrite, Category = "XICharacter|Combat")
+	AActor* MainTarget;
+	UPROPERTY(BlueprintReadWrite, Category = "XICharacter|Combat")
+	AActor* SubTarget;
 
 	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XICharacter|Name")
 	void Server_SetCharacterName(const FText &Name);
@@ -112,6 +140,9 @@ protected:
 	// These effects are only applied one time on startup
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+
+	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
+	virtual void AddCharacterAbilities();
 
 	// Initialize the Character's attributes. Must run on Server but we run it on Client too
 	// so that we don't have to wait. The Server's replication to the Client won't matter since

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Interfaces/AnimationBP.h"
+#include "Interfaces/AnimBPInterface.h"
 #include "XIEnums.h"
 #include "XIHeroAnimInstance.generated.h"
 
@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class XIREMIX_API UXIHeroAnimInstance : public UAnimInstance, public IAnimationBP
+class XIREMIX_API UXIHeroAnimInstance : public UAnimInstance, public IAnimBPInterface
 {
 	GENERATED_BODY()
 

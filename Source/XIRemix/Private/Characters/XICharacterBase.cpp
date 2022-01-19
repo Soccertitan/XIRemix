@@ -8,7 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
 #include "Characters/XICharacterMovementComponent.h"
-#include "Interfaces/AnimationBP.h"
+#include "Interfaces/AnimBPInterface.h"
 
 // Sets default values
 AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitializer) :
@@ -48,6 +48,28 @@ UAbilitySystemComponent * AXICharacterBase::GetAbilitySystemComponent() const
 bool AXICharacterBase::IsAlive() const
 {
 	return GetHitPoints() > 0.0f;
+}
+
+int32 AXICharacterBase::GetAbilityLevel(EXIAbilityInputID AbilityID) const
+{
+	return 1;
+}
+
+void AXICharacterBase::AddCharacterAbilities()
+{
+	// Grant abilities, but only on the server	
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->CharacterAbilitiesGiven)
+	{
+		return;
+	}
+
+	for (TSubclassOf<UGameplayAbilityGlobal>& StartupAbility : CharacterAbilities)
+	{
+		AbilitySystemComponent->GiveAbility(
+			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+	}
+
+	AbilitySystemComponent->CharacterAbilitiesGiven = true;
 }
 
 void AXICharacterBase::InitializeAttributes()
@@ -175,7 +197,7 @@ float AXICharacterBase::GetMoveSpeed() const
 
 #pragma region CharacterName
 
-FText AXICharacterBase::GetCharacterName() const
+FText AXICharacterBase::GetCharName() const
 {
 	return CharacterName;
 }
@@ -225,9 +247,9 @@ UAnimMontage* AXICharacterBase::GetRandomMontage(TArray <UAnimMontage*> AnimMont
 	return AnimMontage[number];
 }
 
-UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
+UAnimMontage* AXICharacterBase::GetAutoAttackMontage_CPP()
 {
-	IAnimationBP* IntAnimBP = Cast<IAnimationBP>(GetMesh()->GetAnimInstance());
+	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
 	if(IntAnimBP)
 	{
 		float Speed = IntAnimBP->Execute_GetSpeed((GetMesh()->GetAnimInstance()));
@@ -493,3 +515,26 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 
 #pragma endregion AnimationMontages
 
+#pragma region XICharacterInterfaceFunctions
+
+AActor* AXICharacterBase::GetMainTarget_Implementation()
+{
+	return MainTarget;
+}
+
+AActor* AXICharacterBase::GetSubTarget_Implementation()
+{
+	return SubTarget;
+}
+
+UAnimMontage* AXICharacterBase::GetAutoAttackMontage_Implementation()
+{
+	return GetAutoAttackMontage_CPP();
+}
+
+FText AXICharacterBase::GetCharacterName_Implementation()
+{
+	return CharacterName;
+}
+
+#pragma endregion XICharacterInterfaceFunctions
