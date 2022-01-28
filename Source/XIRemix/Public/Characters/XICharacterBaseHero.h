@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Characters/XICharacterBase.h"
 #include "Components/SphereComponent.h"
+#include "FunctionLibrary/MeshMergeFunctionLibrary.h"
+#include "Player/XITargetSystemComponent.h"
 #include "XICharacterBaseHero.generated.h"
 
 /**
@@ -23,6 +25,9 @@ class XIREMIX_API AXICharacterBaseHero : public AXICharacterBase
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = XITarget, meta = (AllowPrivateAccess = "true"))
+	class UXITargetSystemComponent* XITargetSystem;
+
 public:
 	AXICharacterBaseHero(const class FObjectInitializer& ObjectInitializer);
 
@@ -40,8 +45,11 @@ protected:
 	UPROPERTY()
 	class UAttributeSetHero* AttributeSetHero;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class USphereComponent* XITargetSphere;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|MeshMerge")
+	FSkeletalMeshMergeParams SKMeshMergeParams;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "XICharacter|MeshMerge")
+	TMap <ESkeletalMeshMergeType, int32> SKMeshMergeMap;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

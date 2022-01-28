@@ -3,8 +3,8 @@
 
 #include "Characters/XICharacterBaseEnemy.h"
 #include "Abilities/Enemy/AttributeSetEnemy.h"
-#include "Abilities/AbilitySystemComponentGlobal.h"
-#include "Abilities/GameplayAbilityGlobal.h"
+#include "Abilities/XIAbilitySystemComponent.h"
+#include "Abilities/XIGameplayAbility.h"
 
 // Sets default values
 AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)

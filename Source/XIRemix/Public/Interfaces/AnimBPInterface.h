@@ -25,12 +25,10 @@ class XIREMIX_API IAnimBPInterface
 public:
 
 	// GetDirection is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
-	float GetDirection();
+	virtual float GetDirection() PURE_VIRTUAL(IAnimBPInterface::GetDirection(), return 0;);
 
 	// GetSpeed is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
-	float GetSpeed();
+	virtual float GetSpeed() PURE_VIRTUAL(IAnimBPInterface::GetSpeed(), return 0;);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
 	void SetCombatStyle(ECombatStyle CombatStyle);

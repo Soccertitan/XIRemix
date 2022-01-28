@@ -21,22 +21,13 @@ public:
 	// Sets default values for this character's properties
 	AXICharacterBase(const class FObjectInitializer& ObjectInitializer);
 
-	// Implements the IXICharacter Interface
-	// GetAutoAtkMontage is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Montage")
-	UAnimMontage* GetAutoAttackMontage(); virtual UAnimMontage* GetAutoAttackMontage_Implementation() override;
-
-	// GetCharacterName is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
-	FText GetCharacterName(); virtual FText GetCharacterName_Implementation() override;
-
-	// GetMainTarget is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
-	AActor* GetMainTarget(); virtual AActor* GetMainTarget_Implementation() override;
-
-	// GetMainTarget is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Attributes")
-	AActor* GetSubTarget(); virtual AActor* GetSubTarget_Implementation() override;
+	// IXICharacter Interface Implementations
+	virtual UAnimMontage* GetAutoAttackMontage() override;
+	virtual FText GetCharacterName() override;
+	virtual AActor* GetMainTarget() override;
+	virtual AActor* GetSubTarget() override;
+	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) override;
+	virtual EXITeam GetXITeam() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -48,9 +39,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "XICharacter")
 	virtual bool IsAlive() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Name")
-	FText GetCharName() const;
 
 	// Switch on AbilityID to return individual ability levels. Hardcoded to 1 for every ability in this project.
 	UFUNCTION(BlueprintCallable, Category = "XICharacter|Abilities")
@@ -85,9 +73,6 @@ public:
 	float GetMoveSpeed() const;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
-	UAnimMontage* GetAutoAttackMontage_CPP();
-
-	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatStartMontage();
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
@@ -108,48 +93,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "XICharacter|Combat")
 	AActor* SubTarget;
 
-	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XICharacter|Name")
-	void Server_SetCharacterName(const FText &Name);
-	bool Server_SetCharacterName_Validate(FText Name);
-	void Server_SetCharacterName_Implementation(FText Name);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|Combat")
+	ECombatStyle CombatStyle;
 
-	UPROPERTY()
-	class UAbilitySystemComponentGlobal* AbilitySystemComponent;
-	UPROPERTY()
-	class UAttributeSetGlobal* AttributeSet;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter")
+	EXITeam XITeam;
 
-	FGameplayTag DeadTag;
-	FGameplayTag EffectRemoveOnDeathTag;
-
-	FDelegateHandle HitPointsChangedDelegateHandle;
-	FDelegateHandle HitPointsMaxChangedDelegateHandle;
-
-	// Attribute Change Callbacks
-	virtual void HitPointsChanged(const FOnAttributeChangeData& Data);
-	virtual void HitPointsMaxChanged(const FOnAttributeChangeData& Data);
-
-	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
-	TArray<TSubclassOf<class UGameplayAbilityGlobal>> CharacterAbilities;
-
-	// Default attributes for a character for initializing on spawn/respawn.
-	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
-	TSubclassOf<class UGameplayEffect> DefaultAttributes;
-
-	// These effects are only applied one time on startup
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
-	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
-
-	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
-	virtual void AddCharacterAbilities();
-
-	// Initialize the Character's attributes. Must run on Server but we run it on Client too
-	// so that we don't have to wait. The Server's replication to the Client won't matter since
-	// the values should be the same.
-	virtual void InitializeAttributes();
-
-	virtual void AddStartupEffects();
+	// UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter")
+	// Widget TargetUI; // Future Implementation
 
 	#pragma region CombatMontages
 
@@ -303,8 +254,79 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|TwoHanded")
 	class UAnimMontage* TwoHandedAtkRight;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Bow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Gun;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Throw;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Harp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Flute;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Range")
+	class UAnimMontage* Sing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* JobAbility;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* JobAbility_Combat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* BlackMagic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* WhiteMagic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* SummonerMagic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* Ninjitsu;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* BlueMagic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
+	class UAnimMontage* GeoMagic;
+
 #pragma endregion CombatMontages
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|Combat")
-	ECombatStyle CombatStyle;
+	UPROPERTY()
+	class UXIAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY()
+	class UAttributeSetGlobal* AttributeSet;
+
+	FGameplayTag DeadTag;
+	FGameplayTag EffectRemoveOnDeathTag;
+
+	FDelegateHandle HitPointsChangedDelegateHandle;
+	FDelegateHandle HitPointsMaxChangedDelegateHandle;
+
+	// Attribute Change Callbacks
+	virtual void HitPointsChanged(const FOnAttributeChangeData& Data);
+	virtual void HitPointsMaxChanged(const FOnAttributeChangeData& Data);
+
+	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	TArray<TSubclassOf<class UXIGameplayAbility>> CharacterAbilities;
+
+	// Default attributes for a character for initializing on spawn/respawn.
+	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+
+	// These effects are only applied one time on startup
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+
+	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
+	virtual void AddCharacterAbilities();
+
+	// Initialize the Character's attributes. Must run on Server but we run it on Client too
+	// so that we don't have to wait. The Server's replication to the Client won't matter since
+	// the values should be the same.
+	virtual void InitializeAttributes();
+
+	virtual void AddStartupEffects();
+
+	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XICharacter|Name")
+	void Server_SetCharacterName(const FText &Name);
+	bool Server_SetCharacterName_Validate(FText Name);
+	void Server_SetCharacterName_Implementation(FText Name);
+
 };

@@ -5,16 +5,20 @@
 #include "AbilitySystemComponent.h"
 #include "Characters/XICharacterBase.h"
 #include "GameplayTagContainer.h"
+#include "Interfaces/AnimBPInterface.h"
 
 
 UXICharacterMovementComponent::UXICharacterMovementComponent()
 {
 	bOrientRotationToMovement = true;
+
 }
 
 float UXICharacterMovementComponent::GetMaxSpeed() const
 {
 	AXICharacterBase* Owner = Cast<AXICharacterBase>(GetOwner());
+	IAnimBPInterface* ABPInt = Cast<IAnimBPInterface>((GetCharacterOwner())->GetMesh()->GetAnimInstance());
+
 	if (!Owner)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() No Owner"), *FString(__FUNCTION__));
@@ -30,6 +34,15 @@ float UXICharacterMovementComponent::GetMaxSpeed() const
 	{
 		return 0.0f;
 	}
+
+	if(ABPInt)
+	{	
+		if ((ABPInt->GetDirection() > 100) | (ABPInt->GetDirection() < -100))
+		{
+			return FMath::Lerp(Owner->GetMoveSpeed(), (Owner->GetMoveSpeed() / 2), 1);
+		}
+	}
+
 	return Owner->GetMoveSpeed();
 }
 

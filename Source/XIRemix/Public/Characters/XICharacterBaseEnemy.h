@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/XICharacterBase.h"
+#include "XIEnums.h"
 #include "XICharacterBaseEnemy.generated.h"
 
 /**

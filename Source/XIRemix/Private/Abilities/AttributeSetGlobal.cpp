@@ -41,7 +41,9 @@ void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CriticalHitBonus, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedCriticalHitRate, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedCriticalHitBonus, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, AttackDelay, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, AttackSpeed, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedAttackDelay, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedAttackSpeed, COND_None, REPNOTIFY_Always);
 
     // Magical Sub Attributes
@@ -209,9 +211,19 @@ void UAttributeSetGlobal::OnRep_RangedCriticalHitBonus(const FGameplayAttributeD
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, RangedCriticalHitBonus, OldRangedCriticalHitBonus);
 }
 
+void UAttributeSetGlobal::OnRep_AttackDelay(const FGameplayAttributeData& OldAttackDelay) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, AttackDelay, OldAttackDelay);
+}
+
 void UAttributeSetGlobal::OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, AttackSpeed, OldAttackSpeed);
+}
+
+void UAttributeSetGlobal::OnRep_RangedAttackDelay(const FGameplayAttributeData& OldRangedAttackDelay) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, RangedAttackDelay, OldRangedAttackDelay);
 }
 
 void UAttributeSetGlobal::OnRep_RangedAttackSpeed(const FGameplayAttributeData& OldRangedAttackSpeed) 

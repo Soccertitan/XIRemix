@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "XIEnums.h"
 #include "XICharacterInterface.generated.h"
 
 // This class does not need to be modified.
@@ -24,18 +25,21 @@ class XIREMIX_API IXICharacterInterface
 public:
 
 	// GetAutoAtkMontage is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimMontages")
-	UAnimMontage* GetAutoAttackMontage();
+	virtual UAnimMontage* GetAutoAttackMontage() PURE_VIRTUAL(IXICharacterInterface::GetAutoAttackMontage(), return nullptr;);
 
 	// GetCharacterName is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter")
-	FText GetCharacterName();
+	virtual FText GetCharacterName() PURE_VIRTUAL(IXICharacterInterface::GetCharacterName(), return FText(););
 
 	// GetMainTarget is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Combat")
-	AActor* GetMainTarget();
+	virtual AActor* GetMainTarget() PURE_VIRTUAL(IXICharacterInterface::GetMainTarget(), return nullptr;);
 
 	// GetSubTarget is Implemented in C++
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|Combat")
-	AActor* GetSubTarget();
+	virtual AActor* GetSubTarget() PURE_VIRTUAL(IXICharacterInterface::GetSubTarget(), return nullptr;);
+
+	// Get the XITeam from Actor
+	virtual EXITeam GetXITeam() PURE_VIRTUAL(IXICharacterInterface::GetXITeam(), return EXITeam::Neutral;);
+
+	//Get Attitute Towards Actor implemented in C++
+	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) PURE_VIRTUAL(IXICharacterInterface::GetAttitudeTowardsActor(AActor* OtherActor), return EXITeamAttitude::Neutral;);
+
 };

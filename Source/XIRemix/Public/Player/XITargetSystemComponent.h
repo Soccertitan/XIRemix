@@ -100,6 +100,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void SwitchTargetActor(TArray<AActor*> PerceivedActors, float Direction);
 
+	// Gets overlapping Actors from SphereComponent
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	TArray<AActor *> GetXIOverlappingActors() const;
+
 	// Called when a target is deslected, either if it is out of reach (based on MinimumDistanceToEnable) or behind an Object.
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FComponentOnTargetModified OnTargetRemoved;
@@ -125,7 +129,7 @@ private:
 	UPROPERTY()
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Target System|Sphere")
 	USphereComponent* SphereComponent;
 
 	UPROPERTY()

@@ -9,6 +9,6 @@ public class XIRemixEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("XIRemix");
+		ExtraModuleNames.AddRange(new string[] { "XIRemix" } );
 	}
 }

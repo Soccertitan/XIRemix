@@ -3,6 +3,7 @@
 #include "FunctionLibrary/CombatFunctionLibrary.h"
 #include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Interfaces/XICharacterInterface.h"
 
 bool UCombatFunctionLibrary::CheckTargetWithinRange(AActor* OwnerActor, AActor* TargetActor, float AngleInDegrees, float Range)
 {
@@ -44,4 +45,64 @@ bool UCombatFunctionLibrary::CheckTargetWithinRange(AActor* OwnerActor, AActor* 
     }
 
     return false;
+}
+
+AActor* UCombatFunctionLibrary::GetMainTarget(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetMainTarget();
+    }
+    return nullptr;
+}
+
+AActor* UCombatFunctionLibrary::GetSubTarget(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetSubTarget();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetAutoAttackMontage();
+    }
+    return nullptr;
+}
+
+FText UCombatFunctionLibrary::GetCharacterName(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetCharacterName();
+    }
+    return FText();
+}
+
+EXITeam UCombatFunctionLibrary::GetXITeam(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetXITeam();
+    }
+    return EXITeam::Neutral;
+}
+
+EXITeamAttitude UCombatFunctionLibrary::GetAttitudeTowardsActor(AActor* OwnerActor, AActor* TargetActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetAttitudeTowardsActor(TargetActor);
+    }
+    return EXITeamAttitude::Neutral;
 }

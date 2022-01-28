@@ -18,11 +18,9 @@ class XIREMIX_API UXIHeroAnimInstance : public UAnimInstance, public IAnimBPInte
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
-	float GetDirection(); virtual float GetDirection_Implementation() override;
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
-	float GetSpeed(); virtual float GetSpeed_Implementation() override;
+	// IAnimBPInterface Implemented Functions
+	virtual float GetDirection() override;
+	virtual float GetSpeed() override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
 	void SetCombatStyle(ECombatStyle CStyle); virtual void SetCombatStyle_Implementation(ECombatStyle CStyle) override;

@@ -173,11 +173,23 @@ public:
 	UFUNCTION()
 	virtual void OnRep_RangedCriticalHitBonus(const FGameplayAttributeData& OldRangedCriticalHitBonus);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_AttackDelay)
+	FGameplayAttributeData AttackDelay;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, AttackDelay);
+	UFUNCTION()
+	virtual void OnRep_AttackDelay(const FGameplayAttributeData& OldAttackDelay);
+
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_AttackSpeed)
 	FGameplayAttributeData AttackSpeed;
 	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, AttackSpeed);
 	UFUNCTION()
 	virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_RangedAttackDelay)
+	FGameplayAttributeData RangedAttackDelay;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RangedAttackDelay);
+	UFUNCTION()
+	virtual void OnRep_RangedAttackDelay(const FGameplayAttributeData& OldRangedAttackDelay);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_RangedAttackSpeed)
 	FGameplayAttributeData RangedAttackSpeed;

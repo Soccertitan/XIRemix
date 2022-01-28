@@ -9,6 +9,6 @@ public class XIRemixTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("XIRemix");
+		ExtraModuleNames.AddRange(new string[] { "XIRemix" } );
 	}
 }

@@ -5,8 +5,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"
-#include "Abilities/AbilitySystemComponentGlobal.h"
-#include "Abilities/GameplayAbilityGlobal.h"
+#include "Abilities/XIAbilitySystemComponent.h"
+#include "Abilities/XIGameplayAbility.h"
 #include "GameFramework/Character.h"
 
 UXIAT_PlayMontageAndWaitForEvent::UXIAT_PlayMontageAndWaitForEvent(const FObjectInitializer& ObjectInitializer)
@@ -16,9 +16,9 @@ UXIAT_PlayMontageAndWaitForEvent::UXIAT_PlayMontageAndWaitForEvent(const FObject
 	bStopWhenAbilityEnds = true;
 }
 
-UAbilitySystemComponentGlobal* UXIAT_PlayMontageAndWaitForEvent::GetTargetASC()
+UXIAbilitySystemComponent* UXIAT_PlayMontageAndWaitForEvent::GetTargetASC()
 {
-	return Cast<UAbilitySystemComponentGlobal>(AbilitySystemComponent);
+	return Cast<UXIAbilitySystemComponent>(AbilitySystemComponent);
 }
 
 void UXIAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
@@ -118,7 +118,7 @@ void UXIAT_PlayMontageAndWaitForEvent::Activate()
 	}
 
 	bool bPlayedMontage = false;
-	UAbilitySystemComponentGlobal* XIAbilitySystemComponent = GetTargetASC();
+	UXIAbilitySystemComponent* XIAbilitySystemComponent = GetTargetASC();
 
 	if (XIAbilitySystemComponent)
 	{
@@ -202,7 +202,7 @@ void UXIAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 		}
 	}
 
-	UAbilitySystemComponentGlobal* XIAbilitySystemComponent = GetTargetASC();
+	UXIAbilitySystemComponent* XIAbilitySystemComponent = GetTargetASC();
 	if (XIAbilitySystemComponent)
 	{
 		XIAbilitySystemComponent->RemoveGameplayEventTagContainerDelegate(EventTags, EventHandle);

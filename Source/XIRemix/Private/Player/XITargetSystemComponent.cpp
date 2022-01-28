@@ -20,6 +20,15 @@ UXITargetSystemComponent::UXITargetSystemComponent()
 
 	LockedOnWidgetClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/XIRemix/Core/Player/UI/WBP_TargetDot.WBP_TargetDot_C'"));
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
+
+	// Defining the SphereComponentParameters
+	SphereComponent = CreateDefaultSubobject<USphereComponent>("XITargetSphere");
+	SphereComponent->SetSphereRadius(MinimumDistanceToEnable);
+	SphereComponent->SetCollisionProfileName(TEXT("TargetSphere"));
+	SphereComponent->AreaClass = nullptr;
+	SphereComponent->SetCanEverAffectNavigation(false);
+	SphereComponent->PrimaryComponentTick.bCanEverTick = false;
+	SphereComponent->PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
 
@@ -49,11 +58,7 @@ void UXITargetSystemComponent::BeginPlay()
 		return;
 	}
 
-	SphereComponent = OwnerActor->FindComponentByClass<USphereComponent>();
-	if(!IsValid(SphereComponent))
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get the sphere component for ..."), *GetName());
-	}
+	SphereComponent->AttachToComponent(OwnerActor->GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	SetupLocalPlayerController();
 	
@@ -226,6 +231,13 @@ void UXITargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors
 AActor* UXITargetSystemComponent::GetTargetedActor() const
 {
 	return TargetedActor;
+}
+
+TArray<AActor *> UXITargetSystemComponent::GetXIOverlappingActors() const
+{
+	TArray<AActor *> Actors;
+	SphereComponent->GetOverlappingActors(Actors);
+	return Actors;
 }
 
 AActor* UXITargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors) const

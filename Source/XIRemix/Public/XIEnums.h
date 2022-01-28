@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 #include "XIEnums.generated.h"
 
 UENUM(BlueprintType, Category="XIRemix")
@@ -100,4 +101,30 @@ enum class ESkeletalMeshMergeType : uint8
 	MainHand UMETA(DisplayName = "MainHand"),
 	SubHand UMETA(DisplayName = "SubHand"),
 	Range UMETA(DisplayName = "Range")
+};
+
+UENUM(BlueprintType, Category="XITeams")
+enum class EXITeam : uint8
+{
+	Neutral UMETA(DisplayName = "Neutral"),
+	Enemy UMETA(DisplayName = "Enemy"),
+	Hero UMETA(DisplayName = "Hero")
+};
+
+UENUM(BlueprintType, Category="XITeams")
+enum class EXITeamAttitude : uint8
+{
+	Neutral UMETA(DisplayName = "Neutral"),
+	Hostile UMETA(DisplayName = "Hostile"),
+	Friendly UMETA(DisplayName = "Friendly")
+};
+
+UENUM(BlueprintType, Category="XIRemix")
+enum class EXIAggroType : uint8
+{
+	Passive UMETA(DisplayName = "Passive"),
+	Sight UMETA(DisplayName = "Sight"),
+	Sound UMETA(DisplayName = "Sound"),
+	Smell UMETA(DisplayName = "Smell"),
+	TrueSense UMETA(DisplayName = "TrueSense")
 };

@@ -3,8 +3,8 @@
 
 #include "Characters/XICharacterBase.h"
 #include "Abilities/AttributeSetGlobal.h"
-#include "Abilities/AbilitySystemComponentGlobal.h"
-#include "Abilities/GameplayAbilityGlobal.h"
+#include "Abilities/XIAbilitySystemComponent.h"
+#include "Abilities/XIGameplayAbility.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
 #include "Characters/XICharacterMovementComponent.h"
@@ -14,14 +14,18 @@
 AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UXICharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	bAlwaysRelevant = true;
+	bUseControllerRotationYaw = false;
+	
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	GetCapsuleComponent()->PrimaryComponentTick.bStartWithTickEnabled = false;
+	GetMesh()->PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	// Cache Tags
-	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Debuff.Dead"));
+	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Gameplay.Dead"));
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponentGlobal>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UXIAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
@@ -63,7 +67,7 @@ void AXICharacterBase::AddCharacterAbilities()
 		return;
 	}
 
-	for (TSubclassOf<UGameplayAbilityGlobal>& StartupAbility : CharacterAbilities)
+	for (TSubclassOf<UXIGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
@@ -197,11 +201,6 @@ float AXICharacterBase::GetMoveSpeed() const
 
 #pragma region CharacterName
 
-FText AXICharacterBase::GetCharName() const
-{
-	return CharacterName;
-}
-
 bool AXICharacterBase::Server_SetCharacterName_Validate(FText Name)
 {
 	return true;
@@ -247,13 +246,106 @@ UAnimMontage* AXICharacterBase::GetRandomMontage(TArray <UAnimMontage*> AnimMont
 	return AnimMontage[number];
 }
 
-UAnimMontage* AXICharacterBase::GetAutoAttackMontage_CPP()
+UAnimMontage* AXICharacterBase::GetCombatStartMontage()
+{
+	switch (CombatStyle)
+	{
+		case ECombatStyle::Unarmed:
+		return UnarmedStartCombat;
+
+		case ECombatStyle::Sword:
+		return SwordStartCombat;
+
+		case ECombatStyle::Axe:
+		return AxeStartCombat;
+
+		case ECombatStyle::Dagger:
+		return DaggerStartCombat;
+
+		case ECombatStyle::Club:
+		return ClubStartCombat;
+
+		case ECombatStyle::Katana:
+		return KatanaStartCombat;
+
+		case ECombatStyle::Hand2Hand:
+		return H2HStartCombat;
+
+		case ECombatStyle::GreatKatana:
+		return GreatKatanaStartCombat;
+
+		case ECombatStyle::GreatSword:
+		return GreatSwordStartCombat;
+
+		case ECombatStyle::TwoHanded:
+		return TwoHandedStartCombat;
+	}
+	return nullptr;
+}
+
+UAnimMontage* AXICharacterBase::GetCombatExitMontage()
+{
+	switch (CombatStyle)
+	{
+		case ECombatStyle::Unarmed:
+		return UnarmedExitCombat;
+
+		case ECombatStyle::Sword:
+		return SwordExitCombat;
+
+		case ECombatStyle::Axe:
+		return AxeExitCombat;
+
+		case ECombatStyle::Dagger:
+		return DaggerExitCombat;
+
+		case ECombatStyle::Club:
+		return ClubExitCombat;
+
+		case ECombatStyle::Katana:
+		return KatanaExitCombat;
+
+		case ECombatStyle::Hand2Hand:
+		return H2HExitCombat;
+
+		case ECombatStyle::GreatKatana:
+		return GreatKatanaExitCombat;
+
+		case ECombatStyle::GreatSword:
+		return GreatSwordExitCombat;
+
+		case ECombatStyle::TwoHanded:
+		return TwoHandedExitCombat;
+	}
+	return nullptr;
+}
+
+#pragma endregion AnimationMontages
+
+#pragma region XICharacterInterfaceFunctions
+
+FText AXICharacterBase::GetCharacterName()
+{
+	return CharacterName;
+}
+
+AActor* AXICharacterBase::GetMainTarget()
+{
+	return MainTarget;
+}
+
+AActor* AXICharacterBase::GetSubTarget()
+{
+	return SubTarget;
+}
+
+UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
 {
 	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
 	if(IntAnimBP)
 	{
-		float Speed = IntAnimBP->Execute_GetSpeed((GetMesh()->GetAnimInstance()));
-		float Direction = IntAnimBP->Execute_GetDirection((GetMesh()->GetAnimInstance()));
+		float Speed = IntAnimBP->GetSpeed();
+		float Direction = IntAnimBP->GetDirection();
 		
 		// Stationary Attack
 		if(FMath::IsNearlyZero(Speed))
@@ -439,102 +531,33 @@ UAnimMontage* AXICharacterBase::GetAutoAttackMontage_CPP()
 	return nullptr;
 }
 
-UAnimMontage* AXICharacterBase::GetCombatStartMontage()
+EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor)
 {
-	switch (CombatStyle)
+	IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(OtherActor);
+	if (XICharInt)
 	{
-		case ECombatStyle::Unarmed:
-		return UnarmedStartCombat;
-
-		case ECombatStyle::Sword:
-		return SwordStartCombat;
-
-		case ECombatStyle::Axe:
-		return AxeStartCombat;
-
-		case ECombatStyle::Dagger:
-		return DaggerStartCombat;
-
-		case ECombatStyle::Club:
-		return ClubStartCombat;
-
-		case ECombatStyle::Katana:
-		return KatanaStartCombat;
-
-		case ECombatStyle::Hand2Hand:
-		return H2HStartCombat;
-
-		case ECombatStyle::GreatKatana:
-		return GreatKatanaStartCombat;
-
-		case ECombatStyle::GreatSword:
-		return GreatSwordStartCombat;
-
-		case ECombatStyle::TwoHanded:
-		return TwoHandedStartCombat;
+		EXITeam OtherTeam = XICharInt->GetXITeam();
+		if (OtherTeam == EXITeam::Neutral)
+		{
+			return EXITeamAttitude::Neutral;
+		}
+		
+		if (OtherTeam == XITeam)
+		{
+			return EXITeamAttitude::Friendly;
+		}
+		
+		if (OtherTeam != XITeam)
+		{
+			return EXITeamAttitude::Hostile;
+		}
 	}
-	return nullptr;
+	return EXITeamAttitude::Neutral;
 }
 
-UAnimMontage* AXICharacterBase::GetCombatExitMontage()
+EXITeam AXICharacterBase::GetXITeam()
 {
-	switch (CombatStyle)
-	{
-		case ECombatStyle::Unarmed:
-		return UnarmedExitCombat;
-
-		case ECombatStyle::Sword:
-		return SwordExitCombat;
-
-		case ECombatStyle::Axe:
-		return AxeExitCombat;
-
-		case ECombatStyle::Dagger:
-		return DaggerExitCombat;
-
-		case ECombatStyle::Club:
-		return ClubExitCombat;
-
-		case ECombatStyle::Katana:
-		return KatanaExitCombat;
-
-		case ECombatStyle::Hand2Hand:
-		return H2HExitCombat;
-
-		case ECombatStyle::GreatKatana:
-		return GreatKatanaExitCombat;
-
-		case ECombatStyle::GreatSword:
-		return GreatSwordExitCombat;
-
-		case ECombatStyle::TwoHanded:
-		return TwoHandedExitCombat;
-	}
-	return nullptr;
-}
-
-#pragma endregion AnimationMontages
-
-#pragma region XICharacterInterfaceFunctions
-
-AActor* AXICharacterBase::GetMainTarget_Implementation()
-{
-	return MainTarget;
-}
-
-AActor* AXICharacterBase::GetSubTarget_Implementation()
-{
-	return SubTarget;
-}
-
-UAnimMontage* AXICharacterBase::GetAutoAttackMontage_Implementation()
-{
-	return GetAutoAttackMontage_CPP();
-}
-
-FText AXICharacterBase::GetCharacterName_Implementation()
-{
-	return CharacterName;
+	return XITeam;
 }
 
 #pragma endregion XICharacterInterfaceFunctions

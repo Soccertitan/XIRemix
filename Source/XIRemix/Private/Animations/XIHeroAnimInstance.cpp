@@ -3,12 +3,12 @@
 
 #include "Animations/XIHeroAnimInstance.h"
 
-float UXIHeroAnimInstance::GetSpeed_Implementation()
+float UXIHeroAnimInstance::GetSpeed()
 {
     return Speed;
 }
 
-float UXIHeroAnimInstance::GetDirection_Implementation()
+float UXIHeroAnimInstance::GetDirection()
 {
     return Direction;
 }

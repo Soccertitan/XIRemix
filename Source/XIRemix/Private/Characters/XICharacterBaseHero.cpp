@@ -3,8 +3,8 @@
 
 #include "Characters/XICharacterBaseHero.h"
 #include "Abilities/Hero/AttributeSetHero.h"
-#include "Abilities/AbilitySystemComponentGlobal.h"
-#include "Abilities/GameplayAbilityGlobal.h"
+#include "Abilities/XIAbilitySystemComponent.h"
+#include "Abilities/XIGameplayAbility.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -13,25 +13,32 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 {
 	AttributeSetHero = CreateDefaultSubobject<UAttributeSetHero>("AttributeSetHero");
 
-	// Creates a sphere collision for targeting Actors.
-	XITargetSphere = CreateDefaultSubobject<USphereComponent>("XITargetSphere");
-	XITargetSphere->SetIsReplicated(false);
-	XITargetSphere->SetComponentTickEnabled(false);
-	XITargetSphere->SetSphereRadius(2000);
-	XITargetSphere->SetupAttachment(RootComponent);
+	// XI Targeting system for players
+	XITargetSystem = CreateDefaultSubobject<UXITargetSystemComponent>("XITargetSystem");
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	CameraBoom->SetComponentTickEnabled(false);
+	CameraBoom->PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	FollowCamera->SetComponentTickEnabled(false);
+	FollowCamera->PrimaryComponentTick.bStartWithTickEnabled = false;
+
+	//Mesh Merge Map
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Face, 0);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Head, 1);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Body, 2);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Arms, 3);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Legs, 4);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Feet, 5);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::MainHand, 6);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::SubHand, 7);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Range, 8);
 }
 
 void AXICharacterBaseHero::BeginPlay()
