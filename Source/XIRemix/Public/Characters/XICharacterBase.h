@@ -28,6 +28,7 @@ public:
 	virtual AActor* GetSubTarget() override;
 	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) override;
 	virtual EXITeam GetXITeam() override;
+	virtual float GetCapsuleRadius() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

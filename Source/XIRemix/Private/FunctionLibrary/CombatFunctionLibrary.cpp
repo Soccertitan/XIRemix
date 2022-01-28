@@ -106,3 +106,13 @@ EXITeamAttitude UCombatFunctionLibrary::GetAttitudeTowardsActor(AActor* OwnerAct
     }
     return EXITeamAttitude::Neutral;
 }
+
+float UCombatFunctionLibrary::GetCapsuleRadius(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetCapsuleRadius();
+    }
+    return 0.0f;
+}

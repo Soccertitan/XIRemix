@@ -43,4 +43,8 @@ public:
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
 	static EXITeamAttitude GetAttitudeTowardsActor (AActor* OwnerActor, AActor* TargetActor);
+
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")
+	static float GetCapsuleRadius (AActor* OwnerActor);
 };

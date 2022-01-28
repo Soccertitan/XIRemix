@@ -42,4 +42,6 @@ public:
 	//Get Attitute Towards Actor implemented in C++
 	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) PURE_VIRTUAL(IXICharacterInterface::GetAttitudeTowardsActor(AActor* OtherActor), return EXITeamAttitude::Neutral;);
 
+	//Gets the Radius of the capsule component. Implemented in C++
+	virtual float GetCapsuleRadius() PURE_VIRTUAL(IXICharacterInterface::GetCapsuleRadius(), return 0.f;);
 };

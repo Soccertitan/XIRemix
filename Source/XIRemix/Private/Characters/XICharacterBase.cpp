@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Characters/XICharacterMovementComponent.h"
 #include "Interfaces/AnimBPInterface.h"
+#include "AI/XIAIControllerBase.h"
 
 // Sets default values
 AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitializer) :
@@ -30,6 +31,9 @@ AXICharacterBase::AXICharacterBase(const class FObjectInitializer& ObjectInitial
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AttributeSet = CreateDefaultSubobject<UAttributeSetGlobal>("AttributeSet");
+
+	// Default AI Controller
+	AIControllerClass = AXIAIControllerBase::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -558,6 +562,11 @@ EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor)
 EXITeam AXICharacterBase::GetXITeam()
 {
 	return XITeam;
+}
+
+float AXICharacterBase::GetCapsuleRadius()
+{
+	return GetCapsuleComponent()->GetScaledCapsuleRadius();
 }
 
 #pragma endregion XICharacterInterfaceFunctions
