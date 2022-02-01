@@ -57,7 +57,7 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	bool bWithinRange;
 	bool bHasGameplayTag;
 
-	if (!HostileActors.IsValidIndex(0))
+	if ((GetOwnerRole() != ROLE_Authority) | (!HostileActors.IsValidIndex(0)) | !bAggroEnabled)
 	{
 		SetComponentTickEnabled(false);
 		return;
@@ -70,9 +70,9 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		// Always Aggro if target is within range!
 		if ((EXIAggroType::TrueSense == XIAggroType) & bWithinRange)
 		{
-			// TODO: Start Implementing Start combat functions!
-			UE_LOG(LogTemp, Warning, TEXT("Start Combat with %s"), *Actor->GetName());
-			SetComponentTickEnabled(false);
+			UE_LOG(LogTemp, Warning, TEXT("Truesensed! Broadcasting %s"), *Actor->GetName());
+			OnActorDetected.Broadcast(Actor);
+			SetAggroMode(false);
 			return;
 		}
 		
@@ -85,9 +85,9 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			bHasGameplayTag = HostileASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Buff.Invisible")));
 			if((EXIAggroType::Sight == XIAggroType) & bWithinRange & !bHasGameplayTag)
 			{
-				// Start Implementing Start combat functions!
-				UE_LOG(LogTemp, Warning, TEXT("Sight Detection! Start Combat with %s"), *Actor->GetName());
-				SetComponentTickEnabled(false);
+				UE_LOG(LogTemp, Warning, TEXT("Sight Detection! Broadcasting %s"), *Actor->GetName());
+				OnActorDetected.Broadcast(Actor);
+				SetAggroMode(false);
 				return;
 			}
 
@@ -95,9 +95,9 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			bHasGameplayTag = HostileASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Buff.Sneak")));
 			if((EXIAggroType::Sound == XIAggroType) & bWithinRange & !bHasGameplayTag)
 			{
-				// Start Implementing Start combat functions!
-				UE_LOG(LogTemp, Warning, TEXT("Sound Detection! Start Combat with %s"), *Actor->GetName());
-				SetComponentTickEnabled(false);
+				UE_LOG(LogTemp, Warning, TEXT("Sound Detection! Broadcasting %s"), *Actor->GetName());
+				OnActorDetected.Broadcast(Actor);
+				SetAggroMode(false);
 				return;
 			}
 
@@ -105,9 +105,9 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			bHasGameplayTag = HostileASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Buff.Deodorize")));
 			if((EXIAggroType::Smell == XIAggroType) & bWithinRange & !bHasGameplayTag)
 			{
-				// Start Implementing Start combat functions!
-				UE_LOG(LogTemp, Warning, TEXT("Smell Detection! Start Combat with %s"), *Actor->GetName());
-				SetComponentTickEnabled(false);
+				UE_LOG(LogTemp, Warning, TEXT("Smell Detection! Broadcasting %s"), *Actor->GetName());
+				OnActorDetected.Broadcast(Actor);
+				SetAggroMode(false);
 				return;
 			}
 		}
@@ -116,9 +116,7 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UXIAggroComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Also want to check if the OwnerActor is in Combat. If it is return immediately.
-	// OwnerASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Gameplay.InCombat"))) Where should this go??
-
+	
 	if((GetOwnerRole() != ROLE_Authority) | (EXIAggroType::Passive == XIAggroType))
 	{
 		return;
@@ -132,19 +130,39 @@ void UXIAggroComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp
 		{
 			// Hostile Actor Detected! Enable tick to check if hostile actor is within Aggro range
 			HostileActors.Add(OtherActor);
-			SetComponentTickEnabled(true);
-			return;
+			if(bAggroEnabled)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Hostile Actor in CollisonSphere, Enabling Tick for checking if in LoS."));
+				SetComponentTickEnabled(true);
+				return;
+			}
 		}
-		
-		UE_LOG(LogTemp, Warning, TEXT("Neutral/Friendly Actor Detected No action Taken"));
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Neutral/Friendly Actor Detected No action Taken"));
+		}
 	}
 }
 
 void UXIAggroComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(!OtherActor)
+	if((GetOwnerRole() != ROLE_Authority) | !OtherActor)
 	{
 		return;
 	}
 	HostileActors.Remove(OtherActor);
+}
+
+void UXIAggroComponent::SetAggroMode(bool bEnableAggro)
+{
+	bAggroEnabled = bEnableAggro;
+
+	if(bAggroEnabled)
+	{
+		SetComponentTickEnabled(true);
+	}
+	else
+	{
+		SetComponentTickEnabled(false);
+	}
 }

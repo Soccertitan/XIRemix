@@ -10,6 +10,7 @@
 AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
 	AttributeSetEnemy = CreateDefaultSubobject<UAttributeSetEnemy>("AttributeSetEnemy");
+	XITeam = EXITeam::Enemy;
 }
 
 void AXICharacterBaseEnemy::BeginPlay()

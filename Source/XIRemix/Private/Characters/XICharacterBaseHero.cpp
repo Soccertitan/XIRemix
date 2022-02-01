@@ -39,6 +39,8 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::MainHand, 6);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::SubHand, 7);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Range, 8);
+
+	XITeam = EXITeam::Hero;
 }
 
 void AXICharacterBaseHero::BeginPlay()

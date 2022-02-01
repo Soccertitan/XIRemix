@@ -8,6 +8,7 @@
 #include "XIEnums.h"
 #include "XIAggroComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActorDetected, AActor*, DetectedActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class XIREMIX_API UXIAggroComponent : public UActorComponent
@@ -24,12 +25,19 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|AggroComponent")
+	void SetAggroMode(bool bEnableAggro);
+
+	UPROPERTY(BlueprintAssignable)
+	FActorDetected OnActorDetected;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	AActor* OwnerActor;
 	TArray<AActor *> HostileActors;
+	bool bAggroEnabled = true;
 
 	class UAbilitySystemComponent* HostileASC;
 	class UAbilitySystemComponent* OwnerASC;
