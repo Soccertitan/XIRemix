@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Characters/XICharacterBase.h"
 #include "XIEnums.h"
+#include "AI/XIAggroComponent.h"
 #include "XICharacterBaseEnemy.generated.h"
 
 /**
@@ -16,6 +17,9 @@ class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase
 	GENERATED_BODY()
 	
 	AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = XIAggro, meta = (AllowPrivateAccess = "true"))
+	class UXIAggroComponent* XIAggroComponent;
 
 	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;

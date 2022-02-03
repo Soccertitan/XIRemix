@@ -15,6 +15,7 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 
 	// XI Targeting system for players
 	XITargetSystem = CreateDefaultSubobject<UXITargetSystemComponent>("XITargetSystem");
+	XITargetSystem->SphereComponent->SetupAttachment(RootComponent);
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

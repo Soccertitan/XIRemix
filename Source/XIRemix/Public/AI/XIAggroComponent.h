@@ -31,33 +31,33 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FActorDetected OnActorDetected;
 
+	UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "Detection|Sphere")
+	USphereComponent* SphereComponent;
+
+private:
+	bool bAggroEnabled = true;
+
+	// Detection Range
+	UPROPERTY(EditAnywhere, Category = "Detection")
+	float Range = 1000;
+
+	// Detection Angle. 180 is equivalent to 360 degrees.
+	UPROPERTY(EditAnywhere, Category = "Detection")
+	float Angle = 30;
+
+	// Aggro Type
+	UPROPERTY(EditAnywhere, Category = "Detection")
+	EXIAggroType XIAggroType;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	AActor* OwnerActor;
 	TArray<AActor *> HostileActors;
-	bool bAggroEnabled = true;
-
+	
 	class UAbilitySystemComponent* HostileASC;
 	class UAbilitySystemComponent* OwnerASC;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Detection|Sphere")
-	USphereComponent* SphereComponent;
-
-	// Detection Range
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Detection")
-	float Range = 1000;
-
-	// Detection Angle. 180 is equivalent to 360 degrees.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Detection")
-	float Angle = 30;
-
-	// Aggro Type
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Detection")
-	EXIAggroType XIAggroType;
-
-	
 
 public:	
 	// Called every frame

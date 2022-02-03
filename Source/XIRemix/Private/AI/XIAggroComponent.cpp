@@ -2,6 +2,7 @@
 
 
 #include "AI/XIAggroComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "FunctionLibrary/CombatFunctionLibrary.h"
 #include "AbilitySystemInterface.h"
@@ -10,8 +11,7 @@
 // Sets default values for this component's properties
 UXIAggroComponent::UXIAggroComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
+	//Setting Default Tick
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 	
@@ -21,10 +21,10 @@ UXIAggroComponent::UXIAggroComponent()
 	SphereComponent->SetCollisionProfileName(TEXT("TargetSphere"));
 	SphereComponent->AreaClass = nullptr;
 	SphereComponent->SetCanEverAffectNavigation(false);
+	SphereComponent->PrimaryComponentTick.bCanEverTick = false;
 	SphereComponent->PrimaryComponentTick.bStartWithTickEnabled = false;
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &UXIAggroComponent::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &UXIAggroComponent::OnOverlapEnd);
-
 }
 
 // Called when the game starts
@@ -38,8 +38,7 @@ void UXIAggroComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("[%s] XIAggroComponent: Cannot get Owner reference ..."), *GetName());
 		return;
 	}
-
-	SphereComponent->AttachToComponent(OwnerActor->GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);	
+	
 	IAbilitySystemInterface* AbilityInt = Cast<IAbilitySystemInterface>(OwnerActor);
 	
 	if(AbilityInt)
@@ -116,7 +115,6 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UXIAggroComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
 	if((GetOwnerRole() != ROLE_Authority) | (EXIAggroType::Passive == XIAggroType))
 	{
 		return;

@@ -23,12 +23,12 @@ UXITargetSystemComponent::UXITargetSystemComponent()
 
 	// Defining the SphereComponentParameters
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("XITargetSphere");
-	SphereComponent->SetSphereRadius(MinimumDistanceToEnable);
 	SphereComponent->SetCollisionProfileName(TEXT("TargetSphere"));
 	SphereComponent->AreaClass = nullptr;
 	SphereComponent->SetCanEverAffectNavigation(false);
 	SphereComponent->PrimaryComponentTick.bCanEverTick = false;
 	SphereComponent->PrimaryComponentTick.bStartWithTickEnabled = false;
+	SphereComponent->SetSphereRadius(MinimumDistanceToEnable);
 }
 
 
@@ -57,8 +57,6 @@ void UXITargetSystemComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get the Camera component for ..."), *GetName());
 		return;
 	}
-
-	SphereComponent->AttachToComponent(OwnerActor->GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	SetupLocalPlayerController();
 	

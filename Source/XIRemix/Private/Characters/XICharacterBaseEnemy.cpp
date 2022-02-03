@@ -10,6 +10,9 @@
 AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
 	AttributeSetEnemy = CreateDefaultSubobject<UAttributeSetEnemy>("AttributeSetEnemy");
+	XIAggroComponent = CreateDefaultSubobject<UXIAggroComponent>("XIAggroComponent");
+	XIAggroComponent->SphereComponent->SetupAttachment(RootComponent);
+
 	XITeam = EXITeam::Enemy;
 }
 
@@ -25,6 +28,7 @@ void AXICharacterBaseEnemy::PossessedBy(AController * NewController)
 
 	// Initialize GAS
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	AddCharacterAbilities();
 	InitializeAttributes();
 	AddStartupEffects();
 }

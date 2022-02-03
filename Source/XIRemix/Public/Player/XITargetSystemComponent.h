@@ -85,6 +85,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
 	float PitchMax = -20.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Target System|Sphere")
+	USphereComponent* SphereComponent;
+
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActor(TArray<AActor*> PerceivedActors);
 
@@ -128,9 +131,6 @@ private:
 
 	UPROPERTY()
 	UCameraComponent* CameraComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Target System|Sphere")
-	USphereComponent* SphereComponent;
 
 	UPROPERTY()
 	UWidgetComponent* TargetWidgetComponent;
