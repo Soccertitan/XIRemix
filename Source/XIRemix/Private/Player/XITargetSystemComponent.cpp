@@ -11,6 +11,7 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "FunctionLibrary/CombatFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
@@ -104,20 +105,25 @@ void UXITargetSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 }
 
-void UXITargetSystemComponent::TargetActor(TArray<AActor*> PerceivedActors)
+void UXITargetSystemComponent::TargetActor(EXITeamAttitude XIAttitude, float Direction)
 {
-	if(!TargetedActor)
+	TArray<AActor *> Actors;
+	for (AActor* Actor : GetXIOverlappingActors())
 	{
-		TargetedActor = FindNearestTarget(PerceivedActors);
-		TargetSelected(TargetedActor);
+		if (XIAttitude == UCombatFunctionLibrary::GetAttitudeTowardsActor(OwnerActor, Actor))
+		{
+			Actors.AddUnique(Actor);
+		}
 	}
+	SwitchTargetActor(Actors, Direction);
 }
 
 void UXITargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors, float Direction)
 {
 	if (!TargetedActor)
 	{
-		TargetActor(PerceivedActors);
+		TargetedActor = FindNearestTarget(PerceivedActors);
+		TargetSelected(TargetedActor);
 		return;
 	}
 
@@ -153,7 +159,7 @@ void UXITargetSystemComponent::SwitchTargetActor(TArray<AActor*> PerceivedActors
 	{
 		if(LineTraceForActor(Actor) && IsInViewport(Actor))
 		{
-			// Gets the positive/ negative rotation from the source Actor to the next potentail targetable Actor.
+			// Gets the positive/ negative rotation from the source Actor to the next potential targetable Actor.
 			FVector ActorLocation = Actor->GetActorLocation();
 			FVector2D ComparisonActorVector = {ActorLocation.X - ReferenceLocation.X , ActorLocation.Y - ReferenceLocation.Y};
 			ComparisonActorVector.Normalize();

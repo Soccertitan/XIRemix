@@ -4,14 +4,35 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interfaces/XIPlayerControllerInterface.h"
 #include "XIPlayerControllerAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API AXIPlayerControllerAction : public APlayerController
+class XIREMIX_API AXIPlayerControllerAction : public APlayerController, public IXIPlayerControllerInterface
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	virtual void CreateHUD() override;
+
+	virtual class UXIPlayerHUD* GetHUD() const override;
+
+protected:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|UI")
+	TSubclassOf<class UXIPlayerHUD> UIHUDWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, Category = "XICharacter|UI")
+	class UXIPlayerHUD* UIHUDWidget;
+
+	UPROPERTY(BlueprintReadWrite, Category = "XICharacter")
+	APawn* PlayerPawn;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	virtual void OnRep_PlayerState() override;
 };

@@ -3,7 +3,9 @@
 
 #include "Characters/XICharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
-#include "Characters/XICharacterBase.h"
+#include "Interfaces/XICharacterInterface.h"
+#include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
 #include "Interfaces/AnimBPInterface.h"
 
@@ -16,12 +18,13 @@ UXICharacterMovementComponent::UXICharacterMovementComponent()
 
 float UXICharacterMovementComponent::GetMaxSpeed() const
 {
-	AXICharacterBase* Owner = Cast<AXICharacterBase>(GetOwner());
+	IXICharacterInterface* Owner = Cast<IXICharacterInterface>(GetOwner());
+	IAbilitySystemInterface* ASC = Cast<IAbilitySystemInterface>(GetOwner());
 	IAnimBPInterface* ABPInt = Cast<IAnimBPInterface>((GetCharacterOwner())->GetMesh()->GetAnimInstance());
 
-	if (!Owner)
+	if (!Owner | !ASC | !ABPInt)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() No Owner"), *FString(__FUNCTION__));
+		UE_LOG(LogTemp, Error, TEXT("%s() Character has not implemented the XICharacterInterface, or AbilitySystemInterface. Or the AnimBP does not implement the AnimBPInterface"), *FString(__FUNCTION__));
 		return Super::GetMaxSpeed();
 	}
 
@@ -30,8 +33,9 @@ float UXICharacterMovementComponent::GetMaxSpeed() const
 		return 0.0f;
 	}
 
-	if (Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun"))))
+	if (ASC->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun"))))
 	{
+		
 		return 0.0f;
 	}
 
@@ -39,7 +43,7 @@ float UXICharacterMovementComponent::GetMaxSpeed() const
 	{	
 		if ((ABPInt->GetDirection() > 100) | (ABPInt->GetDirection() < -100))
 		{
-			return FMath::Lerp(Owner->GetMoveSpeed(), (Owner->GetMoveSpeed() / 2), 1);
+			return (Owner->GetMoveSpeed() / 2);
 		}
 	}
 

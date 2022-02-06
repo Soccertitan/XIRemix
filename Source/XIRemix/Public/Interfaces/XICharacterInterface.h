@@ -28,20 +28,35 @@ public:
 	virtual UAnimMontage* GetAutoAttackMontage() PURE_VIRTUAL(IXICharacterInterface::GetAutoAttackMontage(), return nullptr;);
 
 	// GetCharacterName is Implemented in C++
-	virtual FText GetCharacterName() PURE_VIRTUAL(IXICharacterInterface::GetCharacterName(), return FText(););
+	virtual FText GetCharacterName() const PURE_VIRTUAL(IXICharacterInterface::GetCharacterName(), return FText(););
 
 	// GetMainTarget is Implemented in C++
-	virtual AActor* GetMainTarget() PURE_VIRTUAL(IXICharacterInterface::GetMainTarget(), return nullptr;);
+	virtual AActor* GetMainTarget() const PURE_VIRTUAL(IXICharacterInterface::GetMainTarget(), return nullptr;);
 
 	// GetSubTarget is Implemented in C++
-	virtual AActor* GetSubTarget() PURE_VIRTUAL(IXICharacterInterface::GetSubTarget(), return nullptr;);
+	virtual AActor* GetSubTarget() const PURE_VIRTUAL(IXICharacterInterface::GetSubTarget(), return nullptr;);
 
 	// Get the XITeam from Actor
-	virtual EXITeam GetXITeam() PURE_VIRTUAL(IXICharacterInterface::GetXITeam(), return EXITeam::Neutral;);
+	virtual EXITeam GetXITeam() const PURE_VIRTUAL(IXICharacterInterface::GetXITeam(), return EXITeam::Neutral;);
 
 	//Get Attitute Towards Actor implemented in C++
-	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) PURE_VIRTUAL(IXICharacterInterface::GetAttitudeTowardsActor(AActor* OtherActor), return EXITeamAttitude::Neutral;);
+	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) const PURE_VIRTUAL(IXICharacterInterface::GetAttitudeTowardsActor(AActor* OtherActor), return EXITeamAttitude::Neutral;);
 
 	//Gets the Radius of the capsule component. Implemented in C++
-	virtual float GetCapsuleRadius() PURE_VIRTUAL(IXICharacterInterface::GetCapsuleRadius(), return 0.f;);
+	virtual float GetCapsuleRadius() const PURE_VIRTUAL(IXICharacterInterface::GetCapsuleRadius(), return 0.f;);
+
+	//Is the character alive?
+	virtual bool IsAlive() const PURE_VIRTUAL(IXICharacterInterface::IsAlive(), return false;);
+
+	// /**
+	// * Getters for attributes from GlobalAttributeSet
+	// **/
+	virtual float GetMoveSpeed() const PURE_VIRTUAL(IXICharacterInterface::GetMoveSpeed(), return 0.f;);
+	virtual float GetHitPoints() const PURE_VIRTUAL(IXICharacterInterface::GetHitPoints(), return 0.f;);
+	virtual float GetHitPointsMax() const PURE_VIRTUAL(IXICharacterInterface::GetHitPointsMax(), return 0.f;);
+	virtual float GetManaPoints() const PURE_VIRTUAL(IXICharacterInterface::GetManaPoints(), return 0.f;);
+	virtual float GetManaPointsMax() const PURE_VIRTUAL(IXICharacterInterface::GetManaPointsMax(), return 0.f;);
+	virtual float GetTacticalPoints() const PURE_VIRTUAL(IXICharacterInterface::GetTacticalPoints(), return 0.f;);
+	virtual float GetTacticalPointsMax() const PURE_VIRTUAL(IXICharacterInterface::GetTacticalPointsMax(), return 0.f;);
+	
 };

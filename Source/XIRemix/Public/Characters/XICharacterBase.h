@@ -21,15 +21,6 @@ public:
 	// Sets default values for this character's properties
 	AXICharacterBase(const class FObjectInitializer& ObjectInitializer);
 
-	// IXICharacter Interface Implementations
-	virtual UAnimMontage* GetAutoAttackMontage() override;
-	virtual FText GetCharacterName() override;
-	virtual AActor* GetMainTarget() override;
-	virtual AActor* GetSubTarget() override;
-	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) override;
-	virtual EXITeam GetXITeam() override;
-	virtual float GetCapsuleRadius() override;
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// UPROPERTY(BlueprintAssignable, Category = "XICharacter")
@@ -38,9 +29,6 @@ public:
 	// Implement IAbilitySystemInterface
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, Category = "XICharacter")
-	virtual bool IsAlive() const;
-
 	// Switch on AbilityID to return individual ability levels. Hardcoded to 1 for every ability in this project.
 	UFUNCTION(BlueprintCallable, Category = "XICharacter|Abilities")
 	virtual int32 GetAbilityLevel(EXIAbilityInputID AbilityID) const;
@@ -48,30 +36,26 @@ public:
 	// // Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
 	// virtual void RemoveCharacterAbilities();
 
+	// IXICharacter Interface Implementations
+	virtual UAnimMontage* GetAutoAttackMontage() override;
+	virtual FText GetCharacterName() const override;
+	virtual AActor* GetMainTarget() const override;
+	virtual AActor* GetSubTarget() const override;
+	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) const override;
+	virtual EXITeam GetXITeam() const override;
+	virtual float GetCapsuleRadius() const override;
+	virtual bool IsAlive() const override;
+
 	// /**
 	// * Getters for attributes from GlobalAttributeSet
 	// **/
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetHitPoints() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetHitPointsMax() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetManaPoints() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetManaPointsMax() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetTacticalPoints() const;
-
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetTacticalPointsMax() const;
-	
-	// // Gets the Current value of MoveSpeed
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes")
-	float GetMoveSpeed() const;
+	virtual float GetHitPoints() const override;
+	virtual float GetHitPointsMax() const override;
+	virtual float GetManaPoints() const override;
+	virtual float GetManaPointsMax() const override;
+	virtual float GetTacticalPoints() const override;
+	virtual float GetTacticalPointsMax() const override;
+	virtual float GetMoveSpeed() const override;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatStartMontage();
@@ -295,12 +279,16 @@ protected:
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
 
-	FDelegateHandle HitPointsChangedDelegateHandle;
-	FDelegateHandle HitPointsMaxChangedDelegateHandle;
 
 	// Attribute Change Callbacks
+	FDelegateHandle HitPointsChangedDelegateHandle;
+	FDelegateHandle HitPointsMaxChangedDelegateHandle;
+	FDelegateHandle ManaPointsChangedDelegateHandle;
+	FDelegateHandle TacticalPointsChangedDelegateHandle;
 	virtual void HitPointsChanged(const FOnAttributeChangeData& Data);
 	virtual void HitPointsMaxChanged(const FOnAttributeChangeData& Data);
+	virtual void ManaPointsChanged(const FOnAttributeChangeData& Data);
+	virtual void TacticalPointsChanged(const FOnAttributeChangeData& Data);
 
 	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
@@ -330,4 +318,6 @@ protected:
 	bool Server_SetCharacterName_Validate(FText Name);
 	void Server_SetCharacterName_Implementation(FText Name);
 
+	//Default Death Event. Should be overridden by child classes.
+	void Die();
 };

@@ -45,17 +45,14 @@ void AXICharacterBase::BeginPlay()
 	{
 		HitPointsChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHitPointsAttribute()).AddUObject(this, &AXICharacterBase::HitPointsChanged);
 		HitPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHitPointsMaxAttribute()).AddUObject(this, &AXICharacterBase::HitPointsMaxChanged);
+		ManaPointsChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaPointsAttribute()).AddUObject(this, &AXICharacterBase::ManaPointsChanged);
+		TacticalPointsChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetTacticalPointsAttribute()).AddUObject(this, &AXICharacterBase::TacticalPointsChanged);
 	}
 }
 
 UAbilitySystemComponent * AXICharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
-}
-
-bool AXICharacterBase::IsAlive() const
-{
-	return GetHitPoints() > 0.0f;
 }
 
 int32 AXICharacterBase::GetAbilityLevel(EXIAbilityInputID AbilityID) const
@@ -130,79 +127,6 @@ void AXICharacterBase::AddStartupEffects()
 	AbilitySystemComponent->StartupEffectsApplied = true;
 }
 
-#pragma region AttributeGetters
-
-float AXICharacterBase::GetHitPoints() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetHitPoints();
-	}
-	return 0.0f;
-}
-
-float AXICharacterBase::GetHitPointsMax() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetHitPointsMax();
-	}
-
-	return 0.0f;
-}
-
-float AXICharacterBase::GetManaPoints() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetManaPoints();
-	}
-
-	return 0.0f;
-}
-
-float AXICharacterBase::GetManaPointsMax() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetManaPointsMax();
-	}
-
-	return 0.0f;
-}
-
-float AXICharacterBase::GetTacticalPoints() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetTacticalPoints();
-	}
-
-	return 0.0f;
-}
-
-float AXICharacterBase::GetTacticalPointsMax() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetTacticalPointsMax();
-	}
-
-	return 0.0f;
-}
-
-float AXICharacterBase::GetMoveSpeed() const
-{
-	if (AttributeSet)
-	{
-		return AttributeSet->GetMoveSpeed();
-	}
-
-	return 0.0f;
-}
-
-#pragma endregion AttributeGetters
-
 #pragma region CharacterName
 
 bool AXICharacterBase::Server_SetCharacterName_Validate(FText Name)
@@ -222,11 +146,25 @@ void AXICharacterBase::Server_SetCharacterName_Implementation(FText Name)
 void AXICharacterBase::HitPointsChanged(const FOnAttributeChangeData & Data)
 {
 	float HitPoints = Data.NewValue;
+	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag))
+	{
+		Die();
+	}
 }
 
 void AXICharacterBase::HitPointsMaxChanged(const FOnAttributeChangeData & Data)
 {
 	float HitPointsMax = Data.NewValue;
+}
+
+void AXICharacterBase::ManaPointsChanged(const FOnAttributeChangeData & Data)
+{
+	float ManaPoints = Data.NewValue;
+}
+
+void AXICharacterBase::TacticalPointsChanged(const FOnAttributeChangeData & Data)
+{
+	float TacticalPoints = Data.NewValue;
 }
 
 #pragma endregion AttributeChangeCallbacks
@@ -328,17 +266,17 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 
 #pragma region XICharacterInterfaceFunctions
 
-FText AXICharacterBase::GetCharacterName()
+FText AXICharacterBase::GetCharacterName() const
 {
 	return CharacterName;
 }
 
-AActor* AXICharacterBase::GetMainTarget()
+AActor* AXICharacterBase::GetMainTarget() const
 {
 	return MainTarget;
 }
 
-AActor* AXICharacterBase::GetSubTarget()
+AActor* AXICharacterBase::GetSubTarget() const
 {
 	return SubTarget;
 }
@@ -535,7 +473,7 @@ UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
 	return nullptr;
 }
 
-EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor)
+EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor) const
 {
 	IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(OtherActor);
 	if (XICharInt)
@@ -559,14 +497,104 @@ EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor)
 	return EXITeamAttitude::Neutral;
 }
 
-EXITeam AXICharacterBase::GetXITeam()
+EXITeam AXICharacterBase::GetXITeam() const
 {
 	return XITeam;
 }
 
-float AXICharacterBase::GetCapsuleRadius()
+float AXICharacterBase::GetCapsuleRadius() const
 {
 	return GetCapsuleComponent()->GetScaledCapsuleRadius();
 }
 
+bool AXICharacterBase::IsAlive() const
+{
+	return GetHitPoints() > 0.0f;
+}
+
+#pragma region AttributeGetters
+
+float AXICharacterBase::GetHitPoints() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetHitPoints();
+	}
+	return 0.0f;
+}
+
+float AXICharacterBase::GetHitPointsMax() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetHitPointsMax();
+	}
+
+	return 0.0f;
+}
+
+float AXICharacterBase::GetManaPoints() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetManaPoints();
+	}
+
+	return 0.0f;
+}
+
+float AXICharacterBase::GetManaPointsMax() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetManaPointsMax();
+	}
+
+	return 0.0f;
+}
+
+float AXICharacterBase::GetTacticalPoints() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetTacticalPoints();
+	}
+
+	return 0.0f;
+}
+
+float AXICharacterBase::GetTacticalPointsMax() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetTacticalPointsMax();
+	}
+
+	return 0.0f;
+}
+
+float AXICharacterBase::GetMoveSpeed() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetMoveSpeed();
+	}
+
+	return 0.0f;
+}
+
+#pragma endregion AttributeGetters
+
 #pragma endregion XICharacterInterfaceFunctions
+
+void AXICharacterBase::Die()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+}

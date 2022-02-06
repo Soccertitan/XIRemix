@@ -56,4 +56,14 @@ protected:
 	
 	// Client only
 	virtual void OnRep_PlayerState() override;	
+
+	//Attribute Change Callbacks
+	FDelegateHandle ManaPointsMaxChangedDelegateHandle;
+	FDelegateHandle TacticalPointsMaxChangedDelegateHandle;
+	virtual void HitPointsChanged(const FOnAttributeChangeData& Data) override;
+	virtual void HitPointsMaxChanged(const FOnAttributeChangeData& Data) override;
+	virtual void ManaPointsChanged(const FOnAttributeChangeData& Data) override;
+	virtual void ManaPointsMaxChanged(const FOnAttributeChangeData& Data);
+	virtual void TacticalPointsChanged(const FOnAttributeChangeData& Data) override;
+	virtual void TacticalPointsMaxChanged(const FOnAttributeChangeData& Data);
 };

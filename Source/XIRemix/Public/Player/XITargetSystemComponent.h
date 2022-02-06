@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "XIEnums.h"
 #include "XITargetSystemComponent.generated.h"
 
 class UUserWidget;
@@ -89,7 +90,7 @@ public:
 	USphereComponent* SphereComponent;
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetActor(TArray<AActor*> PerceivedActors);
+	void TargetActor(EXITeamAttitude XIAttitude, float Direction);
 
 	// Function to call to lock the camera and rotation.
 	UFUNCTION(BlueprintCallable, Category = "Target System")
