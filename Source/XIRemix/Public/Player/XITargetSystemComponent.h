@@ -86,6 +86,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
 	float PitchMax = -20.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	float PawnInterpSpeed = 25.0f;
+
 	UPROPERTY(EditAnywhere, Category = "Target System|Sphere")
 	USphereComponent* SphereComponent;
 

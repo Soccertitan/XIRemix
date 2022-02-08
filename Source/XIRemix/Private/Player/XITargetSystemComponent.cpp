@@ -479,6 +479,13 @@ void UXITargetSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) c
 	}
 
 	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
+	
+	if(OwnerActor->GetVelocity().Size() > 0)
+	{
+		FRotator TargetRotation = FRotator(0, ControlRotation.Yaw, 0);
+		OwnerActor->SetActorRotation(FMath::RInterpTo(OwnerActor->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), PawnInterpSpeed));
+	}
+
 	OwnerPlayerController->SetControlRotation(ControlRotation);
 }
 
@@ -530,7 +537,7 @@ void UXITargetSystemComponent::ControlRotation(const bool ShouldControlRotation)
 		return;
 	}
 
-	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
+	// OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
 
 	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
 	if (CharacterMovementComponent)

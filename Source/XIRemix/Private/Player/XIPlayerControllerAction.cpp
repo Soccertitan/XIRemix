@@ -9,6 +9,8 @@ void AXIPlayerControllerAction::BeginPlay()
 {
     Super::BeginPlay();
     PlayerPawn = GetPawn();
+
+    
 }
 
 void AXIPlayerControllerAction::CreateHUD()
