@@ -37,7 +37,6 @@ public:
 	// virtual void RemoveCharacterAbilities();
 
 	// IXICharacter Interface Implementations
-	virtual UAnimMontage* GetAutoAttackMontage() override;
 	virtual FText GetCharacterName() const override;
 	virtual AActor* GetMainTarget() const override;
 	virtual AActor* GetSubTarget() const override;
@@ -56,6 +55,19 @@ public:
 	virtual float GetTacticalPoints() const override;
 	virtual float GetTacticalPointsMax() const override;
 	virtual float GetMoveSpeed() const override;
+
+	// /**
+	// * Getters for Animation Montages
+	// **/
+	virtual UAnimMontage* GetAutoAttackMontage() override;
+	virtual UAnimMontage* GetBlackMagicMontage() override;
+	virtual UAnimMontage* GetWhiteMagicMontage() override;
+	virtual UAnimMontage* GetSummonerMagicMontage() override;
+	virtual UAnimMontage* GetNinjitsuMagicMontage() override;
+	virtual UAnimMontage* GetBlueMagicMontage() override;
+	virtual UAnimMontage* GetGeoMagicMontage() override;
+	virtual UAnimMontage* GetJobAbilityMontage() override;
+	virtual UAnimMontage* GetJobAbilityCombatMontage() override;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatStartMontage();
@@ -255,7 +267,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
 	class UAnimMontage* JobAbility;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
-	class UAnimMontage* JobAbility_Combat;
+	class UAnimMontage* JobAbilityCombat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
 	class UAnimMontage* BlackMagic;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
@@ -263,7 +275,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
 	class UAnimMontage* SummonerMagic;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
-	class UAnimMontage* Ninjitsu;
+	class UAnimMontage* NinjitsuMagic;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")
 	class UAnimMontage* BlueMagic;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XICharacter|Combat|Skills")

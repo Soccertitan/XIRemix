@@ -128,3 +128,14 @@ enum class EXIAggroType : uint8
 	Smell UMETA(DisplayName = "Smell"),
 	TrueSense UMETA(DisplayName = "TrueSense")
 };
+
+UENUM(BlueprintType, Category="XIRemix")
+enum class EXIMagicType : uint8
+{
+	Black UMETA(DisplayName = "Black"),
+	Blue UMETA(DisplayName = "Blue"),
+	Geo UMETA(DisplayName = "Geo"),
+	Ninjitsu UMETA(DisplayName = "Ninjitsu"),
+	Summoner UMETA(DisplayName = "Summoner"),
+	White UMETA(DisplayName = "White")
+};

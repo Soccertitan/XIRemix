@@ -13,6 +13,8 @@ AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& Obj
 	XIAggroComponent = CreateDefaultSubobject<UXIAggroComponent>("XIAggroComponent");
 	XIAggroComponent->SphereComponent->SetupAttachment(RootComponent);
 
+	XIThreatTableComponent = CreateDefaultSubobject<UXIThreatTableComponent>("XIThreatTableComponent");
+
 	XITeam = EXITeam::Enemy;
 }
 
@@ -40,4 +42,9 @@ void AXICharacterBaseEnemy::OnRep_PlayerState()
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	InitializeAttributes();
+}
+
+UXIThreatTableComponent * AXICharacterBaseEnemy::GetXIThreatTableComponent() const
+{
+	return XIThreatTableComponent;
 }

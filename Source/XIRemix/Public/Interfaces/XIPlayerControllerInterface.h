@@ -7,7 +7,7 @@
 #include "XIPlayerControllerInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UXIPlayerControllerInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -25,4 +25,7 @@ public:
 
 	virtual class UXIPlayerHUD* GetHUD() const PURE_VIRTUAL(IXIPlayerControllerInterface::GetHUD(), return nullptr;);
 	virtual void CreateHUD() PURE_VIRTUAL(IXIPlayerControllerInterface::CreateHUD());
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "XIPCInt")
+	void SetIsMoveable(bool bIsMoveable);
 };

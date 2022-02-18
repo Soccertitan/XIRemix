@@ -66,3 +66,8 @@ void AXIPlayerControllerAction::OnRep_PlayerState()
 	// For edge cases where the PlayerState is repped before the Hero is possessed.
 	CreateHUD();
 }
+
+void AXIPlayerControllerAction::SetIsMoveable_Implementation(bool bIsMoveable)
+{
+    bCanMove = bIsMoveable;
+}

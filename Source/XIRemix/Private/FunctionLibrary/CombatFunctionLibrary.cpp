@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Interfaces/XICharacterInterface.h"
+#include "Interfaces/XIEnemyCharacterInterface.h"
 
 bool UCombatFunctionLibrary::CheckTargetWithinRange(AActor* OwnerActor, AActor* TargetActor, float AngleInDegrees, float Range)
 {
@@ -67,16 +68,6 @@ AActor* UCombatFunctionLibrary::GetSubTarget(AActor* OwnerActor)
     return nullptr;
 }
 
-UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetAutoAttackMontage();
-    }
-    return nullptr;
-}
-
 FText UCombatFunctionLibrary::GetCharacterName(AActor* OwnerActor)
 {
     IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
@@ -116,3 +107,107 @@ float UCombatFunctionLibrary::GetCapsuleRadius(AActor* OwnerActor)
     }
     return 0.0f;
 }
+
+#pragma region AnimMontages
+
+UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetAutoAttackMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetBlackMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetBlackMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetWhiteMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetWhiteMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetSummonerMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetSummonerMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetNinjitsuMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetNinjitsuMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetBlueMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetBlueMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetGeoMagicMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetGeoMagicMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetJobAbilityMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetJobAbilityMontage();
+    }
+    return nullptr;
+}
+
+UAnimMontage* UCombatFunctionLibrary::GetJobAbilityCombatMontage(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetJobAbilityCombatMontage();
+    }
+    return nullptr;
+}
+
+UXIThreatTableComponent* UCombatFunctionLibrary::GetXIThreatTableComponent(AActor* OwnerActor)
+{
+    IXIEnemyCharacterInterface* XICharacterInt = Cast<IXIEnemyCharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetXIThreatTableComponent();
+    }
+    return nullptr;
+}
+
+#pragma endregion AnimMontages

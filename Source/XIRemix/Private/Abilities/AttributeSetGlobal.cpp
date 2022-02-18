@@ -2,11 +2,40 @@
 
 
 #include "Abilities/AttributeSetGlobal.h"
+#include "GameplayEffectExtension.h"
+#include "GameplayEffect.h"
 #include "Net/UnrealNetwork.h"
 
 UAttributeSetGlobal::UAttributeSetGlobal() 
+    : HitPoints(1.f)
+    , HitPointsMax(1.f)
+    , ManaPoints(0.f)
+    , ManaPointsMax(0.f)
+    , TacticalPoints(0.f)
+    , TacticalPointsMax(1000.f)
 {
+}
 
+void UAttributeSetGlobal::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    if (Data.EvaluatedData.Attribute == GetHitPointsAttribute())
+	{
+		// Handle other health changes.
+		// Health loss should go through Damage.
+		SetHitPoints(FMath::Clamp(GetHitPoints(), 0.0f, GetHitPointsMax()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetManaPointsAttribute())
+	{
+		// Handle mana changes.
+		SetManaPoints(FMath::Clamp(GetManaPoints(), 0.0f, GetManaPointsMax()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetTacticalPointsAttribute())
+	{
+		// Handle TacticalPoint changes.
+		SetTacticalPoints(FMath::Clamp(GetTacticalPoints(), 0.0f, GetTacticalPointsMax()));
+	}
 }
 
 void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const 

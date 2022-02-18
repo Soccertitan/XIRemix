@@ -30,10 +30,6 @@ public:
 
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
-	static UAnimMontage* GetAutoAttackMontage(AActor* OwnerActor);
-
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
 	static FText GetCharacterName (AActor* OwnerActor);
 
 	//XICharacter Interface Function
@@ -47,4 +43,44 @@ public:
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")
 	static float GetCapsuleRadius (AActor* OwnerActor);
+
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetAutoAttackMontage(AActor* OwnerActor);
+
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetBlackMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetWhiteMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetSummonerMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetNinjitsuMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetBlueMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetGeoMagicMontage(AActor* OwnerActor);
+	
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetJobAbilityMontage(AActor* OwnerActor);
+    
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
+	static UAnimMontage* GetJobAbilityCombatMontage(AActor* OwnerActor);
+
+	//XIEnemyCharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|AI")
+	static UXIThreatTableComponent* GetXIThreatTableComponent(AActor* OwnerActor);
 };

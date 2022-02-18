@@ -21,6 +21,9 @@ public:
 
 	virtual class UXIPlayerHUD* GetHUD() const override;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "XIPCInt")
+	void SetIsMoveable(bool bIsMoveable); void SetIsMoveable_Implementation(bool bIsMoveable) override; 
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|UI")
 	TSubclassOf<class UXIPlayerHUD> UIHUDWidgetClass;
@@ -30,6 +33,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "XICharacter")
 	APawn* PlayerPawn;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bCanMove = true;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

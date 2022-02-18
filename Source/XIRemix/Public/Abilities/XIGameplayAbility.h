@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "XIRemix/XIRemix.h"
+#include "XIEnums.h"
 #include "XIGameplayAbility.generated.h"
 
 /**
@@ -31,13 +32,65 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool ActivateAbilityOnGranted = false;
 
+	//Used to apply a generic Cooldown GE that uses the GA's cooldown value.
+	const FGameplayTagContainer* GetCooldownTags() const override;
+	void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	//The cost of the ability.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	FScalableFloat Cost;
+
 protected:
 
+	// Adds the capsule radius to the range to ensure larger enemies can reach beyond the center of it's root.
+	UPROPERTY(BlueprintReadWrite, Category = "Ability|Parameters")
+	float CapsuleRadius;
+
+	//The Base Power of the ability.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	float BasePower;
+
 	// The max range of the attack.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Attack")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
 	float Range;
 
 	// Angle which determines the range of attack around the user. 180 = a full 360 degrees.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Attack")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
 	float Angle;
+
+	// The attitute the owner needs to be towards the target actor.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Parameters")
+	EXITeamAttitude TargetAttitude;
+
+	//The Targeted actor for the ability. 
+	UPROPERTY(BlueprintReadWrite, Category = "Ability|Target")
+	AActor* MainTarget;
+
+	//The Montage used for the ability.
+	UPROPERTY(BlueprintReadWrite, Category = "Ability|Parameters")
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ability")
+	AActor* AvatarActor;
+
+	//The cooldown for the ability.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Cooldown")
+	FScalableFloat CooldownDuration;
+	//The tag to track for the cooldown duration.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Cooldown")
+	FGameplayTagContainer CooldownTags;
+
+	//Temp container that we will return the pointer to in GetCooldownTags().
+	//This will be the union of our CooldownTags and the Cooldown GE's cooldown tags.
+	UPROPERTY(Transient)
+	FGameplayTagContainer TempCooldownTags;
+
+	// Checks the target is within Range the correct attitute.
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Ability")
+	bool IsTargetValid(AActor* SourceActorLocation, AActor* InTargetActor, float InRange, float InAngle, EXITeamAttitude InTargetAttitude) const;
+
+	//Returns an array of valid actors to apply AoE effects too.
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|Ability")
+	TArray <AActor* > GetSphereAreaEffectTargets(AActor* InActorSource, float InRange); 
+
 };

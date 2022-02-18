@@ -281,6 +281,47 @@ AActor* AXICharacterBase::GetSubTarget() const
 	return SubTarget;
 }
 
+EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor) const
+{
+	IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(OtherActor);
+	if (XICharInt)
+	{
+		EXITeam OtherTeam = XICharInt->GetXITeam();
+		if (OtherTeam == EXITeam::Neutral)
+		{
+			return EXITeamAttitude::Neutral;
+		}
+		
+		if (OtherTeam == XITeam)
+		{
+			return EXITeamAttitude::Friendly;
+		}
+		
+		if (OtherTeam != XITeam)
+		{
+			return EXITeamAttitude::Hostile;
+		}
+	}
+	return EXITeamAttitude::Neutral;
+}
+
+EXITeam AXICharacterBase::GetXITeam() const
+{
+	return XITeam;
+}
+
+float AXICharacterBase::GetCapsuleRadius() const
+{
+	return GetCapsuleComponent()->GetScaledCapsuleRadius();
+}
+
+bool AXICharacterBase::IsAlive() const
+{
+	return GetHitPoints() > 0.0f;
+}
+
+#pragma region AnimationMontageGetters
+
 UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
 {
 	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
@@ -473,44 +514,47 @@ UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
 	return nullptr;
 }
 
-EXITeamAttitude AXICharacterBase::GetAttitudeTowardsActor(AActor* OtherActor) const
+UAnimMontage* AXICharacterBase::GetBlackMagicMontage()
 {
-	IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(OtherActor);
-	if (XICharInt)
-	{
-		EXITeam OtherTeam = XICharInt->GetXITeam();
-		if (OtherTeam == EXITeam::Neutral)
-		{
-			return EXITeamAttitude::Neutral;
-		}
-		
-		if (OtherTeam == XITeam)
-		{
-			return EXITeamAttitude::Friendly;
-		}
-		
-		if (OtherTeam != XITeam)
-		{
-			return EXITeamAttitude::Hostile;
-		}
-	}
-	return EXITeamAttitude::Neutral;
+	return BlackMagic;
 }
 
-EXITeam AXICharacterBase::GetXITeam() const
+UAnimMontage* AXICharacterBase::GetWhiteMagicMontage()
 {
-	return XITeam;
+	return WhiteMagic;
 }
 
-float AXICharacterBase::GetCapsuleRadius() const
+UAnimMontage* AXICharacterBase::GetSummonerMagicMontage()
 {
-	return GetCapsuleComponent()->GetScaledCapsuleRadius();
+	return SummonerMagic;
 }
 
-bool AXICharacterBase::IsAlive() const
+UAnimMontage* AXICharacterBase::GetNinjitsuMagicMontage()
 {
-	return GetHitPoints() > 0.0f;
+	return NinjitsuMagic;
 }
+
+UAnimMontage* AXICharacterBase::GetBlueMagicMontage()
+{
+	return BlueMagic;
+}
+
+UAnimMontage* AXICharacterBase::GetGeoMagicMontage()
+{
+	return GeoMagic;
+}
+
+UAnimMontage* AXICharacterBase::GetJobAbilityMontage()
+{
+	return JobAbility;
+}
+
+UAnimMontage* AXICharacterBase::GetJobAbilityCombatMontage()
+{
+	return JobAbilityCombat;
+}
+
+#pragma endregion AnimationMontageGetters
 
 #pragma region AttributeGetters
 
