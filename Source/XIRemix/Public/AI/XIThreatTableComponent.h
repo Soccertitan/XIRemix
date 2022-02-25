@@ -19,7 +19,10 @@ struct XIREMIX_API FThreatTableStruct
 	AActor* Actor = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
-	float ThreatLevel = 0;
+	float VolatileEnmity = 0;
+
+	UPROPERTY(BlueprintReadWrite)
+	float CumulativeEnmity = 0;
 
 	bool operator==(const FThreatTableStruct& V) const;
 	bool operator!=(const FThreatTableStruct& V) const;
@@ -49,26 +52,51 @@ public:
 	// Sets default values for this component's properties
 	UXIThreatTableComponent();
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = "XIRemix|XIThreatTable")
 	FHighestThreat OnHighestThreat;
 
-	UFUNCTION(BlueprintCallable)
-	void AddThreat(AActor* TargetActor, float ThreatAmount);
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void AddEnmity(AActor* TargetActor, float InVolatileEnmity, float InCumulativeEnmity);
 
-	UFUNCTION(BlueprintCallable)
-	void RemoveThreatActor(AActor* TargetActor);
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void RemoveTargetActor(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void ApplyDamageEnmity(AActor* TargetActor, float EnemyLevel, float Damage, float EnmityRate);
+
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void ApplyHealEnmity(AActor* TargetActor, float HealedTargetLevel, float Heal, float EnmityRate);
+
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void ApplyDamageTakenEnmity(AActor* TargetActor, float Damage, float TargetMaxHP);
+
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;	
 
 	UFUNCTION()
-	void CheckHighestThreat();
+	void CheckHighestEnmity();
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = "XIRemix|XIThreatTable")
 	TArray <FThreatTableStruct> ThreatTable;
 
 	UPROPERTY()
 	AActor* HighestThreatActor;
 
+	UPROPERTY()
+	float ClampMin = 0;
+
+	UPROPERTY(EditAnywhere)
+	float ClampMax = 30000;
+
+	UPROPERTY(EditAnywhere)
+	float VolatileEnimtyDecayRate = 60;
+
+public:	
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 };

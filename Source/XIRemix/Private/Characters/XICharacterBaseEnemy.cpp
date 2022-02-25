@@ -13,8 +13,6 @@ AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& Obj
 	XIAggroComponent = CreateDefaultSubobject<UXIAggroComponent>("XIAggroComponent");
 	XIAggroComponent->SphereComponent->SetupAttachment(RootComponent);
 
-	XIThreatTableComponent = CreateDefaultSubobject<UXIThreatTableComponent>("XIThreatTableComponent");
-
 	XITeam = EXITeam::Enemy;
 }
 
@@ -33,6 +31,7 @@ void AXICharacterBaseEnemy::PossessedBy(AController * NewController)
 	AddCharacterAbilities();
 	InitializeAttributes();
 	AddStartupEffects();
+
 }
 
 // Client only
@@ -44,7 +43,7 @@ void AXICharacterBaseEnemy::OnRep_PlayerState()
 	InitializeAttributes();
 }
 
-UXIThreatTableComponent * AXICharacterBaseEnemy::GetXIThreatTableComponent() const
+UXIAggroComponent* AXICharacterBaseEnemy::GetXIAggroComponent() const
 {
-	return XIThreatTableComponent;
+	return XIAggroComponent;
 }

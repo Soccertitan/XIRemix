@@ -45,6 +45,7 @@ void UXIAggroComponent::BeginPlay()
 	{
 		OwnerASC = AbilityInt->GetAbilitySystemComponent();
 	}
+
 }
 
 // Called every frame to detect if Hostile Actor is within Aggro Range.

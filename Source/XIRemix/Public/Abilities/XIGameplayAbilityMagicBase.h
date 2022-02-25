@@ -34,11 +34,11 @@ protected:
 	bool bAreaEffectCircle;
 
 	//Can the ability target in a circle AoE?
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic", meta=(EditCondition="bAreaEffectCircle"))
 	float AreaEffectBasePower;
 
 	//Can the ability target in a circle AoE?
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic", meta=(EditCondition="bAreaEffectCircle"))
 	float AreaEffectRange;
 
 	//Gets the Casting Anim Montage based on XIMagicType

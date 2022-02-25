@@ -276,6 +276,18 @@ AActor* AXICharacterBase::GetMainTarget() const
 	return MainTarget;
 }
 
+void AXICharacterBase::SetMainTarget(AActor* TargetActor)
+{
+	if(TargetActor)
+	{
+		MainTarget = TargetActor;
+	}
+	else
+	{
+		MainTarget = nullptr;
+	}
+}
+
 AActor* AXICharacterBase::GetSubTarget() const
 {
 	return SubTarget;

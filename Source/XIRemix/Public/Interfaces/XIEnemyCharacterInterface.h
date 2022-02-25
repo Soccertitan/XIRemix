@@ -23,5 +23,5 @@ class XIREMIX_API IXIEnemyCharacterInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual class UXIThreatTableComponent* GetXIThreatTableComponent() const PURE_VIRTUAL(IXIEnemyCharacterInterface::GetXIThreatTableComponent(), return nullptr;);
+	virtual class UXIAggroComponent* GetXIAggroComponent() const PURE_VIRTUAL(IXIThreatTableInterface::GetXIAggroComponent(), return nullptr;);
 };

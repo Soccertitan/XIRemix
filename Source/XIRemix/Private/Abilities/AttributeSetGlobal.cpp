@@ -111,7 +111,6 @@ void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CurePotency, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CureReceivedPotency, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, DamageResist, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Enmity, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, SpellInterruption, COND_None, REPNOTIFY_Always);
 }
 
@@ -414,11 +413,6 @@ void UAttributeSetGlobal::OnRep_CurePotency(const FGameplayAttributeData& OldCur
 void UAttributeSetGlobal::OnRep_CureReceivedPotency(const FGameplayAttributeData& OldCureReceivedPotency) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, CureReceivedPotency, OldCureReceivedPotency);
-}
-
-void UAttributeSetGlobal::OnRep_Enmity(const FGameplayAttributeData& OldEnmity) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Enmity, OldEnmity);
 }
 
 void UAttributeSetGlobal::OnRep_DamageResist(const FGameplayAttributeData& OldDamageResist) 

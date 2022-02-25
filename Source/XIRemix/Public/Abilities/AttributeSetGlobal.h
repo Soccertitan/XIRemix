@@ -394,13 +394,6 @@ public:
 	UFUNCTION()
 	virtual void OnRep_DamageResist(const FGameplayAttributeData& OldDamageResist);
 
-	// The multiplier in enmity generation. 1 = default
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Other", ReplicatedUsing = OnRep_Enmity)
-	FGameplayAttributeData Enmity;
-	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Enmity);
-	UFUNCTION()
-	virtual void OnRep_Enmity(const FGameplayAttributeData& OldEnmity);
-
 	// The multiplier in getting interrupted while casting spells. 1 = default
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Other", ReplicatedUsing = OnRep_SpellInterruption)
 	FGameplayAttributeData SpellInterruption;

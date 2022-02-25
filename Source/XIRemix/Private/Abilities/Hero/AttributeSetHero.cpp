@@ -2,14 +2,27 @@
 
 
 #include "Abilities/Hero/AttributeSetHero.h"
+#include "GameplayEffectExtension.h"
+#include "GameplayEffect.h"
 #include "Net/UnrealNetwork.h"
 
 
-UAttributeSetHero::UAttributeSetHero() 
+UAttributeSetHero::UAttributeSetHero()
+    : EnmityRate(1.0f)
 {
-
 }
 
+void UAttributeSetHero::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    if (Data.EvaluatedData.Attribute == GetEnmityRateAttribute())
+	{
+		// Handle other health changes.
+		// Health loss should go through Damage.
+		SetEnmityRate(FMath::Clamp(GetEnmityRate(), 0.5f, 3.0f));
+	}
+}
 
 void UAttributeSetHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const 
 {
@@ -46,8 +59,8 @@ void UAttributeSetHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageEXP, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageEXPRequired, COND_None, REPNOTIFY_Always);
 
-    //Currencies
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, Gil, COND_None, REPNOTIFY_Always);
+    //OtherAttributes
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, EnmityRate, COND_None, REPNOTIFY_Always);
 }
 
 #pragma region BasicJobs
@@ -159,13 +172,13 @@ void UAttributeSetHero::OnRep_BlackMageEXPRequired(const FGameplayAttributeData&
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, BlackMageEXPRequired, OldBlackMageEXPRequired);
 }
 
-#pragma endregion
+#pragma endregion BasicJobs
 
-#pragma region Currencies
+#pragma region OtherAttributes
 
-void UAttributeSetHero::OnRep_Gil(const FGameplayAttributeData& OldGil) 
+void UAttributeSetHero::OnRep_EnmityRate(const FGameplayAttributeData& OldEnmityRate) 
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, Gil, OldGil);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, EnmityRate, OldEnmityRate);
 }
 
-#pragma endregion
+#pragma endregion OtherAttributes

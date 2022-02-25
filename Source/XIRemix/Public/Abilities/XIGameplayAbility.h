@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "Abilities/GameplayAbilityTypes.h"
 #include "XIRemix/XIRemix.h"
 #include "XIEnums.h"
 #include "XIGameplayAbility.generated.h"
@@ -30,15 +31,19 @@ public:
 
 	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	bool ActivateAbilityOnGranted = false;
+	bool bActivateAbilityOnGranted = false;
+
+	//The cost of the ability.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	FScalableFloat Cost;
 
 	//Used to apply a generic Cooldown GE that uses the GA's cooldown value.
 	const FGameplayTagContainer* GetCooldownTags() const override;
 	void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
-	//The cost of the ability.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
-	FScalableFloat Cost;
+	// If an ability is marked as 'ActivateAbilityOnGranted', activate them immediately when given here
+	// Epic's comment: Projects may want to initiate passives or do other "BeginPlay" type of logic here.
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 protected:
 
@@ -47,7 +52,7 @@ protected:
 	float CapsuleRadius;
 
 	//The Base Power of the ability.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Parameters")
 	float BasePower;
 
 	// The max range of the attack.
@@ -57,6 +62,16 @@ protected:
 	// Angle which determines the range of attack around the user. 180 = a full 360 degrees.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
 	float Angle;
+
+	//Should we use Fixed Enmity Values for this ability?
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity")
+	bool bFixedEnmity;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity", meta=(EditCondition="bFixedEnmity"))
+	float CumulativeEnmity;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity", meta=(EditCondition="bFixedEnmity"))
+	float VolatileEnmity;
 
 	// The attitute the owner needs to be towards the target actor.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Parameters")

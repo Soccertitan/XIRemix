@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Interfaces/XICharacterInterface.h"
 #include "Interfaces/XIEnemyCharacterInterface.h"
+#include "Interfaces/XIThreatTableInterface.h"
 
 bool UCombatFunctionLibrary::CheckTargetWithinRange(AActor* OwnerActor, AActor* TargetActor, float AngleInDegrees, float Range)
 {
@@ -56,6 +57,15 @@ AActor* UCombatFunctionLibrary::GetMainTarget(AActor* OwnerActor)
         return XICharacterInt->GetMainTarget();
     }
     return nullptr;
+}
+
+void UCombatFunctionLibrary::SetMainTarget(AActor* OwnerActor, AActor* TargetActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        XICharacterInt->SetMainTarget(TargetActor);
+    }
 }
 
 AActor* UCombatFunctionLibrary::GetSubTarget(AActor* OwnerActor)
@@ -200,14 +210,24 @@ UAnimMontage* UCombatFunctionLibrary::GetJobAbilityCombatMontage(AActor* OwnerAc
     return nullptr;
 }
 
-UXIThreatTableComponent* UCombatFunctionLibrary::GetXIThreatTableComponent(AActor* OwnerActor)
+#pragma endregion AnimMontages
+
+UXIThreatTableComponent* UCombatFunctionLibrary::GetXIThreatTableComponent(AController* AIController)
 {
-    IXIEnemyCharacterInterface* XICharacterInt = Cast<IXIEnemyCharacterInterface>(OwnerActor);
-    if(XICharacterInt)
+    IXIThreatTableInterface* XIThreatInt = Cast<IXIThreatTableInterface>(AIController);
+    if(XIThreatInt)
     {
-        return XICharacterInt->GetXIThreatTableComponent();
+        return XIThreatInt->GetXIThreatTableComponent();
     }
     return nullptr;
 }
 
-#pragma endregion AnimMontages
+UXIAggroComponent* UCombatFunctionLibrary::GetXIAggroComponent(AActor* OwnerActor)
+{
+    IXIEnemyCharacterInterface* XIEnemyInt = Cast<IXIEnemyCharacterInterface>(OwnerActor);
+    if(XIEnemyInt)
+    {
+        return XIEnemyInt->GetXIAggroComponent();
+    }
+    return nullptr;
+}

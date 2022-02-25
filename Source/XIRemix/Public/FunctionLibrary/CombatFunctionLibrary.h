@@ -24,6 +24,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
 	static AActor* GetMainTarget (AActor* OwnerActor);
 
+	//XICharacter Interface Function should only be called by server for AI
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|Combat")
+	static void SetMainTarget (AActor* OwnerActor, AActor* TargetActor);
+
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
 	static AActor* GetSubTarget (AActor* OwnerActor);
@@ -80,7 +84,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
 	static UAnimMontage* GetJobAbilityCombatMontage(AActor* OwnerActor);
 
-	//XIEnemyCharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|AI")
-	static UXIThreatTableComponent* GetXIThreatTableComponent(AActor* OwnerActor);
+	//XIAI Controller Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|AIController")
+	static class UXIThreatTableComponent* GetXIThreatTableComponent(AController* AIController);
+
+	//XI Aggro Component Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|XIAggroComponent")
+	static class UXIAggroComponent* GetXIAggroComponent(AActor* OwnerActor);
 };

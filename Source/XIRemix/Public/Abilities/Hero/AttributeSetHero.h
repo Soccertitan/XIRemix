@@ -24,6 +24,7 @@ public:
 
 	UAttributeSetHero();
 
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	#pragma region WarriorJob
@@ -52,7 +53,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_WarriorEXPRequired(const FGameplayAttributeData& OldWarriorEXPRequired);
 
-#pragma endregion
+#pragma endregion WarriorJob
 
 #pragma region MonkJob
 
@@ -80,7 +81,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_MonkEXPRequired(const FGameplayAttributeData& OldMonkEXPRequired);
 
-#pragma endregion
+#pragma endregion MonkJob
 
 #pragma region ThiefJob
 
@@ -108,7 +109,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_ThiefEXPRequired(const FGameplayAttributeData& OldThiefEXPRequired);
 
-#pragma endregion
+#pragma endregion ThiefJob
 
 #pragma region RedMageJob
 
@@ -136,7 +137,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_RedMageEXPRequired(const FGameplayAttributeData& OldRedMageEXPRequired);
 
-#pragma endregion
+#pragma endregion RedMageJob
 
 #pragma region WhiteMageJob
 
@@ -164,7 +165,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_WhiteMageEXPRequired(const FGameplayAttributeData& OldWhiteMageEXPRequired);
 
-#pragma endregion
+#pragma endregion WhiteMageJob
 
 #pragma region BlackMageJob
 
@@ -192,16 +193,17 @@ public:
 	UFUNCTION()
 	virtual void OnRep_BlackMageEXPRequired(const FGameplayAttributeData& OldBlackMageEXPRequired);
 
-#pragma endregion
+#pragma endregion BlackMageJob
 
-#pragma region Currencies
+#pragma region OtherAttributes
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Currencies", ReplicatedUsing = OnRep_Gil)
-	FGameplayAttributeData Gil;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, Gil);
+	// The multiplier in enmity generation. 1 = default
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Other", ReplicatedUsing = OnRep_EnmityRate)
+	FGameplayAttributeData EnmityRate;
+	ATTRIBUTE_ACCESSORS(UAttributeSetHero, EnmityRate);
 	UFUNCTION()
-	virtual void OnRep_Gil(const FGameplayAttributeData& OldGil);
+	virtual void OnRep_EnmityRate(const FGameplayAttributeData& OldEnmityRate);
 
-#pragma endregion
+#pragma endregion OtherAttributes
 
 };

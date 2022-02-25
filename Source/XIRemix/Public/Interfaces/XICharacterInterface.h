@@ -43,6 +43,9 @@ public:
 	// GetMainTarget is Implemented in C++
 	virtual AActor* GetMainTarget() const PURE_VIRTUAL(IXICharacterInterface::GetMainTarget(), return nullptr;);
 
+	// SetMainTarget is implemented in C++
+	virtual void SetMainTarget(AActor* Actor) PURE_VIRTUAL(IXICharacterInterface::SetMainTarget(AActor* Actor));
+
 	// GetSubTarget is Implemented in C++
 	virtual AActor* GetSubTarget() const PURE_VIRTUAL(IXICharacterInterface::GetSubTarget(), return nullptr;);
 

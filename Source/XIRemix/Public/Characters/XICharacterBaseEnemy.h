@@ -23,18 +23,20 @@ class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase, public IXIEne
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XIAggro", meta = (AllowPrivateAccess = "true"))
 	class UXIAggroComponent* XIAggroComponent;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XIThreatTable", meta = (AllowPrivateAccess = "true"))
-	class UXIThreatTableComponent* XIThreatTableComponent;
-
-	virtual class UXIThreatTableComponent* GetXIThreatTableComponent() const override;
-
 	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;
+
+public:
+	//Implements IXIEnemyCharacterInterface
+	virtual class UXIAggroComponent* GetXIAggroComponent() const override;
 
 protected:
 	
 	UPROPERTY()
 	class UAttributeSetEnemy* AttributeSetEnemy;
+
+	UPROPERTY()
+	class UXIThreatTableComponent* XIThreatTableComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter", meta = (ExposeOnSpawn = true))
 	float Level = 1;

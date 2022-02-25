@@ -23,6 +23,6 @@ class XIREMIX_API IXIAIControllerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	// SetMainTarget is Implemented in C++ or Blueprint
+	// SetMainTarget is Implemented in C++
 	virtual void SetMainTarget(AActor* TargetActor) PURE_VIRTUAL(IXAIControllerInterface::SetMainTarget(AActor* TargetActor););
 };

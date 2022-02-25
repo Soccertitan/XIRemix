@@ -39,6 +39,7 @@ public:
 	// IXICharacter Interface Implementations
 	virtual FText GetCharacterName() const override;
 	virtual AActor* GetMainTarget() const override;
+	virtual void SetMainTarget(AActor* TargetActor) override;
 	virtual AActor* GetSubTarget() const override;
 	virtual EXITeamAttitude GetAttitudeTowardsActor(AActor* OtherActor) const override;
 	virtual EXITeam GetXITeam() const override;
