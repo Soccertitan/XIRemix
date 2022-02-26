@@ -56,7 +56,7 @@ public:
 	FHighestThreat OnHighestThreat;
 
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
-	void AddEnmity(AActor* TargetActor, float InVolatileEnmity, float InCumulativeEnmity);
+	void AddEnmity(AActor* TargetActor, float InVolatileEnmity, float InCumulativeEnmity, bool bOverrideEnmity);
 
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
 	void RemoveTargetActor(AActor* TargetActor);
@@ -70,8 +70,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
 	void ApplyDamageTakenEnmity(AActor* TargetActor, float Damage, float TargetMaxHP);
 
+	// Returns true if actor is found and has enmity.
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
-	void GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity);
+	bool GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity) const;
 
 protected:
 	// Called when the game starts

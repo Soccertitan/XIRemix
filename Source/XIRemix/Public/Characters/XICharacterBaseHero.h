@@ -7,13 +7,14 @@
 #include "Components/SphereComponent.h"
 #include "FunctionLibrary/MeshMergeFunctionLibrary.h"
 #include "Player/XITargetSystemComponent.h"
+#include "Interfaces/XITargetSystemInterface.h"
 #include "XICharacterBaseHero.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API AXICharacterBaseHero : public AXICharacterBase
+class XIREMIX_API AXICharacterBaseHero : public AXICharacterBase, public IXITargetSystemInterface
 {
 	GENERATED_BODY()
 
@@ -33,6 +34,9 @@ public:
 
 	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;
+
+	// Implements XITargetSystemInterface
+	virtual UXITargetSystemComponent* GetXITargetSystemComponent() const override;
 
 	// /**
 	// * Getters for attributes from AttributeSetHero

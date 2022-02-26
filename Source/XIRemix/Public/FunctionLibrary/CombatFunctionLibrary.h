@@ -24,7 +24,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat")
 	static AActor* GetMainTarget (AActor* OwnerActor);
 
-	//XICharacter Interface Function should only be called by server for AI
+	//XICharacter Interface Function
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|Combat")
 	static void SetMainTarget (AActor* OwnerActor, AActor* TargetActor);
 
@@ -91,4 +91,8 @@ public:
 	//XI Aggro Component Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|XIAggroComponent")
 	static class UXIAggroComponent* GetXIAggroComponent(AActor* OwnerActor);
+
+	//XI Target System Component Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|TargetSystemComponent")
+	static class UXITargetSystemComponent* GetXITargetSystemComponent(AActor* OwnerActor);
 };

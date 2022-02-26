@@ -12,7 +12,7 @@ UAttributeSetGlobal::UAttributeSetGlobal()
     , ManaPoints(0.f)
     , ManaPointsMax(0.f)
     , TacticalPoints(0.f)
-    , TacticalPointsMax(1000.f)
+    , TacticalPointsMax(3000.f)
 {
 }
 
@@ -65,7 +65,6 @@ void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Defense, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Accuracy, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedAccuracy, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Evasion, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CriticalHitRate, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CriticalHitBonus, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedCriticalHitRate, COND_None, REPNOTIFY_Always);
@@ -112,6 +111,91 @@ void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CureReceivedPotency, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, DamageResist, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, SpellInterruption, COND_None, REPNOTIFY_Always);
+
+    // Skill Attributes
+
+    //**
+    // Melee Skills
+    //**
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Axe, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, AxeMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatAxe, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatAxeMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Club, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ClubMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Dagger, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, DaggerMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, HandToHand, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, HandToHandMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Katana, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, KatanaMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatKatana, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatKatanaMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Polearm, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, PolearmMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Scythe, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ScytheMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Staff, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, StaffMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Sword, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, SwordMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatSword, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GreatSwordMax, COND_None, REPNOTIFY_Always);
+
+    //**
+    // Ranged Skills
+    //**
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Archery, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ArcheryMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Marksmanship, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, MarksmanshipMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Throwing, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ThrowingMax, COND_None, REPNOTIFY_Always);
+
+    //**
+    // Defensive Skills
+    //**
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Evasion, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, EvasionMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Guard, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GuardMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Parry, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ParryMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Shield, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ShieldMax, COND_None, REPNOTIFY_Always);
+
+    //**
+    // Special Skills
+    //**
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Blue, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, BlueMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Dark, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, DarkMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Divine, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, DivineMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Elemental, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, ElementalMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Enfeebling, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, EnfeeblingMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Enhancing, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, EnhancingMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Healing, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, HealingMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Summoning, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, SummoningMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Ninjutsu, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, NinjutsuMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Singing, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, SingingMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, String, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, StringMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Wind, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, WindMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Geomancy, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, GeomancyMax, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Handbell, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, HandbellMax, COND_None, REPNOTIFY_Always);
+
 }
 
 #pragma region ResourceAttributesFunctions
@@ -212,11 +296,6 @@ void UAttributeSetGlobal::OnRep_Accuracy(const FGameplayAttributeData& OldAccura
 void UAttributeSetGlobal::OnRep_RangedAccuracy(const FGameplayAttributeData& OldRangedAccuracy) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, RangedAccuracy, OldRangedAccuracy);
-}
-
-void UAttributeSetGlobal::OnRep_Evasion(const FGameplayAttributeData& OldEvasion) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Evasion, OldEvasion);
 }
 
 void UAttributeSetGlobal::OnRep_CriticalHitRate(const FGameplayAttributeData& OldCriticalHitRate) 
@@ -426,3 +505,292 @@ void UAttributeSetGlobal::OnRep_SpellInterruption(const FGameplayAttributeData& 
 }
 
 #pragma endregion OtherAttributes
+
+#pragma region CombatSkills
+
+//**
+// Melee Skills
+//**
+
+void UAttributeSetGlobal::OnRep_Axe(const FGameplayAttributeData& OldAxe) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Axe, OldAxe);
+}
+void UAttributeSetGlobal::OnRep_AxeMax(const FGameplayAttributeData& OldAxeMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, AxeMax, OldAxeMax);
+}
+void UAttributeSetGlobal::OnRep_GreatAxe(const FGameplayAttributeData& OldGreatAxe) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatAxe, OldGreatAxe);
+}
+void UAttributeSetGlobal::OnRep_GreatAxeMax(const FGameplayAttributeData& OldGreatAxeMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatAxeMax, OldGreatAxeMax);
+}
+void UAttributeSetGlobal::OnRep_Club(const FGameplayAttributeData& OldClub) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Club, OldClub);
+}
+void UAttributeSetGlobal::OnRep_ClubMax(const FGameplayAttributeData& OldClubMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ClubMax, OldClubMax);
+}
+void UAttributeSetGlobal::OnRep_Dagger(const FGameplayAttributeData& OldDagger) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Dagger, OldDagger);
+}
+void UAttributeSetGlobal::OnRep_DaggerMax(const FGameplayAttributeData& OldDaggerMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, DaggerMax, OldDaggerMax);
+}
+void UAttributeSetGlobal::OnRep_HandToHand(const FGameplayAttributeData& OldHandToHand) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, HandToHand, OldHandToHand);
+}
+void UAttributeSetGlobal::OnRep_HandToHandMax(const FGameplayAttributeData& OldHandToHandMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, HandToHandMax, OldHandToHandMax);
+}
+void UAttributeSetGlobal::OnRep_Katana(const FGameplayAttributeData& OldKatana) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Katana, OldKatana);
+}
+void UAttributeSetGlobal::OnRep_KatanaMax(const FGameplayAttributeData& OldKatanaMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, KatanaMax, OldKatanaMax);
+}
+void UAttributeSetGlobal::OnRep_GreatKatana(const FGameplayAttributeData& OldGreatKatana) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatKatana, OldGreatKatana);
+}
+void UAttributeSetGlobal::OnRep_GreatKatanaMax(const FGameplayAttributeData& OldGreatKatanaMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatKatanaMax, OldGreatKatanaMax);
+}
+void UAttributeSetGlobal::OnRep_Polearm(const FGameplayAttributeData& OldPolearm) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Polearm, OldPolearm);
+}
+void UAttributeSetGlobal::OnRep_PolearmMax(const FGameplayAttributeData& OldPolearmMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, PolearmMax, OldPolearmMax);
+}
+void UAttributeSetGlobal::OnRep_Scythe(const FGameplayAttributeData& OldScythe) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Scythe, OldScythe);
+}
+void UAttributeSetGlobal::OnRep_ScytheMax(const FGameplayAttributeData& OldScytheMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ScytheMax, OldScytheMax);
+}
+void UAttributeSetGlobal::OnRep_Staff(const FGameplayAttributeData& OldStaff) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Staff, OldStaff);
+}
+void UAttributeSetGlobal::OnRep_StaffMax(const FGameplayAttributeData& OldStaffMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, StaffMax, OldStaffMax);
+}
+void UAttributeSetGlobal::OnRep_Sword(const FGameplayAttributeData& OldSword) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Sword, OldSword);
+}
+void UAttributeSetGlobal::OnRep_SwordMax(const FGameplayAttributeData& OldSwordMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, SwordMax, OldSwordMax);
+}
+void UAttributeSetGlobal::OnRep_GreatSword(const FGameplayAttributeData& OldGreatSword) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatSword, OldGreatSword);
+}
+void UAttributeSetGlobal::OnRep_GreatSwordMax(const FGameplayAttributeData& OldGreatSwordMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GreatSwordMax, OldGreatSwordMax);
+}
+
+//**
+// Ranged SKills
+//**
+
+void UAttributeSetGlobal::OnRep_Archery(const FGameplayAttributeData& OldArchery) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Archery, OldArchery);
+}
+void UAttributeSetGlobal::OnRep_ArcheryMax(const FGameplayAttributeData& OldArcheryMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ArcheryMax, OldArcheryMax);
+}
+void UAttributeSetGlobal::OnRep_Marksmanship(const FGameplayAttributeData& OldMarksmanship) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Marksmanship, OldMarksmanship);
+}
+void UAttributeSetGlobal::OnRep_MarksmanshipMax(const FGameplayAttributeData& OldMarksmanshipMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, MarksmanshipMax, OldMarksmanshipMax);
+}
+void UAttributeSetGlobal::OnRep_Throwing(const FGameplayAttributeData& OldThrowing) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Throwing, OldThrowing);
+}
+void UAttributeSetGlobal::OnRep_ThrowingMax(const FGameplayAttributeData& OldThrowingMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ThrowingMax, OldThrowingMax);
+}
+
+//**
+// Defensive Skills
+//**
+
+void UAttributeSetGlobal::OnRep_Evasion(const FGameplayAttributeData& OldEvasion) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Evasion, OldEvasion);
+}
+void UAttributeSetGlobal::OnRep_EvasionMax(const FGameplayAttributeData& OldEvasionMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, EvasionMax, OldEvasionMax);
+}
+void UAttributeSetGlobal::OnRep_Guard(const FGameplayAttributeData& OldGuard) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Guard, OldGuard);
+}
+void UAttributeSetGlobal::OnRep_GuardMax(const FGameplayAttributeData& OldGuardMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GuardMax, OldGuardMax);
+}
+void UAttributeSetGlobal::OnRep_Parry(const FGameplayAttributeData& OldParry) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Parry, OldParry);
+}
+void UAttributeSetGlobal::OnRep_ParryMax(const FGameplayAttributeData& OldParryMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ParryMax, OldParryMax);
+}
+void UAttributeSetGlobal::OnRep_Shield(const FGameplayAttributeData& OldShield) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Shield, OldShield);
+}
+void UAttributeSetGlobal::OnRep_ShieldMax(const FGameplayAttributeData& OldShieldMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ShieldMax, OldShieldMax);
+}
+
+//**
+// Special SKills
+//**
+
+void UAttributeSetGlobal::OnRep_Blue(const FGameplayAttributeData& OldBlue) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Blue, OldBlue);
+}
+void UAttributeSetGlobal::OnRep_BlueMax(const FGameplayAttributeData& OldBlueMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, BlueMax, OldBlueMax);
+}
+void UAttributeSetGlobal::OnRep_Dark(const FGameplayAttributeData& OldDark) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Dark, OldDark);
+}
+void UAttributeSetGlobal::OnRep_DarkMax(const FGameplayAttributeData& OldDarkMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, DarkMax, OldDarkMax);
+}
+void UAttributeSetGlobal::OnRep_Divine(const FGameplayAttributeData& OldDivine) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Divine, OldDivine);
+}
+void UAttributeSetGlobal::OnRep_DivineMax(const FGameplayAttributeData& OldDivineMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, DivineMax, OldDivineMax);
+}
+void UAttributeSetGlobal::OnRep_Elemental(const FGameplayAttributeData& OldElemental) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Elemental, OldElemental);
+}
+void UAttributeSetGlobal::OnRep_ElementalMax(const FGameplayAttributeData& OldElementalMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, ElementalMax, OldElementalMax);
+}
+void UAttributeSetGlobal::OnRep_Enfeebling(const FGameplayAttributeData& OldEnfeebling) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Enfeebling, OldEnfeebling);
+}
+void UAttributeSetGlobal::OnRep_EnfeeblingMax(const FGameplayAttributeData& OldEnfeeblingMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, EnfeeblingMax, OldEnfeeblingMax);
+}
+void UAttributeSetGlobal::OnRep_Enhancing(const FGameplayAttributeData& OldEnhancing) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Enhancing, OldEnhancing);
+}
+void UAttributeSetGlobal::OnRep_EnhancingMax(const FGameplayAttributeData& OldEnhancingMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, EnhancingMax, OldEnhancingMax);
+}
+void UAttributeSetGlobal::OnRep_Healing(const FGameplayAttributeData& OldHealing) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Healing, OldHealing);
+}
+void UAttributeSetGlobal::OnRep_HealingMax(const FGameplayAttributeData& OldHealingMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, HealingMax, OldHealingMax);
+}
+void UAttributeSetGlobal::OnRep_Summoning(const FGameplayAttributeData& OldSummoning) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Summoning, OldSummoning);
+}
+void UAttributeSetGlobal::OnRep_SummoningMax(const FGameplayAttributeData& OldSummoningMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, SummoningMax, OldSummoningMax);
+}
+void UAttributeSetGlobal::OnRep_Ninjutsu(const FGameplayAttributeData& OldNinjutsu) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Ninjutsu, OldNinjutsu);
+}
+void UAttributeSetGlobal::OnRep_NinjutsuMax(const FGameplayAttributeData& OldNinjutsuMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, NinjutsuMax, OldNinjutsuMax);
+}
+void UAttributeSetGlobal::OnRep_Singing(const FGameplayAttributeData& OldSinging) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Singing, OldSinging);
+}
+void UAttributeSetGlobal::OnRep_SingingMax(const FGameplayAttributeData& OldSingingMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, SingingMax, OldSingingMax);
+}
+void UAttributeSetGlobal::OnRep_String(const FGameplayAttributeData& OldString) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, String, OldString);
+}
+void UAttributeSetGlobal::OnRep_StringMax(const FGameplayAttributeData& OldStringMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, StringMax, OldStringMax);
+}
+void UAttributeSetGlobal::OnRep_Wind(const FGameplayAttributeData& OldWind) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Wind, OldWind);
+}
+void UAttributeSetGlobal::OnRep_WindMax(const FGameplayAttributeData& OldWindMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, WindMax, OldWindMax);
+}
+void UAttributeSetGlobal::OnRep_Geomancy(const FGameplayAttributeData& OldGeomancy) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Geomancy, OldGeomancy);
+}
+void UAttributeSetGlobal::OnRep_GeomancyMax(const FGameplayAttributeData& OldGeomancyMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, GeomancyMax, OldGeomancyMax);
+}
+void UAttributeSetGlobal::OnRep_Handbell(const FGameplayAttributeData& OldHandbell) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Handbell, OldHandbell);
+}
+void UAttributeSetGlobal::OnRep_HandbellMax(const FGameplayAttributeData& OldHandbellMax) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, HandbellMax, OldHandbellMax);
+}
+
+#pragma endregion CombatSkills
+

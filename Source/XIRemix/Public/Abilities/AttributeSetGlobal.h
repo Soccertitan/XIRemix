@@ -115,7 +115,7 @@ public:
 
 #pragma endregion MainAttributes
 	
-#pragma region PhysicalSubAttributes //Defines Attack, Accuracy, Defense, Evasion, Crits, and Movement
+#pragma region PhysicalSubAttributes //Defines Attack, Accuracy, Defense, Crits
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_Attack)
 	FGameplayAttributeData Attack;
@@ -146,12 +146,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RangedAccuracy);
 	UFUNCTION()
 	virtual void OnRep_RangedAccuracy(const FGameplayAttributeData& OldRangedAccuracy);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_Evasion)
-	FGameplayAttributeData Evasion;
-	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Evasion);
-	UFUNCTION()
-	virtual void OnRep_Evasion(const FGameplayAttributeData& OldEvasion);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_CriticalHitRate)
 	FGameplayAttributeData CriticalHitRate;
@@ -203,7 +197,7 @@ public:
 
 #pragma endregion MeleeSubAttributes
 
-#pragma region MagicSubAttributes //Defines Magic Attack, Accuracy, Defense, Evasion, and Crits
+#pragma region MagicSubAttributes //Defines Magic Attack, Accuracy, Evasion, and Crits
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Magical", ReplicatedUsing = OnRep_MagicAttack)
 	FGameplayAttributeData MagicAttack;
@@ -402,5 +396,421 @@ public:
 	virtual void OnRep_SpellInterruption(const FGameplayAttributeData& OldSpellInterruption);
 
 #pragma endregion OtherAttributes
+
+#pragma region CombatSkills
+
+//**
+// Melee Skills
+//**
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Axe)
+	FGameplayAttributeData Axe;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Axe);
+	UFUNCTION()
+	virtual void OnRep_Axe(const FGameplayAttributeData& OldAxe);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_AxeMax)
+	FGameplayAttributeData AxeMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, AxeMax);
+	UFUNCTION()
+	virtual void OnRep_AxeMax(const FGameplayAttributeData& OldAxeMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatAxe)
+	FGameplayAttributeData GreatAxe;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatAxe);
+	UFUNCTION()
+	virtual void OnRep_GreatAxe(const FGameplayAttributeData& OldGreatAxe);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatAxeMax)
+	FGameplayAttributeData GreatAxeMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatAxeMax);
+	UFUNCTION()
+	virtual void OnRep_GreatAxeMax(const FGameplayAttributeData& OldGreatAxeMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Club)
+	FGameplayAttributeData Club;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Club);
+	UFUNCTION()
+	virtual void OnRep_Club(const FGameplayAttributeData& OldClub);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_ClubMax)
+	FGameplayAttributeData ClubMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ClubMax);
+	UFUNCTION()
+	virtual void OnRep_ClubMax(const FGameplayAttributeData& OldClubMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Dagger)
+	FGameplayAttributeData Dagger;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Dagger);
+	UFUNCTION()
+	virtual void OnRep_Dagger(const FGameplayAttributeData& OldDagger);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_DaggerMax)
+	FGameplayAttributeData DaggerMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DaggerMax);
+	UFUNCTION()
+	virtual void OnRep_DaggerMax(const FGameplayAttributeData& OldDaggerMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_HandToHand)
+	FGameplayAttributeData HandToHand;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, HandToHand);
+	UFUNCTION()
+	virtual void OnRep_HandToHand(const FGameplayAttributeData& OldHandToHand);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_HandToHandMax)
+	FGameplayAttributeData HandToHandMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, HandToHandMax);
+	UFUNCTION()
+	virtual void OnRep_HandToHandMax(const FGameplayAttributeData& OldHandToHandMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Katana)
+	FGameplayAttributeData Katana;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Katana);
+	UFUNCTION()
+	virtual void OnRep_Katana(const FGameplayAttributeData& OldKatana);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_KatanaMax)
+	FGameplayAttributeData KatanaMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, KatanaMax);
+	UFUNCTION()
+	virtual void OnRep_KatanaMax(const FGameplayAttributeData& OldKatanaMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatKatana)
+	FGameplayAttributeData GreatKatana;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatKatana);
+	UFUNCTION()
+	virtual void OnRep_GreatKatana(const FGameplayAttributeData& OldGreatKatana);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatKatanaMax)
+	FGameplayAttributeData GreatKatanaMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatKatanaMax);
+	UFUNCTION()
+	virtual void OnRep_GreatKatanaMax(const FGameplayAttributeData& OldGreatKatanaMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Polearm)
+	FGameplayAttributeData Polearm;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Polearm);
+	UFUNCTION()
+	virtual void OnRep_Polearm(const FGameplayAttributeData& OldPolearm);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_PolearmMax)
+	FGameplayAttributeData PolearmMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, PolearmMax);
+	UFUNCTION()
+	virtual void OnRep_PolearmMax(const FGameplayAttributeData& OldPolearmMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Scythe)
+	FGameplayAttributeData Scythe;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Scythe);
+	UFUNCTION()
+	virtual void OnRep_Scythe(const FGameplayAttributeData& OldScythe);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_ScytheMax)
+	FGameplayAttributeData ScytheMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ScytheMax);
+	UFUNCTION()
+	virtual void OnRep_ScytheMax(const FGameplayAttributeData& OldScytheMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Staff)
+	FGameplayAttributeData Staff;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Staff);
+	UFUNCTION()
+	virtual void OnRep_Staff(const FGameplayAttributeData& OldStaff);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_StaffMax)
+	FGameplayAttributeData StaffMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, StaffMax);
+	UFUNCTION()
+	virtual void OnRep_StaffMax(const FGameplayAttributeData& OldStaffMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_Sword)
+	FGameplayAttributeData Sword;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Sword);
+	UFUNCTION()
+	virtual void OnRep_Sword(const FGameplayAttributeData& OldSword);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_SwordMax)
+	FGameplayAttributeData SwordMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, SwordMax);
+	UFUNCTION()
+	virtual void OnRep_SwordMax(const FGameplayAttributeData& OldSwordMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatSword)
+	FGameplayAttributeData GreatSword;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatSword);
+	UFUNCTION()
+	virtual void OnRep_GreatSword(const FGameplayAttributeData& OldGreatSword);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Melee", ReplicatedUsing = OnRep_GreatSwordMax)
+	FGameplayAttributeData GreatSwordMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GreatSwordMax);
+	UFUNCTION()
+	virtual void OnRep_GreatSwordMax(const FGameplayAttributeData& OldGreatSwordMax);
+
+	//**
+	//Ranged Skills
+	//**
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_Archery)
+	FGameplayAttributeData Archery;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Archery);
+	UFUNCTION()
+	virtual void OnRep_Archery(const FGameplayAttributeData& OldArchery);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_ArcheryMax)
+	FGameplayAttributeData ArcheryMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ArcheryMax);
+	UFUNCTION()
+	virtual void OnRep_ArcheryMax(const FGameplayAttributeData& OldArcheryMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_Marksmanship)
+	FGameplayAttributeData Marksmanship;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Marksmanship);
+	UFUNCTION()
+	virtual void OnRep_Marksmanship(const FGameplayAttributeData& OldMarksmanship);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_MarksmanshipMax)
+	FGameplayAttributeData MarksmanshipMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, MarksmanshipMax);
+	UFUNCTION()
+	virtual void OnRep_MarksmanshipMax(const FGameplayAttributeData& OldMarksmanshipMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_Throwing)
+	FGameplayAttributeData Throwing;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Throwing);
+	UFUNCTION()
+	virtual void OnRep_Throwing(const FGameplayAttributeData& OldThrowing);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Range", ReplicatedUsing = OnRep_ThrowingMax)
+	FGameplayAttributeData ThrowingMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ThrowingMax);
+	UFUNCTION()
+	virtual void OnRep_ThrowingMax(const FGameplayAttributeData& OldThrowingMax);
+
+	//**
+	// Defensive Skills
+	//**
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_Evasion)
+	FGameplayAttributeData Evasion;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Evasion);
+	UFUNCTION()
+	virtual void OnRep_Evasion(const FGameplayAttributeData& OldEvasion);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_EvasionMax)
+	FGameplayAttributeData EvasionMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, EvasionMax);
+	UFUNCTION()
+	virtual void OnRep_EvasionMax(const FGameplayAttributeData& OldEvasionMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_Guard)
+	FGameplayAttributeData Guard;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Guard);
+	UFUNCTION()
+	virtual void OnRep_Guard(const FGameplayAttributeData& OldGuard);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_GuardMax)
+	FGameplayAttributeData GuardMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GuardMax);
+	UFUNCTION()
+	virtual void OnRep_GuardMax(const FGameplayAttributeData& OldGuardMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_Parry)
+	FGameplayAttributeData Parry;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Parry);
+	UFUNCTION()
+	virtual void OnRep_Parry(const FGameplayAttributeData& OldParry);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_ParryMax)
+	FGameplayAttributeData ParryMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ParryMax);
+	UFUNCTION()
+	virtual void OnRep_ParryMax(const FGameplayAttributeData& OldParryMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_Shield)
+	FGameplayAttributeData Shield;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Shield);
+	UFUNCTION()
+	virtual void OnRep_Shield(const FGameplayAttributeData& OldShield);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Defense", ReplicatedUsing = OnRep_ShieldMax)
+	FGameplayAttributeData ShieldMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ShieldMax);
+	UFUNCTION()
+	virtual void OnRep_ShieldMax(const FGameplayAttributeData& OldShieldMax);
+
+	//**
+	//Special Skills
+	//**
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Blue)
+	FGameplayAttributeData Blue;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Blue);
+	UFUNCTION()
+	virtual void OnRep_Blue(const FGameplayAttributeData& OldBlue);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_BlueMax)
+	FGameplayAttributeData BlueMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, BlueMax);
+	UFUNCTION()
+	virtual void OnRep_BlueMax(const FGameplayAttributeData& OldBlueMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Dark)
+	FGameplayAttributeData Dark;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Dark);
+	UFUNCTION()
+	virtual void OnRep_Dark(const FGameplayAttributeData& OldDark);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_DarkMax)
+	FGameplayAttributeData DarkMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DarkMax);
+	UFUNCTION()
+	virtual void OnRep_DarkMax(const FGameplayAttributeData& OldDarkMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Divine)
+	FGameplayAttributeData Divine;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Divine);
+	UFUNCTION()
+	virtual void OnRep_Divine(const FGameplayAttributeData& OldDivine);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_DivineMax)
+	FGameplayAttributeData DivineMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DivineMax);
+	UFUNCTION()
+	virtual void OnRep_DivineMax(const FGameplayAttributeData& OldDivineMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Elemental)
+	FGameplayAttributeData Elemental;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Elemental);
+	UFUNCTION()
+	virtual void OnRep_Elemental(const FGameplayAttributeData& OldElemental);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_ElementalMax)
+	FGameplayAttributeData ElementalMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, ElementalMax);
+	UFUNCTION()
+	virtual void OnRep_ElementalMax(const FGameplayAttributeData& OldElementalMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Enfeebling)
+	FGameplayAttributeData Enfeebling;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Enfeebling);
+	UFUNCTION()
+	virtual void OnRep_Enfeebling(const FGameplayAttributeData& OldEnfeebling);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_EnfeeblingMax)
+	FGameplayAttributeData EnfeeblingMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, EnfeeblingMax);
+	UFUNCTION()
+	virtual void OnRep_EnfeeblingMax(const FGameplayAttributeData& OldEnfeeblingMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Enhancing)
+	FGameplayAttributeData Enhancing;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Enhancing);
+	UFUNCTION()
+	virtual void OnRep_Enhancing(const FGameplayAttributeData& OldEnhancing);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_EnhancingMax)
+	FGameplayAttributeData EnhancingMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, EnhancingMax);
+	UFUNCTION()
+	virtual void OnRep_EnhancingMax(const FGameplayAttributeData& OldEnhancingMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Healing)
+	FGameplayAttributeData Healing;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Healing);
+	UFUNCTION()
+	virtual void OnRep_Healing(const FGameplayAttributeData& OldHealing);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_HealingMax)
+	FGameplayAttributeData HealingMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, HealingMax);
+	UFUNCTION()
+	virtual void OnRep_HealingMax(const FGameplayAttributeData& OldHealingMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Summoning)
+	FGameplayAttributeData Summoning;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Summoning);
+	UFUNCTION()
+	virtual void OnRep_Summoning(const FGameplayAttributeData& OldSummoning);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_SummoningMax)
+	FGameplayAttributeData SummoningMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, SummoningMax);
+	UFUNCTION()
+	virtual void OnRep_SummoningMax(const FGameplayAttributeData& OldSummoningMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Ninjutsu)
+	FGameplayAttributeData Ninjutsu;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Ninjutsu);
+	UFUNCTION()
+	virtual void OnRep_Ninjutsu(const FGameplayAttributeData& OldNinjutsu);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_NinjutsuMax)
+	FGameplayAttributeData NinjutsuMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, NinjutsuMax);
+	UFUNCTION()
+	virtual void OnRep_NinjutsuMax(const FGameplayAttributeData& OldNinjutsuMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Singing)
+	FGameplayAttributeData Singing;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Singing);
+	UFUNCTION()
+	virtual void OnRep_Singing(const FGameplayAttributeData& OldSinging);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_SingingMax)
+	FGameplayAttributeData SingingMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, SingingMax);
+	UFUNCTION()
+	virtual void OnRep_SingingMax(const FGameplayAttributeData& OldSingingMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_String)
+	FGameplayAttributeData String;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, String);
+	UFUNCTION()
+	virtual void OnRep_String(const FGameplayAttributeData& OldString);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_StringMax)
+	FGameplayAttributeData StringMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, StringMax);
+	UFUNCTION()
+	virtual void OnRep_StringMax(const FGameplayAttributeData& OldStringMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Wind)
+	FGameplayAttributeData Wind;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Wind);
+	UFUNCTION()
+	virtual void OnRep_Wind(const FGameplayAttributeData& OldWind);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_WindMax)
+	FGameplayAttributeData WindMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, WindMax);
+	UFUNCTION()
+	virtual void OnRep_WindMax(const FGameplayAttributeData& OldWindMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Geomancy)
+	FGameplayAttributeData Geomancy;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Geomancy);
+	UFUNCTION()
+	virtual void OnRep_Geomancy(const FGameplayAttributeData& OldGeomancy);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_GeomancyMax)
+	FGameplayAttributeData GeomancyMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, GeomancyMax);
+	UFUNCTION()
+	virtual void OnRep_GeomancyMax(const FGameplayAttributeData& OldGeomancyMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_Handbell)
+	FGameplayAttributeData Handbell;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Handbell);
+	UFUNCTION()
+	virtual void OnRep_Handbell(const FGameplayAttributeData& OldHandbell);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Skills|Special", ReplicatedUsing = OnRep_HandbellMax)
+	FGameplayAttributeData HandbellMax;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, HandbellMax);
+	UFUNCTION()
+	virtual void OnRep_HandbellMax(const FGameplayAttributeData& OldHandbellMax);
+
+#pragma endregion CombatSkills
 
 };

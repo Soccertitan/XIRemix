@@ -191,3 +191,8 @@ void AXICharacterBaseHero::TacticalPointsMaxChanged(const FOnAttributeChangeData
 }
 
 #pragma endregion AttributeChangeCallbacks
+
+UXITargetSystemComponent* AXICharacterBaseHero::GetXITargetSystemComponent() const
+{
+	return XITargetSystem;
+}

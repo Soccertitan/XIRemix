@@ -6,6 +6,7 @@
 #include "Interfaces/XICharacterInterface.h"
 #include "Interfaces/XIEnemyCharacterInterface.h"
 #include "Interfaces/XIThreatTableInterface.h"
+#include "Interfaces/XITargetSystemInterface.h"
 
 bool UCombatFunctionLibrary::CheckTargetWithinRange(AActor* OwnerActor, AActor* TargetActor, float AngleInDegrees, float Range)
 {
@@ -228,6 +229,16 @@ UXIAggroComponent* UCombatFunctionLibrary::GetXIAggroComponent(AActor* OwnerActo
     if(XIEnemyInt)
     {
         return XIEnemyInt->GetXIAggroComponent();
+    }
+    return nullptr;
+}
+
+UXITargetSystemComponent* UCombatFunctionLibrary::GetXITargetSystemComponent(AActor* OwnerActor)
+{
+    IXITargetSystemInterface* XITargetInt = Cast<IXITargetSystemInterface>(OwnerActor);
+    if(XITargetInt)
+    {
+        return XITargetInt->GetXITargetSystemComponent();
     }
     return nullptr;
 }

@@ -19,7 +19,7 @@ void UXIThreatTableComponent::BeginPlay()
 }
 
 // Adds threat for the specified target actor.
-void UXIThreatTableComponent::AddEnmity(AActor* TargetActor, float InVolatileEnmity, float InCumulativeEnmity)
+void UXIThreatTableComponent::AddEnmity(AActor* TargetActor, float InVolatileEnmity, float InCumulativeEnmity, bool bOverrideEnmity)
 {
 	if(!TargetActor)
 	{
@@ -47,10 +47,20 @@ void UXIThreatTableComponent::AddEnmity(AActor* TargetActor, float InVolatileEnm
 		{
 			if (ThreatEntry.Actor == TargetActor)
 			{
-				ThreatEntry.VolatileEnmity = FMath::Clamp(ThreatEntry.VolatileEnmity + InVolatileEnmity, ClampMin, ClampMax);
-				ThreatEntry.CumulativeEnmity = FMath::Clamp(ThreatEntry.CumulativeEnmity + InCumulativeEnmity, ClampMin, ClampMax);
-				CheckHighestEnmity();
-				return;
+				if(bOverrideEnmity)
+				{
+					ThreatEntry.VolatileEnmity = FMath::Clamp(InVolatileEnmity, ClampMin, ClampMax);
+					ThreatEntry.CumulativeEnmity = FMath::Clamp(InCumulativeEnmity, ClampMin, ClampMax);
+					CheckHighestEnmity();
+					return;
+				}
+				else
+				{
+					ThreatEntry.VolatileEnmity = FMath::Clamp(ThreatEntry.VolatileEnmity + InVolatileEnmity, ClampMin, ClampMax);
+					ThreatEntry.CumulativeEnmity = FMath::Clamp(ThreatEntry.CumulativeEnmity + InCumulativeEnmity, ClampMin, ClampMax);
+					CheckHighestEnmity();
+					return;
+				}
 			}
 		}
 
@@ -122,7 +132,7 @@ void UXIThreatTableComponent::ApplyDamageEnmity(AActor* TargetActor, float Enemy
 	float CE = CEMod * Damage * EnmityRate * EnemyLvScaleFactor;
 	float VE = CE * 3;
 	
-	AddEnmity(TargetActor, VE, CE);
+	AddEnmity(TargetActor, VE, CE, false);
 }
 
 void UXIThreatTableComponent::ApplyHealEnmity(AActor* TargetActor, float HealedTargetLevel, float Heal, float EnmityRate)
@@ -138,7 +148,7 @@ void UXIThreatTableComponent::ApplyHealEnmity(AActor* TargetActor, float HealedT
 	float CE = CEMod * Heal;
 	float VE = CE * 6;
 
-	AddEnmity(TargetActor, VE, CE);
+	AddEnmity(TargetActor, VE, CE, false);
 }
 
 void UXIThreatTableComponent::ApplyDamageTakenEnmity(AActor* TargetActor, float Damage, float TargetMaxHP)
@@ -151,14 +161,14 @@ void UXIThreatTableComponent::ApplyDamageTakenEnmity(AActor* TargetActor, float 
 
 	float CELost = -(1800 * Damage / FMath::Max(TargetMaxHP, 1.f));
 
-	AddEnmity(TargetActor, 0, CELost);
+	AddEnmity(TargetActor, 0, CELost, false);
 }
 
-void UXIThreatTableComponent::GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity)
+bool UXIThreatTableComponent::GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity) const
 {
 	if (!TargetActor | !ThreatTable.IsValidIndex(0))
 	{
-		return;
+		return false;
 	}
 
 	for (FThreatTableStruct ThreatEntry : ThreatTable)
@@ -167,9 +177,10 @@ void UXIThreatTableComponent::GetTargetActorEnmity(AActor* TargetActor, float& O
 		{
 			OutCumulativeEnmity = ThreatEntry.CumulativeEnmity;
 			OutVolatileEnmity = ThreatEntry.VolatileEnmity;
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
 void UXIThreatTableComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
