@@ -46,9 +46,12 @@ enum class EItemType : uint8
 {
 	WeaponMelee UMETA(DisplayName = "WeaponMelee"),
 	WeaponRange UMETA(DisplayName = "WeaponRange"),
+	Instrument UMETA(DisplayName = "Instrument"),
+	Ammo UMETA(DisplayName = "Ammo"),
 	Armor UMETA(DisplayName = "Armor"),
 	Accessory UMETA(DisplayName = "Accessory"),
 	Consumable UMETA(DisplayName = "Consumable"),
+	Material UMETA(Displayname = "Material"),
 	KeyItem UMETA(DisplayName = "KeyItem")
 };
 
@@ -134,7 +137,8 @@ enum class EXIMagicType : uint8
 {
 	Black UMETA(DisplayName = "Black"),
 	Blue UMETA(DisplayName = "Blue"),
-	Geo UMETA(DisplayName = "Geo"),
+	Geomancy UMETA(DisplayName = "Geomancy"),
+	HandBell UMETA(DisplayName = "HandBell"),
 	Ninjitsu UMETA(DisplayName = "Ninjitsu"),
 	Summoner UMETA(DisplayName = "Summoner"),
 	White UMETA(DisplayName = "White")

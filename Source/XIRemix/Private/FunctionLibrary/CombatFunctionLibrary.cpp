@@ -131,82 +131,12 @@ UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
     return nullptr;
 }
 
-UAnimMontage* UCombatFunctionLibrary::GetBlackMagicMontage(AActor* OwnerActor)
+UXICharacterCombatMontages* UCombatFunctionLibrary::GetXICharacterCombatMontages(AActor* OwnerActor)
 {
     IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
     if(XICharacterInt)
     {
-        return XICharacterInt->GetBlackMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetWhiteMagicMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetWhiteMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetSummonerMagicMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetSummonerMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetNinjitsuMagicMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetNinjitsuMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetBlueMagicMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetBlueMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetGeoMagicMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetGeoMagicMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetJobAbilityMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetJobAbilityMontage();
-    }
-    return nullptr;
-}
-
-UAnimMontage* UCombatFunctionLibrary::GetJobAbilityCombatMontage(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetJobAbilityCombatMontage();
+        return XICharacterInt->GetXICharacterCombatMontages();
     }
     return nullptr;
 }

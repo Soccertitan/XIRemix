@@ -55,6 +55,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "XICharacter|MeshMerge")
 	TMap <ESkeletalMeshMergeType, int32> SKMeshMergeMap;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter")
+	ERace Race;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

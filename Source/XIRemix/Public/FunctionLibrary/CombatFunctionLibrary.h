@@ -54,35 +54,7 @@ public:
 
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetBlackMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetWhiteMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetSummonerMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetNinjitsuMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetBlueMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetGeoMagicMontage(AActor* OwnerActor);
-	
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetJobAbilityMontage(AActor* OwnerActor);
-    
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static UAnimMontage* GetJobAbilityCombatMontage(AActor* OwnerActor);
+	static class UXICharacterCombatMontages* GetXICharacterCombatMontages(AActor* OwnerActor);
 
 	//XIAI Controller Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|AIController")

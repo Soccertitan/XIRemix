@@ -39,10 +39,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 		EItemType ItemType;
 
-	/** Is only allowed one copy of item */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
-		bool bIsRare;
-
 	/** Is item Exclusive to the owner */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 		bool bIsExclusive;

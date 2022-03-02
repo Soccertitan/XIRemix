@@ -24,18 +24,9 @@ class XIREMIX_API IXICharacterInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	// /**
-	// * Getters for Anim Montages
-	// **/
+	// Getter for combat montage Data Asset.
+	virtual class UXICharacterCombatMontages* GetXICharacterCombatMontages() const PURE_VIRTUAL(IXICharacterInterface::GetXICharacterCombatMontages(), return nullptr;);
 	virtual UAnimMontage* GetAutoAttackMontage() PURE_VIRTUAL(IXICharacterInterface::GetAutoAttackMontage(), return nullptr;);
-	virtual UAnimMontage* GetBlackMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetBlackMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetWhiteMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetWhiteMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetSummonerMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetSummonerMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetNinjitsuMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetNinjitsuMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetBlueMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetBlueMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetGeoMagicMontage() PURE_VIRTUAL(IXICharacterInterface::GetGeoMagicMontage(), return nullptr;);
-	virtual UAnimMontage* GetJobAbilityMontage() PURE_VIRTUAL(IXICharacterInterface::GetJobAbilityMontage(), return nullptr;);
-	virtual UAnimMontage* GetJobAbilityCombatMontage() PURE_VIRTUAL(IXICharacterInterface::GetJobAbilityCombatMontage(), return nullptr;);
 
 	// GetCharacterName is Implemented in C++
 	virtual FText GetCharacterName() const PURE_VIRTUAL(IXICharacterInterface::GetCharacterName(), return FText(););
