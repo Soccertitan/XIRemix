@@ -18,8 +18,7 @@ void UAttributeSetHero::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
     if (Data.EvaluatedData.Attribute == GetEnmityRateAttribute())
 	{
-		// Handle other health changes.
-		// Health loss should go through Damage.
+		// Caps Enmity to between generating half the amount to 3x.
 		SetEnmityRate(FMath::Clamp(GetEnmityRate(), 0.5f, 3.0f));
 	}
 }

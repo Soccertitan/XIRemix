@@ -25,22 +25,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Magic")
 	EXIMagicType XIMagicType;
 
-	//The cast time for the ability.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic")
-	float CastTime;
-
-	//Can the ability target in a circle AoE?
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Magic")
-	bool bAreaEffectCircle;
-
-	//Can the ability target in a circle AoE?
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic", meta=(EditCondition="bAreaEffectCircle"))
-	float AreaEffectBasePower;
-
-	//Can the ability target in a circle AoE?
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Magic", meta=(EditCondition="bAreaEffectCircle"))
-	float AreaEffectRange;
-
 	//Gets the Casting Anim Montage based on XIMagicType
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Ability")
 	UAnimMontage* GetCastingAnimMontage();

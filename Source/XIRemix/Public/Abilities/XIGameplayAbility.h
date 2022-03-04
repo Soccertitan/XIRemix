@@ -7,13 +7,15 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "XIRemix/XIRemix.h"
 #include "XIEnums.h"
+#include "XIDataTables.h"
+#include "Interfaces/XIGameplayAbilityInterface.h"
 #include "XIGameplayAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UXIGameplayAbility : public UGameplayAbility
+class XIREMIX_API UXIGameplayAbility : public UGameplayAbility, public IXIGameplayAbilityInterface
 {
 	GENERATED_BODY()
 
@@ -34,8 +36,7 @@ public:
 	bool bActivateAbilityOnGranted = false;
 
 	//The cost of the ability.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
-	FScalableFloat Cost;
+	virtual float GetCost() const override;
 
 	//Used to apply a generic Cooldown GE that uses the GA's cooldown value.
 	const FGameplayTagContainer* GetCooldownTags() const override;
@@ -46,31 +47,48 @@ public:
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 protected:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability|Parameters")
+	FDataTableRowHandle XIAbilityDataHandle;
 
 	// Adds the capsule radius to the range to ensure larger enemies can reach beyond the center of it's root.
-	UPROPERTY(BlueprintReadWrite, Category = "Ability|Parameters")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
 	float CapsuleRadius;
 
-	//The Base Power of the ability.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Parameters")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
+	float Cost;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
 	float BasePower;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
+	float CastTime;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
+	float Duration;
+
 	// The max range of the attack.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	UPROPERTY(BlueprintReadOnly,  Category = "Ability|Parameters")
 	float Range;
 
 	// Angle which determines the range of attack around the user. 180 = a full 360 degrees.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Parameters")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
 	float Angle;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
+	bool bAreaEffect;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ability|Parameters")
+	float AreaEffectRange;
+
 	//Should we use Fixed Enmity Values for this ability?
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Enmity")
 	bool bFixedEnmity;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity", meta=(EditCondition="bFixedEnmity"))
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Enmity")
 	float CumulativeEnmity;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Enmity", meta=(EditCondition="bFixedEnmity"))
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Enmity")
 	float VolatileEnmity;
 
 	// The attitute the owner needs to be towards the target actor.
@@ -85,14 +103,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Ability|Parameters")
 	UAnimMontage* AnimMontage;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Ability")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	AActor* AvatarActor;
 
 	//The cooldown for the ability.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Cooldown")
-	FScalableFloat CooldownDuration;
+	UPROPERTY(BlueprintReadOnly, Category = "Ability|Parameters")
+	float Cooldown;
 	//The tag to track for the cooldown duration.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Cooldown")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Parameters")
 	FGameplayTagContainer CooldownTags;
 
 	//Temp container that we will return the pointer to in GetCooldownTags().
@@ -107,5 +125,9 @@ protected:
 	//Returns an array of valid actors to apply AoE effects too.
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|Ability")
 	TArray <AActor* > GetSphereAreaEffectTargets(AActor* InActorSource, float InRange); 
+
+	//Initializes Ability Parameters (AvatarActor, Range, Power, Cost, etc..). Should be called at the start of ActivateAbility
+	UFUNCTION(BlueprintCallable, Category = "Ability|Parameters")
+	void InitializeAbilityData();
 
 };

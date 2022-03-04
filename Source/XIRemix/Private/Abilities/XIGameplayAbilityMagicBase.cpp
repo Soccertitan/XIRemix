@@ -7,10 +7,6 @@
 
 UXIGameplayAbilityMagicBase::UXIGameplayAbilityMagicBase()
 {
-    CastTime = 2.0f;
-    bAreaEffectCircle = false;
-    AreaEffectBasePower = BasePower;
-    AreaEffectRange = 200.0f;
 }
 
 UAnimMontage* UXIGameplayAbilityMagicBase::GetCastingAnimMontage()

@@ -9,10 +9,11 @@ UXIGameplayAbility::UXIGameplayAbility()
     // Default to instance per Actor
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-    Range = 250.0f;
-    Angle = 35.0f;
-    BasePower = 1.0f;
-    CooldownDuration = 1.0f;
+    static ConstructorHelpers::FObjectFinder<UDataTable> XIAbilityDataObject(TEXT("DataTable'/Game/XIRemix/DataTables/DT_XIAbilityData.DT_XIAbilityData'"));
+    if(XIAbilityDataObject.Succeeded())
+    {
+        XIAbilityDataHandle.DataTable = XIAbilityDataObject.Object;
+    }
 }
 
 bool UXIGameplayAbility::IsTargetValid(AActor* SourceActorLocation, AActor* InTargetActor, float InRange, float InAngle, EXITeamAttitude InTargetAttitude) const
@@ -88,7 +89,7 @@ void UXIGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(CooldownTags);
-		SpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Cooldown")), CooldownDuration.GetValueAtLevel(GetAbilityLevel()));
+		SpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Cooldown")), Cooldown);
 		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }
@@ -101,4 +102,34 @@ void UXIGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 	{
 		bool ActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
 	}
+}
+
+float UXIGameplayAbility::GetCost() const
+{
+    return Cost;
+}
+
+void UXIGameplayAbility::InitializeAbilityData()
+{
+    static const FString ContextString(TEXT("XIGameplay Ability Initialize Parameters"));
+    FXIAbilityData* XIAbilityData = XIAbilityDataHandle.DataTable->FindRow<FXIAbilityData>(XIAbilityDataHandle.RowName, ContextString, true);
+
+    if(XIAbilityData)
+    {
+        Angle = XIAbilityData->Angle;
+        AreaEffectRange = XIAbilityData->AreaEffectRange;
+        bAreaEffect = XIAbilityData->bAreaEffect;
+        BasePower = XIAbilityData->BasePower;
+        bFixedEnmity = XIAbilityData->bFixedEnmity;
+        CastTime = XIAbilityData->CastTime;
+        Cooldown = XIAbilityData->Cooldown;
+        Cost = XIAbilityData->Cost;
+        CumulativeEnmity = XIAbilityData->CumulativeEnmity;
+        Duration = XIAbilityData->Duration;
+        Range = XIAbilityData->Range;
+        VolatileEnmity = XIAbilityData->VolatileEnmity;
+    }
+
+    AvatarActor = GetAvatarActorFromActorInfo();
+    CapsuleRadius = UCombatFunctionLibrary::GetCapsuleRadius(AvatarActor);
 }
