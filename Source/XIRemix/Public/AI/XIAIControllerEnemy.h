@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AI/XIAIControllerBase.h"
-#include "AI/XIThreatTableComponent.h"
+#include "Components/XIThreatTableComponent.h"
 #include "Interfaces/XIThreatTableInterface.h"
 #include "XIAIControllerEnemy.generated.h"
 

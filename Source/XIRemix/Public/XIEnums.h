@@ -143,3 +143,22 @@ enum class EXIMagicType : uint8
 	Summoner UMETA(DisplayName = "Summoner"),
 	White UMETA(DisplayName = "White")
 };
+
+UENUM(BlueprintType, Category="XIRemix")
+enum class EXISkillRank : uint8
+{
+	APlus UMETA(DisplayName = "A+"),
+	A UMETA(DisplayName = "A"),
+	AMinus UMETA(DisplayName = "A-"),
+	BPlus UMETA(DisplayName = "B+"),
+	B UMETA(DisplayName = "B"),
+	BMinus UMETA(DisplayName = "B-"),
+	CPlus UMETA(DisplayName = "C+"),
+	C UMETA(DisplayName = "C"),
+	CMinus UMETA(DisplayName = "C-"),
+	D UMETA (DisplayName = "D"),
+	E UMETA (DisplayName = "E"),
+	F UMETA (DisplayName = "F"),
+	G UMETA (DisplayName = "G"),
+	H UMETA (DisplayName = "H")
+};

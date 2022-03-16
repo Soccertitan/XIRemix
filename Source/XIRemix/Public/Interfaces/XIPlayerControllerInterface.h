@@ -25,7 +25,4 @@ public:
 
 	virtual class UXIPlayerHUD* GetHUD() const PURE_VIRTUAL(IXIPlayerControllerInterface::GetHUD(), return nullptr;);
 	virtual void CreateHUD() PURE_VIRTUAL(IXIPlayerControllerInterface::CreateHUD());
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "XIPCInt")
-	void SetIsMoveable(bool bIsMoveable);
 };

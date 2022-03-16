@@ -13,6 +13,8 @@
 #include "DataAssets/XICharacterCombatMontages.h"
 #include "XICharacterBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AActor*, DeadActor);
+
 UCLASS()
 class XIREMIX_API AXICharacterBase : public ACharacter, public IAbilitySystemInterface, public IXICharacterInterface
 {
@@ -24,8 +26,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	// UPROPERTY(BlueprintAssignable, Category = "XICharacter")
-	// FCharacterDiedDelegate OnCharacterDied;
+	UPROPERTY(BlueprintAssignable, Category = "XICharacter")
+	FCharacterDiedDelegate OnCharacterDied;
 
 	// Implement IAbilitySystemInterface
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -38,6 +40,7 @@ public:
 	// virtual void RemoveCharacterAbilities();
 
 	// IXICharacter Interface Implementations
+	virtual class AXICharacterBase* GetXICharacterBase() override;
 	virtual FText GetCharacterName() const override;
 	virtual AActor* GetMainTarget() const override;
 	virtual void SetMainTarget(AActor* TargetActor) override;
@@ -47,7 +50,7 @@ public:
 	virtual float GetCapsuleRadius() const override;
 	virtual bool IsAlive() const override;
 	virtual UXICharacterCombatMontages* GetXICharacterCombatMontages() const override;
-	virtual UAnimMontage* GetAutoAttackMontage() override;
+	virtual UAnimMontage* GetAutoAttackMontage() const override;
 
 	// /**
 	// * Getters for attributes from GlobalAttributeSet
@@ -67,7 +70,7 @@ public:
 	UAnimMontage* GetCombatExitMontage();
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
-	UAnimMontage* GetRandomMontage(TArray <UAnimMontage*> AnimMontage);
+	UAnimMontage* GetRandomMontage(TArray <UAnimMontage*> AnimMontage) const;
 
 protected:
 	// Called when the game starts or when spawned

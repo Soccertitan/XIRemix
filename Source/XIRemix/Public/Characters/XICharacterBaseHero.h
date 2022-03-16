@@ -6,7 +6,7 @@
 #include "Characters/XICharacterBase.h"
 #include "Components/SphereComponent.h"
 #include "FunctionLibrary/MeshMergeFunctionLibrary.h"
-#include "Player/XITargetSystemComponent.h"
+#include "Components/XITargetSystemComponent.h"
 #include "Interfaces/XITargetSystemInterface.h"
 #include "XICharacterBaseHero.generated.h"
 

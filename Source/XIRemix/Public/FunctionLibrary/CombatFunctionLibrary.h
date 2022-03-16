@@ -56,6 +56,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
 	static class UXICharacterCombatMontages* GetXICharacterCombatMontages(AActor* OwnerActor);
 
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")
+	static bool IsAlive(AActor* OwnerActor);
+
+	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")
+	static class AXICharacterBase* GetXICharacterBase(AActor* OwnerActor);
+
 	//XIAI Controller Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|AIController")
 	static class UXIThreatTableComponent* GetXIThreatTableComponent(AController* AIController);

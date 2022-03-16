@@ -4,19 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Interfaces/XIAIControllerInterface.h"
+#include "Interfaces/XIGameplayControllerInterface.h"
 #include "XIAIControllerBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API AXIAIControllerBase : public AAIController, public IXIAIControllerInterface
+class XIREMIX_API AXIAIControllerBase : public AAIController, public IXIGameplayControllerInterface
 {
 	GENERATED_BODY()
 	
 public:
 
-	//XIAIControllerInterface Functions
-	virtual void SetMainTarget(AActor* TargetActor) override;
 };

@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "XIAbilitySystemComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceivedCombatExpDelegate, float, ExpGained);
+
 /**
  * 
  */
@@ -17,4 +19,10 @@ class XIREMIX_API UXIAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	bool CharacterAbilitiesGiven = false;
 	bool StartupEffectsApplied = false;
+
+	FReceivedCombatExpDelegate ReceivedCombatExp;
+
+	virtual void ReceiveCombatExp(float ExpGained);
+
+	virtual void CheckLevelUp();
 };

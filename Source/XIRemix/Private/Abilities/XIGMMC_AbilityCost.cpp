@@ -2,16 +2,16 @@
 
 
 #include "Abilities/XIGMMC_AbilityCost.h"
-#include "Interfaces/XIGameplayAbilityInterface.h"
+#include "Abilities/XIGameplayAbility.h"
 
 float UXIGMMC_AbilityCost::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	const IXIGameplayAbilityInterface* GAInt = Cast<IXIGameplayAbilityInterface>(Spec.GetContext().GetAbilityInstance_NotReplicated());
+	const UXIGameplayAbility* Ability = Cast<UXIGameplayAbility>(Spec.GetContext().GetAbilityInstance_NotReplicated());
 
-	if (!GAInt)
+	if (!Ability)
 	{
 		return 0.0f;
 	}
 	
-	return GAInt->GetCost();
+	return Ability->GetCost();
 }

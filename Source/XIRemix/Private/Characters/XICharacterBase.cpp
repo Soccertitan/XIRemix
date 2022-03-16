@@ -178,7 +178,7 @@ void AXICharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 #pragma region AnimationMontages
 
-UAnimMontage* AXICharacterBase::GetRandomMontage(TArray <UAnimMontage*> AnimMontage)
+UAnimMontage* AXICharacterBase::GetRandomMontage(TArray <UAnimMontage*> AnimMontage) const
 {
 	if (!AnimMontage.IsValidIndex(0))
 	{
@@ -276,6 +276,11 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 
 #pragma region XICharacterInterfaceFunctions
 
+AXICharacterBase * AXICharacterBase::GetXICharacterBase()
+{
+	return this;
+}
+
 FText AXICharacterBase::GetCharacterName() const
 {
 	return CharacterName;
@@ -344,7 +349,7 @@ bool AXICharacterBase::IsAlive() const
 
 #pragma region AnimationMontageGetters
 
-UAnimMontage* AXICharacterBase::GetAutoAttackMontage()
+UAnimMontage* AXICharacterBase::GetAutoAttackMontage() const
 {
 	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
 	if(IntAnimBP && CombatMontages)
@@ -620,7 +625,9 @@ float AXICharacterBase::GetMoveSpeed() const
 
 void AXICharacterBase::Die()
 {
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OnCharacterDied.Broadcast(this);
+	
+	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 

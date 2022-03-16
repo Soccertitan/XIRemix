@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
+#include "Interfaces/XIGameplayControllerInterface.h"
 #include "XIPlayerControllerAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API AXIPlayerControllerAction : public APlayerController, public IXIPlayerControllerInterface
+class XIREMIX_API AXIPlayerControllerAction : public APlayerController, public IXIPlayerControllerInterface, public IXIGameplayControllerInterface
 {
 	GENERATED_BODY()
 

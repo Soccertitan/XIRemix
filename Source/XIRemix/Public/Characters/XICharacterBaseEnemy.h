@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "Characters/XICharacterBase.h"
 #include "XIEnums.h"
-#include "AI/XIAggroComponent.h"
-#include "AI/XIThreatTableComponent.h"
-#include "Interfaces/XIEnemyCharacterInterface.h"
+#include "Components/XIAggroComponent.h"
+#include "Components/XIThreatTableComponent.h"
+#include "Interfaces/XIAggroInterface.h"
 #include "XICharacterBaseEnemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase, public IXIEnemyCharacterInterface
+class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase, public IXIAggroInterface
 {
 	GENERATED_BODY()
 	
@@ -27,16 +27,13 @@ class XIREMIX_API AXICharacterBaseEnemy : public AXICharacterBase, public IXIEne
 	virtual void PossessedBy(AController* NewController) override;
 
 public:
-	//Implements IXIEnemyCharacterInterface
+	//Implements IXIAggroInterface
 	virtual class UXIAggroComponent* GetXIAggroComponent() const override;
 
 protected:
 	
 	UPROPERTY()
 	class UAttributeSetEnemy* AttributeSetEnemy;
-
-	UPROPERTY()
-	class UXIThreatTableComponent* XIThreatTableComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter", meta = (ExposeOnSpawn = true))
 	float Level = 1;

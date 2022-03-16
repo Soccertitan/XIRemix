@@ -4,7 +4,7 @@
 #include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Interfaces/XICharacterInterface.h"
-#include "Interfaces/XIEnemyCharacterInterface.h"
+#include "Interfaces/XIAggroInterface.h"
 #include "Interfaces/XIThreatTableInterface.h"
 #include "Interfaces/XITargetSystemInterface.h"
 
@@ -119,6 +119,26 @@ float UCombatFunctionLibrary::GetCapsuleRadius(AActor* OwnerActor)
     return 0.0f;
 }
 
+bool UCombatFunctionLibrary::IsAlive(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->IsAlive();
+    }
+    return false;
+}
+
+AXICharacterBase* UCombatFunctionLibrary::GetXICharacterBase(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetXICharacterBase();
+    }
+    return nullptr;
+}
+
 #pragma region AnimMontages
 
 UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
@@ -155,7 +175,7 @@ UXIThreatTableComponent* UCombatFunctionLibrary::GetXIThreatTableComponent(ACont
 
 UXIAggroComponent* UCombatFunctionLibrary::GetXIAggroComponent(AActor* OwnerActor)
 {
-    IXIEnemyCharacterInterface* XIEnemyInt = Cast<IXIEnemyCharacterInterface>(OwnerActor);
+    IXIAggroInterface* XIEnemyInt = Cast<IXIAggroInterface>(OwnerActor);
     if(XIEnemyInt)
     {
         return XIEnemyInt->GetXIAggroComponent();

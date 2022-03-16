@@ -2,8 +2,3 @@
 
 
 #include "AI/XIAIControllerBase.h"
-
-void AXIAIControllerBase::SetMainTarget(AActor* TargetActor)
-{
-    
-}

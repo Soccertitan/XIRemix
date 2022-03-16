@@ -8,14 +8,13 @@
 #include "XIRemix/XIRemix.h"
 #include "XIEnums.h"
 #include "XIDataTables.h"
-#include "Interfaces/XIGameplayAbilityInterface.h"
 #include "XIGameplayAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UXIGameplayAbility : public UGameplayAbility, public IXIGameplayAbilityInterface
+class XIREMIX_API UXIGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -36,7 +35,7 @@ public:
 	bool bActivateAbilityOnGranted = false;
 
 	//The cost of the ability.
-	virtual float GetCost() const override;
+	float GetCost() const;
 
 	//Used to apply a generic Cooldown GE that uses the GA's cooldown value.
 	const FGameplayTagContainer* GetCooldownTags() const override;
