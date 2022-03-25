@@ -5,6 +5,7 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffect.h"
 #include "Net/UnrealNetwork.h"
+#include "Abilities/XIAbilitySystemComponent.h"
 
 
 UAttributeSetHero::UAttributeSetHero()
@@ -15,6 +16,14 @@ UAttributeSetHero::UAttributeSetHero()
 void UAttributeSetHero::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
     Super::PostGameplayEffectExecute(Data);
+
+    FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
+    UAbilitySystemComponent* Target = Data.Target.AbilityActorInfo->AbilitySystemComponent.Get();
+    UXIAbilitySystemComponent* TargetASC = Cast<UXIAbilitySystemComponent>(Target);
+
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+    const FGameplayTagContainer& TargetTags = *Data.EffectSpec.CapturedTargetTags.GetAggregatedTags();
 
     if (Data.EvaluatedData.Attribute == GetEnmityRateAttribute())
 	{

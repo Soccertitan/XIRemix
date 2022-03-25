@@ -38,11 +38,10 @@ public:
 	// Implements XITargetSystemInterface
 	virtual UXITargetSystemComponent* GetXITargetSystemComponent() const override;
 
-	// /**
-	// * Getters for attributes from AttributeSetHero
-	// **/
-	UFUNCTION(BlueprintCallable, Category = "XICharacter|Attributes|Jobs")
-	float GetWarriorLevel() const;
+	//Implements IXICharacterInterface
+	virtual float GetCharacterLevel() const override;
+
+	void GetCharacterActiveJobsAndLevels(FGameplayTag& MainJobTag, float& MainJobLevel, FGameplayTag& SubJobTag, float& SubJobLevel) const;
 
 protected:
 	
@@ -63,6 +62,12 @@ protected:
 	
 	// Client only
 	virtual void OnRep_PlayerState() override;	
+
+	//These tags are used to evaluate which job any given charcter could be.
+	FGameplayTag ParentMainJobTag  = FGameplayTag::RequestGameplayTag("State.Job.Main");
+	FGameplayTag ParentSubJobTag = FGameplayTag::RequestGameplayTag("State.Job.Sub");
+	FGameplayTagContainer MainJobTags;
+	FGameplayTagContainer SubJobTags;
 
 	//Attribute Change Callbacks
 	FDelegateHandle ManaPointsMaxChangedDelegateHandle;

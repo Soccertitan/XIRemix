@@ -20,7 +20,26 @@ void UAttributeSetGlobal::PostGameplayEffectExecute(const FGameplayEffectModCall
 {
     Super::PostGameplayEffectExecute(Data);
 
-    if (Data.EvaluatedData.Attribute == GetHitPointsAttribute())
+    FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+
+    if(Data.EvaluatedData.Attribute == GetDamageHPAttribute())
+    {
+        // Store a local copy of the amount of damage done and clear the damage attribute
+		const float LocalDamageDone = GetDamageHP();
+		SetDamageHP(0.f);
+
+        if(LocalDamageDone > 0)
+        {
+            //TODO: Add something for Stoneskin to remove damage from there before applying to HP.
+
+            // Apply the health change and then clamp it.
+            const float OldHealth = GetHitPoints();
+            SetHitPoints(FMath::Clamp(OldHealth - LocalDamageDone, 0.f, GetHitPointsMax()));
+        }
+    }
+    else if (Data.EvaluatedData.Attribute == GetHitPointsAttribute())
 	{
 		// Handle other health changes.
 		// Health loss should go through Damage.

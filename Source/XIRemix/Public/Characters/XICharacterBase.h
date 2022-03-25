@@ -11,6 +11,7 @@
 #include "XIRemix/XIRemix.h"
 #include "Interfaces/XICharacterInterface.h"
 #include "DataAssets/XICharacterCombatMontages.h"
+#include "DataAssets/XIAbilitySet.h"
 #include "XICharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AActor*, DeadActor);
@@ -62,6 +63,7 @@ public:
 	virtual float GetTacticalPoints() const override;
 	virtual float GetTacticalPointsMax() const override;
 	virtual float GetMoveSpeed() const override;
+	virtual float GetCharacterLevel() const override;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatStartMontage();
@@ -115,18 +117,14 @@ protected:
 	virtual void ManaPointsChanged(const FOnAttributeChangeData& Data);
 	virtual void TacticalPointsChanged(const FOnAttributeChangeData& Data);
 
-	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
+	//Default Abilities and Effects for this character.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
-	TArray<TSubclassOf<class UXIGameplayAbility>> CharacterAbilities;
+	TArray<UXIAbilitySet*> AbilitySets;
 
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
-
-	// These effects are only applied one time on startup
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
-	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
 	virtual void AddCharacterAbilities();
@@ -135,8 +133,6 @@ protected:
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
-
-	virtual void AddStartupEffects();
 
 	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XICharacter|Name")
 	void Server_SetCharacterName(const FText &Name);

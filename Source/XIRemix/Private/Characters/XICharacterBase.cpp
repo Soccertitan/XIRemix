@@ -63,15 +63,14 @@ int32 AXICharacterBase::GetAbilityLevel(EXIAbilityInputID AbilityID) const
 void AXICharacterBase::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->CharacterAbilitiesGiven)
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->CharacterAbilitiesGiven || !AbilitySets.IsValidIndex(0))
 	{
 		return;
 	}
 
-	for (TSubclassOf<UXIGameplayAbility>& StartupAbility : CharacterAbilities)
+	for(UXIAbilitySet* AbilitySet : AbilitySets)
 	{
-		AbilitySystemComponent->GiveAbility(
-			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+		AbilitySet->GiveAbilitySetTo(AbilitySystemComponent);
 	}
 
 	AbilitySystemComponent->CharacterAbilitiesGiven = true;
@@ -99,32 +98,6 @@ void AXICharacterBase::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
 	}
-}
-
-void AXICharacterBase::AddStartupEffects()
-{
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->StartupEffectsApplied)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Startup Effects Will not Apply"));
-		return;
-	}
-
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-	EffectContext.AddSourceObject(this);
-
-	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Attempting to apply GE Spec to Self"));
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 0, EffectContext);
-		if (NewHandle.IsValid())
-		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
-			UE_LOG(LogTemp, Warning, TEXT("Applied GE Spec to Self"));
-		}
-		UE_LOG(LogTemp, Warning, TEXT("GE Handle Invalid"));
-	}
-
-	AbilitySystemComponent->StartupEffectsApplied = true;
 }
 
 #pragma region CharacterName
@@ -617,6 +590,11 @@ float AXICharacterBase::GetMoveSpeed() const
 	}
 
 	return 0.0f;
+}
+
+float AXICharacterBase::GetCharacterLevel() const
+{
+	return 0.f;
 }
 
 #pragma endregion AttributeGetters

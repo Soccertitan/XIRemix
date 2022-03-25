@@ -8,12 +8,6 @@ UXIGameplayAbility::UXIGameplayAbility()
 {
     // Default to instance per Actor
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-    static ConstructorHelpers::FObjectFinder<UDataTable> XIAbilityDataObject(TEXT("DataTable'/Game/XIRemix/DataTables/DT_XIAbilityData.DT_XIAbilityData'"));
-    if(XIAbilityDataObject.Succeeded())
-    {
-        XIAbilityDataHandle.DataTable = XIAbilityDataObject.Object;
-    }
 }
 
 bool UXIGameplayAbility::IsTargetValid(AActor* SourceActorLocation, AActor* InTargetActor, float InRange, float InAngle, EXITeamAttitude InTargetAttitude) const
@@ -39,7 +33,7 @@ TArray <AActor* > UXIGameplayAbility::GetSphereAreaEffectTargets(AActor* InActor
     Actors.Empty();
     OutHits.Empty();
     
-    if(!InActorSource || !MainTarget)
+    if(!InActorSource || !MainTarget || !XIAbilityData)
     {
         return Actors;
     }
@@ -57,7 +51,7 @@ TArray <AActor* > UXIGameplayAbility::GetSphereAreaEffectTargets(AActor* InActor
 
     for (FHitResult Hit : OutHits)
     {
-        if(IsTargetValid(InActorSource, Hit.GetActor(), InRange, 180.f, TargetAttitude))
+        if(IsTargetValid(InActorSource, Hit.GetActor(), InRange, 180.f, XIAbilityData->TargetAttiude))
         {
             Actors.AddUnique(Hit.GetActor());
         }
@@ -78,7 +72,12 @@ const FGameplayTagContainer* UXIGameplayAbility::GetCooldownTags() const
 	{
 		MutableTags->AppendTags(*ParentTags);
 	}
-	MutableTags->AppendTags(CooldownTags);
+
+    if(XIAbilityData)
+    {
+	    MutableTags->AppendTags(XIAbilityData->CooldownTags);
+    }
+
 	return MutableTags;
 }
 
@@ -88,8 +87,13 @@ void UXIGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	if (CooldownGE)
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
-		SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(CooldownTags);
-		SpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Cooldown")), Cooldown);
+		
+        if(XIAbilityData)
+        {
+            SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(XIAbilityData->CooldownTags);
+    	    SpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("SetByCaller.Cooldown")), XIAbilityData->Cooldown);
+        }
+
 		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }
@@ -98,38 +102,190 @@ void UXIGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 {
     Super::OnAvatarSet(ActorInfo, Spec);
 
-	if (bActivateAbilityOnGranted)
+	if (XIAbilityData)
 	{
-		bool ActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+        if(XIAbilityData->bPassiveAbility)
+        {
+		    bool ActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+        }
 	}
+}
+
+bool UXIGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+{
+    bool bBlocked = false;
+    bool bMissing = false;
+ 
+    const UAbilitySystemGlobals& AbilitySystemGlobals = UAbilitySystemGlobals::Get();
+    const FGameplayTag& BlockedTag = AbilitySystemGlobals.ActivateFailTagsBlockedTag;
+    const FGameplayTag& MissingTag = AbilitySystemGlobals.ActivateFailTagsMissingTag;
+ 
+    // Check if any of this ability's tags are currently blocked
+    if (AbilitySystemComponent.AreAbilityTagsBlocked(AbilityTags))
+    {
+        bBlocked = true;
+    }
+ 
+    /*
+     * Relationship related code
+     */
+     
+    const UXIAbilitySystemComponent* XIASC = Cast<UXIAbilitySystemComponent>(&AbilitySystemComponent);
+    static FGameplayTagContainer AbilityRequiredTags;
+    AbilityRequiredTags = ActivationRequiredTags;
+     
+    static FGameplayTagContainer AbilityBlockedTags; 
+    AbilityBlockedTags = ActivationBlockedTags;
+ 
+    // This gets the additional tags from the ASC's relationship mapping for the abilities tags.
+    if (XIASC)
+    {
+        XIASC->GetRelationshipActivationTagRequirements(AbilityTags, AbilityRequiredTags, AbilityBlockedTags);
+    }
+ 
+    /*
+     * End of relationship code
+     */
+ 
+    // Check to see the required/blocked tags for this ability
+    if (AbilityBlockedTags.Num() || AbilityRequiredTags.Num())
+    {
+        static FGameplayTagContainer AbilitySystemComponentTags;
+         
+        AbilitySystemComponentTags.Reset();
+        AbilitySystemComponent.GetOwnedGameplayTags(AbilitySystemComponentTags);
+ 
+        if (AbilitySystemComponentTags.HasAny(AbilityBlockedTags))
+        {
+            bBlocked = true;
+        }
+ 
+        if (!AbilitySystemComponentTags.HasAll(AbilityRequiredTags))
+        {
+            bMissing = true;
+        }
+    }
+ 
+    if (SourceTags != nullptr)
+    {
+        if (SourceBlockedTags.Num() || SourceRequiredTags.Num())
+        {
+            if (SourceTags->HasAny(SourceBlockedTags))
+            {
+                bBlocked = true;
+            }
+ 
+            if (!SourceTags->HasAll(SourceRequiredTags))
+            {
+                bMissing = true;
+            }
+        }
+    }
+ 
+    if (TargetTags != nullptr)
+    {
+        if (TargetBlockedTags.Num() || TargetRequiredTags.Num())
+        {
+            if (TargetTags->HasAny(TargetBlockedTags))
+            {
+                bBlocked = true;
+            }
+ 
+            if (!TargetTags->HasAll(TargetRequiredTags))
+            {
+                bMissing = true;
+            }
+        }
+    }
+ 
+    if (bBlocked)
+    {
+        if (OptionalRelevantTags && BlockedTag.IsValid())
+        {
+            OptionalRelevantTags->AddTag(BlockedTag);
+        }
+        return false;
+    }
+    if (bMissing)
+    {
+        if (OptionalRelevantTags && MissingTag.IsValid())
+        {
+            OptionalRelevantTags->AddTag(MissingTag);
+        }
+        return false;
+    }
+ 
+    return true;
 }
 
 float UXIGameplayAbility::GetCost() const
 {
-    return Cost;
+    if(XIAbilityData)
+    {
+        return XIAbilityData->Cost;
+    }
+    return 0.f;
+}
+
+float UXIGameplayAbility::GetPotency() const
+{
+    if(XIAbilityData)
+    {
+        return XIAbilityData->Potency;
+    }
+    return 0.f;
+}
+
+bool UXIGameplayAbility::GetEnmity(float OutCumulativeEnmity, float OutVolatileEnmity) const
+{
+    if(XIAbilityData)
+    {
+        if(XIAbilityData->bFixedEnmity)
+        {
+            OutCumulativeEnmity = XIAbilityData->CumulativeEnmity;
+            OutVolatileEnmity = XIAbilityData->VolatileEnmity;
+            return true;
+        }
+    }
+    return false;
 }
 
 void UXIGameplayAbility::InitializeAbilityData()
 {
-    static const FString ContextString(TEXT("XIGameplay Ability Initialize Parameters"));
-    FXIAbilityData* XIAbilityData = XIAbilityDataHandle.DataTable->FindRow<FXIAbilityData>(XIAbilityDataHandle.RowName, ContextString, true);
-
-    if(XIAbilityData)
-    {
-        Angle = XIAbilityData->Angle;
-        AreaEffectRange = XIAbilityData->AreaEffectRange;
-        bAreaEffect = XIAbilityData->bAreaEffect;
-        BasePower = XIAbilityData->BasePower;
-        bFixedEnmity = XIAbilityData->bFixedEnmity;
-        CastTime = XIAbilityData->CastTime;
-        Cooldown = XIAbilityData->Cooldown;
-        Cost = XIAbilityData->Cost;
-        CumulativeEnmity = XIAbilityData->CumulativeEnmity;
-        Duration = XIAbilityData->Duration;
-        Range = XIAbilityData->Range;
-        VolatileEnmity = XIAbilityData->VolatileEnmity;
-    }
-
     AvatarActor = GetAvatarActorFromActorInfo();
     CapsuleRadius = UCombatFunctionLibrary::GetCapsuleRadius(AvatarActor);
+}
+
+void UXIGameplayAbility::GiveXIGameplayAbility(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UXIGameplayAbility> XIGameplayAbility, AActor* SourceActor)
+{
+    if (!K2_HasAuthority() || !AbilitySystemComponent || !XIGameplayAbility)
+    {
+        return;
+    }
+        AbilitySystemComponent->GiveAbility(
+			FGameplayAbilitySpec(XIGameplayAbility, 1, static_cast<int32>(XIGameplayAbility.GetDefaultObject()->AbilityInputID), SourceActor));
+}
+
+void UXIGameplayAbility::RemoveXIGameplayAbilities(UAbilitySystemComponent* AbilitySystemComponent, TArray<TSubclassOf<UXIGameplayAbility>> XIGameplayAbilities)
+{
+    if (!K2_HasAuthority() || !AbilitySystemComponent || !XIGameplayAbilities.IsValidIndex(0))
+    {
+        return;
+    }
+
+    // Adds specified abilities to an array for removal.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+	{
+		if (XIGameplayAbilities.Contains(Spec.Ability->GetClass()))
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
 }

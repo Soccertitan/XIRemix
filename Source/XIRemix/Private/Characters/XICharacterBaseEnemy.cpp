@@ -30,8 +30,6 @@ void AXICharacterBaseEnemy::PossessedBy(AController * NewController)
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	AddCharacterAbilities();
 	InitializeAttributes();
-	AddStartupEffects();
-
 }
 
 // Client only
@@ -46,4 +44,9 @@ void AXICharacterBaseEnemy::OnRep_PlayerState()
 UXIAggroComponent* AXICharacterBaseEnemy::GetXIAggroComponent() const
 {
 	return XIAggroComponent;
+}
+
+float AXICharacterBaseEnemy::GetCharacterLevel() const
+{
+	return AttributeSetEnemy->GetLevel();
 }

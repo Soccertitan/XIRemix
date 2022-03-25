@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
 #include "UI/XIPlayerHUD.h"
+#include "GameplayTagsManager.h"
 
 // Sets default values
 AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -44,6 +45,9 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Range, 8);
 
 	XITeam = EXITeam::Hero;
+
+	MainJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentMainJobTag);
+    SubJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentSubJobTag);
 }
 
 void AXICharacterBaseHero::BeginPlay()
@@ -66,7 +70,6 @@ void AXICharacterBaseHero::PossessedBy(AController * NewController)
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	AddCharacterAbilities();
 	InitializeAttributes();
-	AddStartupEffects();
 }
 
 // Client only
@@ -86,13 +89,59 @@ void AXICharacterBaseHero::OnRep_PlayerState()
 
 #pragma region AttributeGetters
 
-float AXICharacterBaseHero::GetWarriorLevel() const
+float AXICharacterBaseHero::GetCharacterLevel() const
 {
-	if (AttributeSetHero)
+	FGameplayTag MainJobTag;
+	FGameplayTag SubJobTag;
+	float MainJobLevel;
+	float SubJobLevel;
+
+	GetCharacterActiveJobsAndLevels(MainJobTag, MainJobLevel, SubJobTag, SubJobLevel);
+	return MainJobLevel;
+}
+
+void AXICharacterBaseHero::GetCharacterActiveJobsAndLevels(FGameplayTag& MainJobTag, float& MainJobLevel, FGameplayTag& SubJobTag, float& SubJobLevel) const
+{
+	TArray<FGameplayTag> JobTagsArray;
+    FXIJobTagRelationshipItem JobTagRelationshipItem;
+	
+	MainJobTag = MainJobTag.EmptyTag;
+    MainJobLevel = 0;
+	SubJobTag = SubJobTag.EmptyTag;
+	SubJobLevel = 0;
+
+    FGameplayTagContainer OwnedGameplayTags;
+	AbilitySystemComponent->GetOwnedGameplayTags(OwnedGameplayTags);
+
+	/*
+    // Find and return the Main Job Tag and Level.
+    */
+    MainJobTags.GetGameplayTagArray(JobTagsArray);
+	for(const FGameplayTag& JobTag : JobTagsArray)
 	{
-		return AttributeSetHero->GetWarriorLevel();
-	}
-	return 0.0f;
+		if(OwnedGameplayTags.HasTagExact(JobTag))
+        {
+            AbilitySystemComponent->GetXIJobTagRelationship(JobTag, JobTagRelationshipItem);
+            MainJobTag = JobTag;
+            MainJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
+            break;
+        }
+    }
+
+	/*
+    // Find and return the Sub Job Tag and Level.
+    */
+    SubJobTags.GetGameplayTagArray(JobTagsArray);
+    for(const FGameplayTag& JobTag : JobTagsArray)
+    {
+        if(OwnedGameplayTags.HasTagExact(JobTag))
+        {
+			AbilitySystemComponent->GetXIJobTagRelationship(JobTag, JobTagRelationshipItem);
+			SubJobTag = JobTag;
+			SubJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
+			return;
+        }
+    }
 }
 
 #pragma endregion AttributeGetters

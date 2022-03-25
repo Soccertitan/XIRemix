@@ -30,6 +30,9 @@ public:
 	//Implements IXIAggroInterface
 	virtual class UXIAggroComponent* GetXIAggroComponent() const override;
 
+	//Implements IXICharacterInterface
+	virtual float GetCharacterLevel() const override;
+
 protected:
 	
 	UPROPERTY()

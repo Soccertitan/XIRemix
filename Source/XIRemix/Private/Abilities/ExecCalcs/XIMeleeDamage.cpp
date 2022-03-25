@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Abilities/XIMeleeDamageExecCalculation.h"
+#include "Abilities/ExecCalcs/XIMeleeDamage.h"
 #include "Abilities/XIAbilitySystemComponent.h"
 #include "Abilities/AttributeSetGlobal.h"
 #include "Interfaces/XIThreatTableInterface.h"
@@ -14,6 +14,7 @@ struct XIMeleeStatics
     DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
     DECLARE_ATTRIBUTE_CAPTUREDEF(Accuracy);
     DECLARE_ATTRIBUTE_CAPTUREDEF(Evasion);
+    DECLARE_ATTRIBUTE_CAPTUREDEF(DamageHP);
 
     XIMeleeStatics()
     {
@@ -21,6 +22,7 @@ struct XIMeleeStatics
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Accuracy, Source, true);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Defense, Target, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Evasion, Target, false);
+        DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, DamageHP, Target, false);
     }
 };
 
@@ -30,15 +32,16 @@ static const XIMeleeStatics& MeleeStatics()
     return MStatics;
 }
 
-UXIMeleeDamageExecCalculation::UXIMeleeDamageExecCalculation()
+UXIMeleeDamage::UXIMeleeDamage()
 {
     RelevantAttributesToCapture.Add(MeleeStatics().AccuracyDef);
     RelevantAttributesToCapture.Add(MeleeStatics().AttackDef);
     RelevantAttributesToCapture.Add(MeleeStatics().DefenseDef);
     RelevantAttributesToCapture.Add(MeleeStatics().EvasionDef);
+    RelevantAttributesToCapture.Add(MeleeStatics().DamageHPDef);
 }
 
-void UXIMeleeDamageExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
     UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
 	UAbilitySystemComponent* SourceAbilitySystemComponent = ExecutionParams.GetSourceAbilitySystemComponent();
@@ -66,4 +69,7 @@ void UXIMeleeDamageExecCalculation::Execute_Implementation(const FGameplayEffect
         UXIThreatTableComponent* ThreatTableComponent = XIThreatInt->GetXIThreatTableComponent();
         ThreatTableComponent->ApplyDamageEnmity(SourceActor, 1.0f, 3.0f, 1.0f);
     }
+
+    //TODO: Will need to add proper calculations for damage.
+    OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(MeleeStatics().DamageHPProperty, EGameplayModOp::Additive, 1.f));
 }

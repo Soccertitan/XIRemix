@@ -119,6 +119,16 @@ float UCombatFunctionLibrary::GetCapsuleRadius(AActor* OwnerActor)
     return 0.0f;
 }
 
+float UCombatFunctionLibrary::GetCharacterLevel(AActor* OwnerActor)
+{
+    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
+    if(XICharacterInt)
+    {
+        return XICharacterInt->GetCharacterLevel();
+    }
+    return 0.0f;
+}
+
 bool UCombatFunctionLibrary::IsAlive(AActor* OwnerActor)
 {
     IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);

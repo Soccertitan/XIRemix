@@ -65,5 +65,8 @@ public:
 	virtual float GetManaPointsMax() const PURE_VIRTUAL(IXICharacterInterface::GetManaPointsMax(), return 0.f;);
 	virtual float GetTacticalPoints() const PURE_VIRTUAL(IXICharacterInterface::GetTacticalPoints(), return 0.f;);
 	virtual float GetTacticalPointsMax() const PURE_VIRTUAL(IXICharacterInterface::GetTacticalPointsMax(), return 0.f;);
+
+	// Gets the current level of the character.
+	virtual float GetCharacterLevel() const PURE_VIRTUAL(IXICharacterInterface::GetCharacterLevel(), return 0.f;);
 	
 };

@@ -29,6 +29,39 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+#pragma region MetaAttributes
+
+	/* 
+	This regions meta attributes are used by the different exec calculations which modify the corresponding attributes.
+	Temporary value that only exists on the Server. Not replicated.
+	*/
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData DamageHP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DamageHP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData DamageMP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DamageMP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData DamageTP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, DamageTP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData RecoverHP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RecoverHP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData RecoverMP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RecoverMP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData RecoverTP;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RecoverTP)
+
+#pragma endregion MetaAttributes
+
 #pragma region ResourceAttributes // Defines HP, MP, TP resources
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Resource", ReplicatedUsing = OnRep_HitPoints)

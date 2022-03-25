@@ -27,7 +27,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	#pragma region WarriorJob
+#pragma region WarriorJob
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|Warrior", ReplicatedUsing = OnRep_WarriorLevel)
 	FGameplayAttributeData WarriorLevel;

@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "XIMeleeDamageExecCalculation.generated.h"
+#include "XIMeleeDamage.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UXIMeleeDamageExecCalculation : public UGameplayEffectExecutionCalculation
+class XIREMIX_API UXIMeleeDamage : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
-	
+
 public:
-	UXIMeleeDamageExecCalculation();
+	UXIMeleeDamage();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
 };

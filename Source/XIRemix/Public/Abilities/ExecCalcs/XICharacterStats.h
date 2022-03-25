@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "XICharacterStatsExecCalculation.generated.h"
+#include "XICharacterStats.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UXICharacterStatsExecCalculation : public UGameplayEffectExecutionCalculation
+class XIREMIX_API UXICharacterStats : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	UXICharacterStatsExecCalculation();
+	UXICharacterStats();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;	
 };

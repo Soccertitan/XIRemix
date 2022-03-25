@@ -49,6 +49,10 @@ public:
 	static float GetCapsuleRadius (AActor* OwnerActor);
 
 	//XICharacter Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")
+	static float GetCharacterLevel(AActor* OwnerActor);
+
+	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
 	static UAnimMontage* GetAutoAttackMontage(AActor* OwnerActor);
 

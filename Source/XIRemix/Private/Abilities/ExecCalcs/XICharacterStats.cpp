@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Abilities/XICharacterStatsExecCalculation.h"
+#include "Abilities/ExecCalcs/XICharacterStats.h"
 #include "Abilities/XIAbilitySystemComponent.h"
 #include "Abilities/AttributeSetGlobal.h"
 
@@ -41,7 +41,7 @@ static const XIBaseAttributesStatics& BaseAttributesStatics()
     return AStatics;
 }
 
-UXICharacterStatsExecCalculation::UXICharacterStatsExecCalculation()
+UXICharacterStats::UXICharacterStats()
 {
     RelevantAttributesToCapture.Add(XIBaseAttributesStatics().HitPointsDef);
     RelevantAttributesToCapture.Add(XIBaseAttributesStatics().HitPointsMaxDef);
@@ -56,7 +56,7 @@ UXICharacterStatsExecCalculation::UXICharacterStatsExecCalculation()
     RelevantAttributesToCapture.Add(XIBaseAttributesStatics().CharismaDef);
 }
 
-void UXICharacterStatsExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UXICharacterStats::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
     UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
     AActor* TargetActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor() : nullptr;
