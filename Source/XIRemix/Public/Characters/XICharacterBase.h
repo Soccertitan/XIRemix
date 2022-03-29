@@ -12,6 +12,8 @@
 #include "Interfaces/XICharacterInterface.h"
 #include "DataAssets/XICharacterCombatMontages.h"
 #include "DataAssets/XIAbilitySet.h"
+#include "DataAssets/XIStatsGrowthRank.h"
+#include "DataAssets/XIStatsGrowthData.h"
 #include "XICharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AActor*, DeadActor);
@@ -52,6 +54,8 @@ public:
 	virtual bool IsAlive() const override;
 	virtual UXICharacterCombatMontages* GetXICharacterCombatMontages() const override;
 	virtual UAnimMontage* GetAutoAttackMontage() const override;
+	virtual UXIStatsGrowthRank* GetXIStatsGrowthRank() const override;
+	virtual UXIStatsGrowthData* GetXIStatsGrowthData() const override;
 
 	// /**
 	// * Getters for attributes from GlobalAttributeSet
@@ -125,6 +129,14 @@ protected:
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+
+	//Stats Growth Ranking data to determine stats.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	UXIStatsGrowthRank* StatsGrowthRank;
+
+	//Referenced by StatsGrowthRank to get the value for calculating Stat Growth
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	UXIStatsGrowthData* StatsGrowthData;
 
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
 	virtual void AddCharacterAbilities();

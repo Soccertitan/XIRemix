@@ -5,13 +5,22 @@
 
 void UXIGameplayAbilityHeroJobBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-    if(!XIJobAbilityData)
+    if(!XIJobAbilityData || !AttributeGE)
     {
-        UE_LOG(LogTemp, Warning, TEXT("XIJob Ability Data is Null"));
+        UE_LOG(LogTemp, Error, TEXT("XIJob Ability Data or AttributeGE is null."));
         EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
         return;
     }
-    
+
+    if(LevelAdjustmentGE)
+    {
+        FGameplayEffectSpecHandle Spec = MakeOutgoingGameplayEffectSpec(LevelAdjustmentGE);
+        LevelAdjustmentHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, Spec);
+    }
+
+    FGameplayEffectSpecHandle AttributeSpec = MakeOutgoingGameplayEffectSpec(AttributeGE);
+    ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, AttributeSpec);
+
     for(const FXIJobAbilityDataItem& Item : XIJobAbilityData->XIJobAbilityDataItem)
     {
         if(Item.XIAbility->Ability)
@@ -41,6 +50,8 @@ void UXIGameplayAbilityHeroJobBase::EndAbility(const FGameplayAbilitySpecHandle 
 
         RemoveXIGameplayAbilities(GetAbilitySystemComponentFromActorInfo(), XIGameplayAbilities);
     }
+
+    BP_RemoveGameplayEffectFromOwnerWithHandle(LevelAdjustmentHandle);
 
     Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

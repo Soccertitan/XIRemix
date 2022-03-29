@@ -17,4 +17,12 @@ class XIREMIX_API AXIAIControllerBase : public AAIController, public IXIGameplay
 	
 public:
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "XIPCInt")
+	void SetIsMoveable(bool bIsMoveable); void SetIsMoveable_Implementation(bool bIsMoveable) override;
+
+protected:
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bCanMove = true;
+
 };

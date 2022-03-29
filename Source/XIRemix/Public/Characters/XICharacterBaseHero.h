@@ -41,6 +41,7 @@ public:
 	//Implements IXICharacterInterface
 	virtual float GetCharacterLevel() const override;
 
+	UFUNCTION(BlueprintPure, Category = "XICharacter|Hero")
 	void GetCharacterActiveJobsAndLevels(FGameplayTag& MainJobTag, float& MainJobLevel, FGameplayTag& SubJobTag, float& SubJobLevel) const;
 
 protected:

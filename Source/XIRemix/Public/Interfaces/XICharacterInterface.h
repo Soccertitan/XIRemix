@@ -68,5 +68,8 @@ public:
 
 	// Gets the current level of the character.
 	virtual float GetCharacterLevel() const PURE_VIRTUAL(IXICharacterInterface::GetCharacterLevel(), return 0.f;);
+
+	virtual class UXIStatsGrowthRank* GetXIStatsGrowthRank() const PURE_VIRTUAL(IXICharacterInterface::GetXIStatsGrowthRank(), return nullptr;);
+	virtual class UXIStatsGrowthData* GetXIStatsGrowthData() const PURE_VIRTUAL(IXICharacterInterface::GetXIStatsGrowthData(), return nullptr;);
 	
 };

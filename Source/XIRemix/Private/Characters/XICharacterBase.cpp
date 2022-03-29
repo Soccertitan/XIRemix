@@ -599,6 +599,16 @@ float AXICharacterBase::GetCharacterLevel() const
 
 #pragma endregion AttributeGetters
 
+UXIStatsGrowthRank* AXICharacterBase::GetXIStatsGrowthRank() const
+{
+	return StatsGrowthRank;
+}
+
+UXIStatsGrowthData* AXICharacterBase::GetXIStatsGrowthData() const
+{
+	return StatsGrowthData;
+}
+
 #pragma endregion XICharacterInterfaceFunctions
 
 void AXICharacterBase::Die()

@@ -6,6 +6,8 @@
 #include "GameplayTagContainer.h"
 #include "AttributeSet.h"
 #include "DataAssets/XIJobAbilityData.h"
+#include "DataAssets/XICombatSkillsRank.h"
+#include "DataAssets/XIStatsGrowthRank.h"
 #include "Engine/DataAsset.h"
 #include "XIJobTagRelationship.generated.h"
 
@@ -35,6 +37,12 @@ struct FXIJobTagRelationshipItem
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)
 	UXIJobAbilityData* JobAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)
+	UXICombatSkillsRank* CombatSkillsRank;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)
+	UXIStatsGrowthRank* StatsGrowthRank;
 };
 
 /**
