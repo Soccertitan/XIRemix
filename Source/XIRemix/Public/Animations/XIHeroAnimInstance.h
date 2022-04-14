@@ -23,7 +23,7 @@ public:
 	virtual float GetSpeed() override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "XICharacter|AnimBP")
-	void SetCombatStyle(ECombatStyle CStyle); virtual void SetCombatStyle_Implementation(ECombatStyle CStyle) override;
+	void SetCombatStyle(ECombatStyle InCombatStyle); virtual void SetCombatStyle_Implementation(ECombatStyle InCombatStyle) override;
 
 protected:	
 	

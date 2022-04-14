@@ -16,6 +16,7 @@ class XIREMIX_API UXIGameplayAbilityHeroJobBase : public UXIGameplayAbility
 	GENERATED_BODY()
 
 public:
+	UXIGameplayAbilityHeroJobBase();
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
@@ -34,5 +35,7 @@ protected:
 	TSubclassOf<class UGameplayEffect> LevelAdjustmentGE;
 
 	FActiveGameplayEffectHandle LevelAdjustmentHandle;
+
+	float GetCharacterLevel();
 
 };

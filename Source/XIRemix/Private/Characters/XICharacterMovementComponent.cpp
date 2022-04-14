@@ -22,9 +22,21 @@ float UXICharacterMovementComponent::GetMaxSpeed() const
 	IAbilitySystemInterface* ASC = Cast<IAbilitySystemInterface>(GetOwner());
 	IAnimBPInterface* ABPInt = Cast<IAnimBPInterface>((GetCharacterOwner())->GetMesh()->GetAnimInstance());
 
-	if (!Owner | !ASC | !ABPInt)
+	if (!Owner)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Character has not implemented the XICharacterInterface, or AbilitySystemInterface. Or the AnimBP does not implement the AnimBPInterface"), *FString(__FUNCTION__));
+		UE_LOG(LogTemp, Error, TEXT("%s() Character has not implemented the XICharacterInterface"), *FString(__FUNCTION__));
+		return Super::GetMaxSpeed();
+	}
+
+	if (!ASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Character has not implemented the AbilitySystemInterface."), *FString(__FUNCTION__));
+		return Super::GetMaxSpeed();
+	}
+
+	if (!ABPInt)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Character has not implemented the AnimBP does not implement the AnimBPInterface"), *FString(__FUNCTION__));
 		return Super::GetMaxSpeed();
 	}
 

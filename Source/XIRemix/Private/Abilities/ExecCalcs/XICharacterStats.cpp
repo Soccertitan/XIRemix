@@ -88,22 +88,17 @@ void UXICharacterStats::Execute_Implementation(const FGameplayEffectCustomExecut
         return;
     }
 
-    FGameplayTag MainJobTag;
-    FGameplayTag SubJobTag;
-    float MainJobLevel;
-    float SubJobLevel;
-
-    XICharacter->GetCharacterActiveJobsAndLevels(MainJobTag, MainJobLevel, SubJobTag, SubJobLevel);
+    FXICharacterHeroActiveJobsLevels HeroCharacterJobs = XICharacter->GetCharacterActiveJobsAndLevels();
     FXIJobTagRelationshipItem MainJobTagRelationship;
     FXIJobTagRelationshipItem SubJobTagRelationship;
 
-    if (MainJobTag.IsValid())
+    if (HeroCharacterJobs.MainJobTag.IsValid())
     {
-        XIASC->GetXIJobTagRelationship(MainJobTag, MainJobTagRelationship);
+        XIASC->GetXIJobTagRelationship(HeroCharacterJobs.MainJobTag, MainJobTagRelationship);
     }
-    if (SubJobTag.IsValid())
+    if (HeroCharacterJobs.SubJobTag.IsValid())
     {
-        XIASC->GetXIJobTagRelationship(SubJobTag, SubJobTagRelationship);
+        XIASC->GetXIJobTagRelationship(HeroCharacterJobs.SubJobTag, SubJobTagRelationship);
     }
 
     float MJScale = 0;
@@ -121,10 +116,10 @@ void UXICharacterStats::Execute_Implementation(const FGameplayEffectCustomExecut
     /*
     // Calculate HP
     */
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetHitPointsGrowth(MainJobTagRelationship.StatsGrowthRank->HitPoints, MJScale, MJBase, MJMultiplier) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetHitPointsGrowth(SubJobTagRelationship.StatsGrowthRank->HitPoints, SJScale, SJBase, SJMultiplier) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetHitPointsGrowth(MainJobTagRelationship.StatsGrowthRank->HitPoints, MJScale, MJBase, MJMultiplier) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetHitPointsGrowth(SubJobTagRelationship.StatsGrowthRank->HitPoints, SJScale, SJBase, SJMultiplier) : nullptr;
     RaceStatsGrowthData->GetHitPointsGrowth(RaceStatsGrowthRank->HitPoints, RaceScale, RaceBase, RaceMultiplier);
-    float HPAttribute = CalculateHPAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, RaceMultiplier, MJScale, MJBase, MJMultiplier, SJScale, SJBase);
+    float HPAttribute = CalculateHPAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, RaceMultiplier, MJScale, MJBase, MJMultiplier, SJScale, SJBase);
 
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().HitPointsMaxProperty, EGameplayModOp::Override, HPAttribute));
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().HitPointsProperty, EGameplayModOp::Override, HPAttribute));
@@ -132,10 +127,10 @@ void UXICharacterStats::Execute_Implementation(const FGameplayEffectCustomExecut
     /*
     // Calculate MP
     */
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetManaPointsGrowth(MainJobTagRelationship.StatsGrowthRank->ManaPoints, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetManaPointsGrowth(SubJobTagRelationship.StatsGrowthRank->ManaPoints, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetManaPointsGrowth(MainJobTagRelationship.StatsGrowthRank->ManaPoints, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetManaPointsGrowth(SubJobTagRelationship.StatsGrowthRank->ManaPoints, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetManaPointsGrowth(RaceStatsGrowthRank->ManaPoints, RaceScale, RaceBase);
-    float MPAttribute = CalculateMPAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    float MPAttribute = CalculateMPAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
 
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().ManaPointsMaxProperty, EGameplayModOp::Override, MPAttribute));
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().ManaPointsProperty, EGameplayModOp::Override, MPAttribute));
@@ -146,46 +141,46 @@ void UXICharacterStats::Execute_Implementation(const FGameplayEffectCustomExecut
     */
     float AttributeTotal;
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Strength, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Strength, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Strength, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Strength, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Strength, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().StrengthProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Dexterity, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Dexterity, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Dexterity, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Dexterity, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Dexterity, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().DexterityProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Vitality, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Vitality, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Vitality, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Vitality, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Vitality, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().VitalityProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Agility, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Agility, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Agility, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Agility, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Agility, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().AgilityProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Intelligence, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Intelligence, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Intelligence, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Intelligence, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Intelligence, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().IntelligenceProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Mind, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Mind, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Mind, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Mind, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Mind, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().MindProperty, EGameplayModOp::Override, AttributeTotal));
 
-    MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Charisma, MJScale, MJBase) : nullptr;
-    SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Charisma, SJScale, SJBase) : nullptr;
+    HeroCharacterJobs.MainJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(MainJobTagRelationship.StatsGrowthRank->Charisma, MJScale, MJBase) : nullptr;
+    HeroCharacterJobs.SubJobTag.IsValid() ? RaceStatsGrowthData->GetAttributeGrowth(SubJobTagRelationship.StatsGrowthRank->Charisma, SJScale, SJBase) : nullptr;
     RaceStatsGrowthData->GetAttributeGrowth(RaceStatsGrowthRank->Charisma, RaceScale, RaceBase);
-    AttributeTotal = CalculateBasicAttribute(MainJobLevel, SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
+    AttributeTotal = CalculateBasicAttribute(HeroCharacterJobs.MainJobLevel, HeroCharacterJobs.SubJobLevel, RaceScale, RaceBase, MJScale, MJBase, SJScale, SJBase);
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(BaseAttributesStatics().CharismaProperty, EGameplayModOp::Override, AttributeTotal));
 }
 

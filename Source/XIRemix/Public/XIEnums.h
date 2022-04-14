@@ -25,7 +25,7 @@ enum class EEquipSlot : uint8
 {
 	MainHand UMETA(DisplayName = "MainHand"),
 	SubHand UMETA(DisplayName = "SubHand"),
-	Range UMETA(DisplayName = "Range"),
+	Ranged UMETA(DisplayName = "Ranged"),
 	Ammo UMETA(DisplayName = "Ammo"),
 	Head UMETA(DisplayName = "Head"),
 	Neck UMETA(DisplayName = "Neck"),
@@ -46,6 +46,7 @@ enum class EItemType : uint8
 {
 	WeaponMelee UMETA(DisplayName = "WeaponMelee"),
 	WeaponRange UMETA(DisplayName = "WeaponRange"),
+	Shield UMETA(DisplayName = "Shield"),
 	Instrument UMETA(DisplayName = "Instrument"),
 	Ammo UMETA(DisplayName = "Ammo"),
 	Armor UMETA(DisplayName = "Armor"),
@@ -69,36 +70,12 @@ enum class ERace : uint8
 };
 
 UENUM(BlueprintType, Category="XIRemix")
-enum class EWeaponType : uint8
-{
-	Hand UMETA(DisplayName = "Hand"),
-	Dagger UMETA(DisplayName = "Dagger"),
-	Sword UMETA(DisplayName = "Sword"),
-	GreatSword UMETA(DisplayName = "GreatSword"),
-	Axe UMETA(DisplayName = "Axe"),
-	GreatAxe UMETA(DisplayName = "GreatAxe"),
-	Scythe UMETA(DisplayName = "Scythe"),
-	Polearm UMETA(DisplayName = "Polearm"),
-	Katana UMETA(DisplayName = "Katana"),
-	GreatKatana UMETA(DisplayName = "GreatKatana"),
-	Club UMETA(DisplayName = "Club"),
-	Staff UMETA(DisplayName = "Staff"),
-	Shield UMETA(DisplayName = "Shield"),
-	Throwing UMETA(DisplayName = "Throwing"),
-	Archery UMETA(DisplayName = "Archery"),
-	Gun UMETA(DisplayName = "Gun"),
-	Wind UMETA(DisplayName = "Wind"),
-	String UMETA(DisplayName = "String"),
-	Bell UMETA(DisplayName = "Bell")
-};
-
-UENUM(BlueprintType, Category="XIRemix")
 enum class ESkeletalMeshMergeType : uint8
 {
 	Face UMETA(DisplayName = "Face"),
 	Head UMETA(DisplayName = "Head"),
 	Body UMETA(DisplayName = "Body"),
-	Arms UMETA(DisplayName = "Arms"),
+	Hands UMETA(DisplayName = "Hands"),
 	Legs UMETA(DisplayName = "Legs"),
 	Feet UMETA(DisplayName = "Feet"),
 	MainHand UMETA(DisplayName = "MainHand"),

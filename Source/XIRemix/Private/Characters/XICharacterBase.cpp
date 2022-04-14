@@ -147,6 +147,7 @@ void AXICharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AXICharacterBase, CharacterName);
+	DOREPLIFETIME_CONDITION_NOTIFY(AXICharacterBase, CombatStyle, COND_None, REPNOTIFY_Always);
 }
 
 #pragma region AnimationMontages
@@ -622,5 +623,14 @@ void AXICharacterBase::Die()
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+}
+
+void AXICharacterBase::OnRep_CombatStyle()
+{
+	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
+	if(IntAnimBP)
+	{
+		IntAnimBP->SetCombatStyle_Implementation(CombatStyle);
 	}
 }

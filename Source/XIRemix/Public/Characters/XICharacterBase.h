@@ -90,8 +90,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "XICharacter|Combat")
 	AActor* SubTarget;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter|Combat")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, ReplicatedUsing = OnRep_CombatStyle, Category = "XICharacter|Combat")
 	ECombatStyle CombatStyle;
+	UFUNCTION()
+	void OnRep_CombatStyle();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter")
 	EXITeam XITeam;

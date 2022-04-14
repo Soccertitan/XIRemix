@@ -79,4 +79,8 @@ public:
 	//XI Target System Component Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|TargetSystemComponent")
 	static class UXITargetSystemComponent* GetXITargetSystemComponent(AActor* OwnerActor);
+
+	//XI Target System Component Interface Function
+	UFUNCTION(BlueprintPure, Category = "XIRemix|EquipmentManagerComponent")
+	static class UXIEquipmentManagerComponent* GetXIEquipmentManagerComponent(AActor* OwnerActor);
 };

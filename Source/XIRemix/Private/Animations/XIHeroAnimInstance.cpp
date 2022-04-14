@@ -13,7 +13,7 @@ float UXIHeroAnimInstance::GetDirection()
     return Direction;
 }
 
-void UXIHeroAnimInstance::SetCombatStyle_Implementation(ECombatStyle CStyle)
+void UXIHeroAnimInstance::SetCombatStyle_Implementation(ECombatStyle InCombatStyle)
 {
-    CombatStyle = CStyle;
+    CombatStyle = InCombatStyle;
 }

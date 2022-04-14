@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
 #include "UI/XIPlayerHUD.h"
+#include "Net/UnrealNetwork.h"
 #include "GameplayTagsManager.h"
 
 // Sets default values
@@ -33,21 +34,36 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	FollowCamera->PrimaryComponentTick.bStartWithTickEnabled = false;
 
+	// Creates the Equipment Manager Component
+	XIEquipmentManager = CreateDefaultSubobject<UXIEquipmentManagerComponent>(TEXT("XIEquipmentManager"));
+	XIEquipmentManager->SetIsReplicated(true);
+	XIEquipmentManager->OnMeshUpdated.AddDynamic(this, &AXICharacterBaseHero::SetCharacterMesh);
+	XIEquipmentManager->OnCombatStyleChanged.AddDynamic(this, &AXICharacterBaseHero::SetCombatStyle);
+
 	//Mesh Merge Map
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Face, 0);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Head, 1);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Body, 2);
-	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Arms, 3);
+	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Hands, 3);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Legs, 4);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Feet, 5);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::MainHand, 6);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::SubHand, 7);
 	SKMeshMergeMap.Add(ESkeletalMeshMergeType::Range, 8);
 
+	SKMeshMergeParams.MeshesToMerge.SetNum(9);
+
 	XITeam = EXITeam::Hero;
 
 	MainJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentMainJobTag);
     SubJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentSubJobTag);
+}
+
+void AXICharacterBaseHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME_CONDITION_NOTIFY(AXICharacterBaseHero, SKMeshMergeParams, COND_None, REPNOTIFY_Always);
 }
 
 void AXICharacterBaseHero::BeginPlay()
@@ -59,6 +75,8 @@ void AXICharacterBaseHero::BeginPlay()
 		ManaPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaPointsMaxAttribute()).AddUObject(this, &AXICharacterBaseHero::ManaPointsMaxChanged);
 		TacticalPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetTacticalPointsMaxAttribute()).AddUObject(this, &AXICharacterBaseHero::TacticalPointsMaxChanged);
 	}
+
+	InitializeMeshesToMerge();
 }
 
 // Server only
@@ -91,24 +109,16 @@ void AXICharacterBaseHero::OnRep_PlayerState()
 
 float AXICharacterBaseHero::GetCharacterLevel() const
 {
-	FGameplayTag MainJobTag;
-	FGameplayTag SubJobTag;
-	float MainJobLevel;
-	float SubJobLevel;
-
-	GetCharacterActiveJobsAndLevels(MainJobTag, MainJobLevel, SubJobTag, SubJobLevel);
-	return MainJobLevel;
+	FXICharacterHeroActiveJobsLevels Level = GetCharacterActiveJobsAndLevels();
+	return Level.MainJobLevel;
 }
 
-void AXICharacterBaseHero::GetCharacterActiveJobsAndLevels(FGameplayTag& MainJobTag, float& MainJobLevel, FGameplayTag& SubJobTag, float& SubJobLevel) const
+FXICharacterHeroActiveJobsLevels AXICharacterBaseHero::GetCharacterActiveJobsAndLevels() const
 {
 	TArray<FGameplayTag> JobTagsArray;
     FXIJobTagRelationshipItem JobTagRelationshipItem;
-	
-	MainJobTag = MainJobTag.EmptyTag;
-    MainJobLevel = 0;
-	SubJobTag = SubJobTag.EmptyTag;
-	SubJobLevel = 0;
+
+	FXICharacterHeroActiveJobsLevels CharacterJobLevel;
 
     FGameplayTagContainer OwnedGameplayTags;
 	AbilitySystemComponent->GetOwnedGameplayTags(OwnedGameplayTags);
@@ -122,8 +132,8 @@ void AXICharacterBaseHero::GetCharacterActiveJobsAndLevels(FGameplayTag& MainJob
 		if(OwnedGameplayTags.HasTagExact(JobTag))
         {
             AbilitySystemComponent->GetXIJobTagRelationship(JobTag, JobTagRelationshipItem);
-            MainJobTag = JobTag;
-            MainJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
+            CharacterJobLevel.MainJobTag = JobTag;
+            CharacterJobLevel.MainJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
             break;
         }
     }
@@ -137,11 +147,12 @@ void AXICharacterBaseHero::GetCharacterActiveJobsAndLevels(FGameplayTag& MainJob
         if(OwnedGameplayTags.HasTagExact(JobTag))
         {
 			AbilitySystemComponent->GetXIJobTagRelationship(JobTag, JobTagRelationshipItem);
-			SubJobTag = JobTag;
-			SubJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
-			return;
+			CharacterJobLevel.SubJobTag = JobTag;
+			CharacterJobLevel.SubJobLevel = AbilitySystemComponent->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
+			return CharacterJobLevel;
         }
     }
+	return CharacterJobLevel;
 }
 
 #pragma endregion AttributeGetters
@@ -244,4 +255,105 @@ void AXICharacterBaseHero::TacticalPointsMaxChanged(const FOnAttributeChangeData
 UXITargetSystemComponent* AXICharacterBaseHero::GetXITargetSystemComponent() const
 {
 	return XITargetSystem;
+}
+
+UXIEquipmentManagerComponent* AXICharacterBaseHero::GetXIEquipmentManagerComponent() const
+{
+	return XIEquipmentManager;
+}
+
+void AXICharacterBaseHero::OnRep_SKMeshMergeParams()
+{
+	USkeletalMesh* MergedMesh = UMeshMergeFunctionLibrary::MergeMeshes(SKMeshMergeParams);
+
+	if (MergedMesh)
+	{
+		GetMesh()->SetSkeletalMesh(MergedMesh, false);
+	}
+}
+
+void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType)
+{
+	USkeletalMesh* TargetMesh = nullptr;
+
+	if (Item)
+	{
+		if (SKMeshMergeType == ESkeletalMeshMergeType::SubHand)
+		{
+			TargetMesh = Item->GetMesh(Race, true);
+		}
+		else
+		{
+			TargetMesh = Item->GetMesh(Race, false);
+		}
+	}
+
+	// To ensure the character body isn't invisible if mesh is null.
+	if (TargetMesh == nullptr && DefaultMeshesToMerge)
+	{
+		switch (SKMeshMergeType)
+		{
+			case ESkeletalMeshMergeType::Body:
+				TargetMesh = DefaultMeshesToMerge->Body;
+				break;
+			case ESkeletalMeshMergeType::Hands:
+				TargetMesh = DefaultMeshesToMerge->Hands;
+				break;
+			case ESkeletalMeshMergeType::Legs:
+				TargetMesh = DefaultMeshesToMerge->Legs;
+				break;
+			case ESkeletalMeshMergeType::Feet:
+				TargetMesh = DefaultMeshesToMerge->Feet;
+				break;
+		}
+	}
+
+	int32 Key = SKMeshMergeMap.FindRef(SKMeshMergeType);
+	SKMeshMergeParams.MeshesToMerge[Key] = TargetMesh;
+
+	OnRep_SKMeshMergeParams();
+}
+
+void AXICharacterBaseHero::InitializeMeshesToMerge()
+{
+	if (DefaultMeshesToMerge)
+	{
+		int32 Key = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::Face);
+		if (!SKMeshMergeParams.MeshesToMerge[Key])
+		{
+			SKMeshMergeParams.MeshesToMerge[Key] = DefaultMeshesToMerge->Face;
+		}
+
+		Key = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::Body);
+		if (!SKMeshMergeParams.MeshesToMerge[Key])
+		{
+			SKMeshMergeParams.MeshesToMerge[Key] = DefaultMeshesToMerge->Body;
+		}
+
+		Key = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::Hands);
+		if (!SKMeshMergeParams.MeshesToMerge[Key])
+		{
+			SKMeshMergeParams.MeshesToMerge[Key] = DefaultMeshesToMerge->Hands;
+		}
+
+		Key = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::Legs);
+		if (!SKMeshMergeParams.MeshesToMerge[Key])
+		{
+			SKMeshMergeParams.MeshesToMerge[Key] = DefaultMeshesToMerge->Legs;
+		}
+
+		Key = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::Feet);
+		if (!SKMeshMergeParams.MeshesToMerge[Key])
+		{
+			SKMeshMergeParams.MeshesToMerge[Key] = DefaultMeshesToMerge->Feet;
+		}
+	}
+
+	OnRep_SKMeshMergeParams();
+}
+
+void AXICharacterBaseHero::SetCombatStyle(ECombatStyle InCombatStyle)
+{
+	CombatStyle = InCombatStyle;
+	OnRep_CombatStyle();
 }

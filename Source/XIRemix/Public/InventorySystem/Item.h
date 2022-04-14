@@ -36,6 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 		class UTexture2D* Thumbnail;
 
+	/** The item type used for UI*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 		EItemType ItemType;
 

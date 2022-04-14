@@ -2,6 +2,12 @@
 
 
 #include "Abilities/XIGameplayAbilityHeroJobBase.h"
+#include "Characters/XICharacterBaseHero.h"
+
+UXIGameplayAbilityHeroJobBase::UXIGameplayAbilityHeroJobBase()
+{
+    bRetriggerInstancedAbility = true;
+}
 
 void UXIGameplayAbilityHeroJobBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -21,9 +27,11 @@ void UXIGameplayAbilityHeroJobBase::ActivateAbility(const FGameplayAbilitySpecHa
     FGameplayEffectSpecHandle AttributeSpec = MakeOutgoingGameplayEffectSpec(AttributeGE);
     ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, AttributeSpec);
 
+    float Level = GetCharacterLevel();
+
     for(const FXIJobAbilityDataItem& Item : XIJobAbilityData->XIJobAbilityDataItem)
     {
-        if(Item.XIAbility->Ability)
+        if(Item.XIAbility->Ability && (Item.Level <= Level))
         {
             //TODO: Add check if character is appropriate level to gain ability + proper override starting attributes.
             UE_LOG(LogTemp, Warning, TEXT("Adding Ability: %s"), *Item.XIAbility->Ability->GetName());
@@ -54,4 +62,27 @@ void UXIGameplayAbilityHeroJobBase::EndAbility(const FGameplayAbilitySpecHandle 
     BP_RemoveGameplayEffectFromOwnerWithHandle(LevelAdjustmentHandle);
 
     Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+float UXIGameplayAbilityHeroJobBase::GetCharacterLevel()
+{
+    AXICharacterBaseHero* XIHero = Cast<AXICharacterBaseHero>(GetAvatarActorFromActorInfo());
+
+    if (XIHero)
+    {
+        FXICharacterHeroActiveJobsLevels HeroCharacterJobs;
+        HeroCharacterJobs = XIHero->GetCharacterActiveJobsAndLevels();
+
+        if (AbilityTags.HasTagExact(HeroCharacterJobs.MainJobTag))
+        {
+            return HeroCharacterJobs.MainJobLevel;
+        }
+
+        if (AbilityTags.HasTagExact(HeroCharacterJobs.SubJobTag))
+        {
+            return HeroCharacterJobs.SubJobLevel;
+        }
+    }
+
+    return 0.f;
 }
