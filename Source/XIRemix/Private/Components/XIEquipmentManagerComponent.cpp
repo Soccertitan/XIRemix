@@ -92,6 +92,7 @@ void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandl
 					Spec->SetSetByCallerMagnitude(Attribute.AttributeTag, Attribute.Value);
 				}
 
+				Spec->DynamicGrantedTags = Item->GrantedTags;
 				AGEHandle = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 			}
 		}
@@ -100,54 +101,68 @@ void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandl
 
 void UXIEquipmentManagerComponent::SetGameplayEffectMeleeDelay()
 {
-	if(GetOwnerRole() != ROLE_Authority || !GEMeleeDelay)
+	if(GetOwnerRole() != ROLE_Authority || !GEMeleeAttackDelay || !GEWeaponTags)
 	{
 		return;
 	}
 
-	float Delay = 340.f;
-
 	if(AbilitySystemComponent)
 	{
 		// Removes the old Gameplay Effect
-		AbilitySystemComponent->RemoveActiveGameplayEffect(AGEMeleeDelay);
+		AbilitySystemComponent->RemoveActiveGameplayEffect(AGEMeleeDelayTags);
 
+		float Delay = 480.f;
+
+		// Applies the appropriate Melee Tags
 		if(MainHand)
 		{
-			if(MainHand->ItemType == EItemType::WeaponMelee)
+
+			if (MainHand->CombatStyle == ECombatStyle::Hand2Hand)
+			{
+				Delay += MainHand->Delay;
+			}
+			else
 			{
 				Delay = MainHand->Delay;
 			}
-		}
 
-		if(SubHand)
-		{
-			if(SubHand->ItemType == EItemType::WeaponMelee)
-			{
-				Delay = FMath::Floor((Delay + SubHand->Delay) / 2.f);
-			}
-		}
-
-		Delay = Delay / 60.f;
-
-		if (MainHand || SubHand)
-		{
 			FGameplayEffectContextHandle GECH;
-			FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEMeleeDelay, 1.f, GECH);
+			FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEWeaponTags, 1.f, GECH);
 			FGameplayEffectSpec* Spec = GEC.Data.Get();
 
 			if (Spec)
 			{
-				Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.AttackSpeed"), Delay);
-				AGEMeleeDelay = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
+				if(SubHand)
+				{
+					if(SubHand->ItemType == EItemType::WeaponMelee)
+					{
+						Delay = (Delay + SubHand->Delay) / 2.f ;
+						Spec->DynamicGrantedTags.AddTag(DualWielding);
+					}
+					Spec->DynamicGrantedTags.AddTag(SubHand->WeaponType);
+				}
+
+				Spec->DynamicGrantedTags.AddTag(MainHand->WeaponType);
+				AGEMeleeDelayTags = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 			}
+		}
+
+		// Applies the instant Gameplay Effect for the Melee Attack Delay
+		FGameplayEffectContextHandle GECH;
+		FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEMeleeAttackDelay, 1.f, GECH);
+		FGameplayEffectSpec* Spec = GEC.Data.Get();
+
+		if (Spec)
+		{
+			Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.AttackSpeed"), Delay);
+			AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 		}
 	}
 }
 
 void UXIEquipmentManagerComponent::SetGameplayEffectRangeDelay()
 {
-	if(GetOwnerRole() != ROLE_Authority || !GERangeDelay)
+	if(GetOwnerRole() != ROLE_Authority || !GERangeAttackDelay || !GEWeaponTags)
 	{
 		return;
 	}
@@ -155,27 +170,38 @@ void UXIEquipmentManagerComponent::SetGameplayEffectRangeDelay()
 	if(AbilitySystemComponent)
 	{
 		// Removes the old Gameplay Effect
-		AbilitySystemComponent->RemoveActiveGameplayEffect(AGERangeDelay);
+		AbilitySystemComponent->RemoveActiveGameplayEffect(AGERangeDelayTags);
 
-		float Delay = 340.f;
+		float Delay = 480.f;
 
+		// Applies the Infinite GE for the weapon tags.
 		if(Ranged)
 		{
 			if(Ranged->ItemType == EItemType::WeaponRange)
 			{
 				Delay = Ranged->Delay;
-				Delay = Delay / 110.f;
 
 				FGameplayEffectContextHandle GECH;
-				FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GERangeDelay, 1.f, GECH);
+				FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEWeaponTags, 1.f, GECH);
 				FGameplayEffectSpec* Spec = GEC.Data.Get();
 
 				if (Spec)
 				{
-					Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.RangedAttackSpeed"), Delay);
-					AGERangeDelay = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
+					Spec->DynamicGrantedTags.AddTag(Ranged->WeaponType);
+					AGERangeDelayTags = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 				}
 			}
+		}
+
+		// Applies the instant GE for the Ranged Attack.
+		FGameplayEffectContextHandle GECH;
+		FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GERangeAttackDelay, 1.f, GECH);
+		FGameplayEffectSpec* Spec = GEC.Data.Get();
+
+		if (Spec)
+		{
+			Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.RangedAttackSpeed"), Delay);
+			AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 		}
 	}
 }
@@ -201,7 +227,12 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UItemEquipment* Item) const
 	FXICharacterHeroActiveJobsLevels CharacterJobsLevels;
 	CharacterJobsLevels = HeroCharacter->GetCharacterActiveJobsAndLevels();
 
-	if((CharacterJobsLevels.MainJobLevel >= Item->LevelRequirement && Item->JobRequirements.HasTagExact(CharacterJobsLevels.MainJobTag)) || (CharacterJobsLevels.SubJobLevel >= Item->LevelRequirement && Item->JobRequirements.HasTagExact(CharacterJobsLevels.SubJobTag)))
+	if(!Item->JobRequirements)
+	{
+		return true;
+	}
+
+	if((CharacterJobsLevels.MainJobLevel >= Item->LevelRequirement && Item->JobRequirements->JobTags.HasTagExact(CharacterJobsLevels.MainJobTag)) || (CharacterJobsLevels.SubJobLevel >= Item->LevelRequirement && Item->JobRequirements->JobTags.HasTagExact(CharacterJobsLevels.SubJobTag)))
 	{
 		return true;
 	}
@@ -249,6 +280,12 @@ void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UItemEquipmen
 					SetGameplayEffects(AGEMainHand, MainHand);
 					OnRep_MainHand();
 				}
+
+				if(!(Item->ItemType == EItemType::WeaponMelee && AbilitySystemComponent->HasMatchingGameplayTag(DualWield)))
+				{
+					break;
+				}
+
 				SubHand = Item;
 				CheckCombatStyle();
 				SetGameplayEffects(AGESubHand, SubHand);
@@ -279,6 +316,12 @@ void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UItemEquipmen
 		case EEquipSlot::Head:
 			if(Item->EquipSlot.Contains(EEquipSlot::Head) && IsItemEquipable(Item))
 			{
+				if(Body && Body->GrantedTags.HasTag(NoHeadGear))
+				{
+					Body = nullptr;
+					SetGameplayEffects(AGEBody, Body);
+					OnRep_Body();
+				}
 				Head = Item;
 				SetGameplayEffects(AGEHead, Head);
 				OnRep_Head();
@@ -315,6 +358,12 @@ void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UItemEquipmen
 		case EEquipSlot::Body:
 			if(Item->EquipSlot.Contains(EEquipSlot::Body) && IsItemEquipable(Item))
 			{
+				if(Item->GrantedTags.HasTag(NoHeadGear))
+				{
+					Head = nullptr;
+					SetGameplayEffects(AGEHead, Head);
+					OnRep_Head();
+				}
 				Body = Item;
 				SetGameplayEffects(AGEBody, Body);
 				OnRep_Body();

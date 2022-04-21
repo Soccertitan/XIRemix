@@ -143,17 +143,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
 	ECombatStyle CombatStyleReference;
 
-	// The Gameplay Effect Class for basic Attributes
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	// The Infinite Gameplay Effect Class for modifying Attributes
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay Effects")
 	TSubclassOf<class UGameplayEffect> GEEquipment;
 
-	// The Gameplay Effect Class for Melee weapon Delay
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<class UGameplayEffect> GEMeleeDelay;
+	// The Instant Gameplay Effect Class for Melee weapon Delay
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay Effects")
+	TSubclassOf<class UGameplayEffect> GEMeleeAttackDelay;
 
-	// The Gameplay Effect Class for Ranged attack Delay
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<class UGameplayEffect> GERangeDelay;
+	// The Instant Gameplay Effect Class for Ranged attack Delay
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay Effects")
+	TSubclassOf<class UGameplayEffect> GERangeAttackDelay;
+
+	// A blank Infinite Gameplay Effect Class to apply Weapon Tags
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay Effects")
+	TSubclassOf<class UGameplayEffect> GEWeaponTags;
 
 	UPROPERTY(BlueprintReadOnly)
 	class AXICharacterBaseHero* HeroCharacter;
@@ -278,13 +282,20 @@ protected:
 	UPROPERTY()
 	FActiveGameplayEffectHandle AGEFeet;
 
-	FActiveGameplayEffectHandle AGEMeleeDelay;
-	FActiveGameplayEffectHandle AGERangeDelay;
+	FActiveGameplayEffectHandle AGEMeleeDelayTags;
+	FActiveGameplayEffectHandle AGERangeDelayTags;
 
 	//The parent tag of the setbycaller equipment tags.
 	UPROPERTY(EditDefaultsOnly, meta = (Categories="SetByCaller"))
 	FGameplayTag SetByCallerParent = FGameplayTag::RequestGameplayTag("SetByCaller.Attributes");
 	UPROPERTY()
 	TArray<FGameplayTag> SetByCallerChildTags;
+
+	/*
+	// GameplayTags for Comparison
+	*/
+	FGameplayTag DualWield = FGameplayTag::RequestGameplayTag("Passive.DualWield");
+	FGameplayTag DualWielding = FGameplayTag::RequestGameplayTag("State.Gameplay.DualWielding");
+	FGameplayTag NoHeadGear = FGameplayTag::RequestGameplayTag("Passive.NoHeadGear");
 
 };

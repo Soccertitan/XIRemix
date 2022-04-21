@@ -278,13 +278,27 @@ void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshM
 
 	if (Item)
 	{
-		if (SKMeshMergeType == ESkeletalMeshMergeType::SubHand)
+		if (Item->ItemType == EItemType::Shield || SKMeshMergeType != ESkeletalMeshMergeType::SubHand)
 		{
-			TargetMesh = Item->GetMesh(Race, true);
+			TargetMesh = Item->GetMesh(Race, false);
 		}
 		else
 		{
-			TargetMesh = Item->GetMesh(Race, false);
+			TargetMesh = Item->GetMesh(Race, true);
+		}
+
+		if(Item->CombatStyle == ECombatStyle::Hand2Hand)
+		{
+			int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
+			SKMeshMergeParams.MeshesToMerge[SubHandKey] = Item->GetMesh(Race, true);
+		}
+	}
+	else
+	{
+		if(!XIEquipmentManager->GetSubHandItem())
+		{
+			int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
+			SKMeshMergeParams.MeshesToMerge[SubHandKey] = nullptr;
 		}
 	}
 

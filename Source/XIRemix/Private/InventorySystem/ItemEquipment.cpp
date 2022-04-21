@@ -10,28 +10,20 @@ UItemEquipment::UItemEquipment()
 
 USkeletalMesh* UItemEquipment::GetMesh(ERace Race, bool bWeaponInSubHand = false)
 {
-    if(bWeaponInSubHand)
+    
+    if (SKMesh.IsValidIndex(0))
     {
-        if (SKMeshWeaponSubHand.IsValidIndex(0))
+        for (FXISKMeshEquipment& Item : SKMesh)
         {
-            for (FXISKMeshEquipment& Item : SKMeshWeaponSubHand)
+            if (Item.Race == Race)
             {
-                if (Item.Race == Race)
+                if (bWeaponInSubHand)
                 {
-                    return Item.Mesh;
+                    return Item.MeshSecondary;
                 }
-            }
-        }
-    }
-    else
-    {
-        if (SKMeshDefault.IsValidIndex(0))
-        {
-            for (FXISKMeshEquipment& Item : SKMeshDefault)
-            {
-                if (Item.Race == Race)
+                else
                 {
-                    return Item.Mesh;
+                    return Item.MeshDefault;
                 }
             }
         }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "DataAssets/XIJobTagCollection.h"
 #include "InventorySystem/Item.h"
 #include "ItemEquipment.generated.h"
 
@@ -16,7 +17,10 @@ struct XIREMIX_API FXISKMeshEquipment
 	ERace Race;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USkeletalMesh* Mesh;
+	USkeletalMesh* MeshDefault;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMesh* MeshSecondary;
 
 };
 
@@ -53,13 +57,11 @@ public:
 	float LevelRequirement;
 
 	/* Leave empty to include all Jobs*/
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment", meta = (Categories="State.Job"))
-	FGameplayTagContainer JobRequirements;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment")
+	UXIJobTagCollection* JobRequirements;
 
-	/*
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment")
-	FGameplayTagContainer SpecialTraits;
-	*/
+	FGameplayTagContainer GrantedTags;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
 	float Damage;
@@ -67,7 +69,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
 	float Delay;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides, Categories="Weapon"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Instrument || ItemType == EItemType::Ammo", EditConditionHides, Categories="Weapon"))
 	FGameplayTag WeaponType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides, Categories="DamageType"))
@@ -86,9 +88,5 @@ protected:
 
 	//For any item that can only be 'equipped' into a single slot.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Mesh")
-	TArray<FXISKMeshEquipment> SKMeshDefault;
-
-	// For One Handed weapons that can be equipped in the SubHand in addtion to MainHand.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Mesh")
-	TArray<FXISKMeshEquipment> SKMeshWeaponSubHand;
+	TArray<FXISKMeshEquipment> SKMesh;
 };
