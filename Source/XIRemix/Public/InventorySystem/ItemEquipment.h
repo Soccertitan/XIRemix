@@ -81,9 +81,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes")
 	TArray<FXIGrantedAttribute> Attributes;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Item|Equipment")
-	bool bIsEquipped;
-
 protected:
 
 	//For any item that can only be 'equipped' into a single slot.

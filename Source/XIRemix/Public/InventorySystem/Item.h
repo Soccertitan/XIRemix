@@ -48,4 +48,8 @@ public:
 	UPROPERTY()
 	class UInventoryComponent* OwningInventory;
 
+	/**The Equipment Manager that has this item equipped*/
+	UPROPERTY()
+	class UXIEquipmentManagerComponent* OwningEquipmentManager;
+
 };

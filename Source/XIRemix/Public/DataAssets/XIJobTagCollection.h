@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class XIREMIX_API UXIJobTagCollection : public UDataAsset
 {
 	GENERATED_BODY()
