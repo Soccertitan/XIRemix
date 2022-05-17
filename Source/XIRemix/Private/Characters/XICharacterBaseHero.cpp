@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
+#include "Components/InteractionComponent.h"
 #include "UI/XIPlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayTagsManager.h"
@@ -57,6 +58,9 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 
 	MainJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentMainJobTag);
     SubJobTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(ParentSubJobTag);
+
+	InteractionCheckFrequency = 0.f;
+	InteractionCheckDistance = 1000.f;
 }
 
 void AXICharacterBaseHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -77,6 +81,22 @@ void AXICharacterBaseHero::BeginPlay()
 	}
 
 	InitializeMeshesToMerge();
+}
+
+void AXICharacterBaseHero::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// const bool bIsInteractingOnServer = (HasAuthority() && IsInteracting());
+	if(!IsLocallyControlled())
+	{
+		SetActorTickEnabled(false);
+	}
+
+	if(GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
+	{
+		PerformInteractionCheck();
+	}
 }
 
 // Server only
@@ -274,17 +294,22 @@ void AXICharacterBaseHero::OnRep_SKMeshMergeParams()
 
 void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType)
 {
+	if(!HasAuthority())
+	{
+		return;
+	}
+
 	USkeletalMesh* TargetMesh = nullptr;
 
 	if (Item)
 	{
-		if (Item->ItemType == EItemType::Shield || SKMeshMergeType != ESkeletalMeshMergeType::SubHand)
+		if (SKMeshMergeType == ESkeletalMeshMergeType::SubHand)
 		{
-			TargetMesh = Item->GetMesh(Race, false);
+			TargetMesh = Item->GetMesh(Race, true);
 		}
 		else
 		{
-			TargetMesh = Item->GetMesh(Race, true);
+			TargetMesh = Item->GetMesh(Race, false);
 		}
 
 		if(Item->CombatStyle == ECombatStyle::Hand2Hand)
@@ -293,13 +318,11 @@ void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshM
 			SKMeshMergeParams.MeshesToMerge[SubHandKey] = Item->GetMesh(Race, true);
 		}
 	}
-	else
+
+	if(!XIEquipmentManager->GetSubHandItem() && ECombatStyle::Hand2Hand != CombatStyle)
 	{
-		if(!XIEquipmentManager->GetSubHandItem())
-		{
-			int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
-			SKMeshMergeParams.MeshesToMerge[SubHandKey] = nullptr;
-		}
+		int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
+		SKMeshMergeParams.MeshesToMerge[SubHandKey] = nullptr;
 	}
 
 	// To ensure the character body isn't invisible if mesh is null.
@@ -371,3 +394,175 @@ void AXICharacterBaseHero::SetCombatStyle(ECombatStyle InCombatStyle)
 	CombatStyle = InCombatStyle;
 	OnRep_CombatStyle();
 }
+
+
+#pragma region Interactables
+
+void AXICharacterBaseHero::PerformInteractionCheck()
+{
+	if (GetController() == nullptr)
+	{
+		return;
+	}
+
+	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
+
+	FVector ForwardVector = GetActorForwardVector();
+	FVector TraceStart = GetActorLocation();
+	FVector TraceEnd = (ForwardVector * InteractionCheckDistance) + TraceStart;
+	FHitResult TraceHit;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if(GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+	{
+		//Check if we hit an interactable object
+		if(TraceHit.GetActor())
+		{
+			if(UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(TraceHit.GetActor()->GetComponentByClass(UInteractionComponent::StaticClass())))
+			{
+				float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
+
+				if(InteractionComponent != GetInteractable() && Distance <= InteractionComponent->InteractionDistance)
+				{
+					FoundNewInteractable(InteractionComponent);
+					return;
+				}
+				else if (Distance > InteractionComponent->InteractionDistance && GetInteractable())
+				{
+					CouldntFindInteractable();
+				}
+				return;
+			}
+		}
+	}
+	CouldntFindInteractable();
+}
+
+void AXICharacterBaseHero::CouldntFindInteractable()
+{
+	//We've lost focus on an interactable. Clear the timer
+	if(GetWorldTimerManager().IsTimerActive(TimerHandle_Interact))
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandle_Interact);
+	}
+
+	//Tell the interactable we've stopped focusing on it and clear the current interactable.
+	if(UInteractionComponent* Interactable = GetInteractable())
+	{
+		Interactable->EndFocus(this);
+		
+		if(InteractionData.bInteractHeld)
+		{
+			EndInteract();
+		}
+	}
+
+	InteractionData.ViewedInteractionComponent = nullptr;
+}
+
+void AXICharacterBaseHero::FoundNewInteractable(UInteractionComponent* Interactable)
+{
+	EndInteract();
+
+	if(UInteractionComponent* OldInteractable = GetInteractable())
+	{
+		OldInteractable->EndFocus(this);
+	}
+
+	InteractionData.ViewedInteractionComponent = Interactable;
+	Interactable->BeginFocus(this);
+}
+
+void AXICharacterBaseHero::BeginInteract()
+{
+	if(!HasAuthority())
+	{
+		Server_BeginInteract();
+	}
+
+	/**As an optimization, the server only checks that we're looking at an item once we begin interacting with it.
+	This saves the server doing a check every tick for an interactable Item. The exception is a non-instant interact.
+	In this case, the server will check every tick for the duration of the interact*/
+	if (HasAuthority())
+	{
+		PerformInteractionCheck();
+	}
+
+	InteractionData.bInteractHeld = true;
+
+	if (UInteractionComponent* Interactable = GetInteractable())
+	{
+		Interactable->BeginInteract(this);
+
+		if (FMath::IsNearlyZero(Interactable->InteractionTime))
+		{
+			Interact();
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(TimerHandle_Interact, this, &AXICharacterBaseHero::Interact, Interactable->InteractionTime, false);
+		}
+	}
+}
+
+bool AXICharacterBaseHero::Server_BeginInteract_Validate()
+{
+	return true;
+}
+
+void AXICharacterBaseHero::Server_BeginInteract_Implementation()
+{
+	BeginInteract();
+}
+
+void AXICharacterBaseHero::EndInteract()
+{
+	if(!HasAuthority())
+	{
+		Server_EndInteract();
+	}
+
+	InteractionData.bInteractHeld = false;
+
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interact);
+
+	if(UInteractionComponent* Interactable = GetInteractable())
+	{
+		Interactable->EndInteract(this);
+	}
+}
+
+bool AXICharacterBaseHero::Server_EndInteract_Validate()
+{
+	return true;
+}
+
+void AXICharacterBaseHero::Server_EndInteract_Implementation()
+{
+	EndInteract();
+}
+
+void AXICharacterBaseHero::Interact()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interact);
+
+	if(UInteractionComponent* Interactable = GetInteractable())
+	{
+		Interactable->Interact(this);
+	}
+}
+
+bool AXICharacterBaseHero::IsInteracting() const
+{
+	return GetWorldTimerManager().IsTimerActive(TimerHandle_Interact);
+}
+
+float AXICharacterBaseHero::GetRemainingInteractTime() const
+{
+	return GetWorldTimerManager().GetTimerRemaining(TimerHandle_Interact);
+}
+
+#pragma endregion Interactables
+

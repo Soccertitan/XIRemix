@@ -48,6 +48,8 @@ public:
 
 	UItemEquipment();
 
+	//Gets the default mesh for an equipment item.
+	USkeletalMesh* GetMesh(ERace Race);
 	USkeletalMesh* GetMesh(ERace Race, bool bWeaponInSubHand);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment")
@@ -81,9 +83,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes")
 	TArray<FXIGrantedAttribute> Attributes;
 
+	/**The Equipment Manager that has this item equipped*/
+	UPROPERTY()
+	class UXIEquipmentManagerComponent* OwningEquipmentManager;
+
 protected:
 
 	//For any item that can only be 'equipped' into a single slot.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Mesh")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Mesh", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Shield || ItemType == EItemType::Instrument || ItemType == EItemType::Armor", EditConditionHides))
 	TArray<FXISKMeshEquipment> SKMesh;
 };

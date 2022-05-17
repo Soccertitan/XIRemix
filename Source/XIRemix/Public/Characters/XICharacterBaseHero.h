@@ -31,6 +31,31 @@ struct XIREMIX_API FXICharacterHeroActiveJobsLevels
 	float SubJobLevel = 0.f;
 };
 
+USTRUCT()
+struct XIREMIX_API FInteractionData
+{
+	GENERATED_BODY()
+
+	FInteractionData()
+	{
+		ViewedInteractionComponent = nullptr;
+		LastInteractionCheckTime = 0.f;
+		bInteractHeld = false;
+	}
+
+	//The current interactable component we're viewing, if there is one
+	UPROPERTY()
+	class UInteractionComponent* ViewedInteractionComponent;
+
+	//The time when we last checked for an interactable
+	UPROPERTY()
+	float LastInteractionCheckTime;
+
+	//Whether the local player is holding the interact key.
+	UPROPERTY()
+	bool bInteractHeld;
+};
+
 /**
  * 
  */
@@ -97,6 +122,8 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	//Called Every frame
+	virtual void Tick(float DeltaTime) override;
 	
 	// Client only
 	virtual void OnRep_PlayerState() override;
@@ -121,4 +148,54 @@ protected:
 	virtual void ManaPointsMaxChanged(const FOnAttributeChangeData& Data);
 	virtual void TacticalPointsChanged(const FOnAttributeChangeData& Data) override;
 	virtual void TacticalPointsMaxChanged(const FOnAttributeChangeData& Data);
+
+
+	//Interactables
+
+	//How often in seconds to check for an interactable object. Set this to zero if you want to check every tick.
+	UPROPERTY(EditDefaultsOnly, Category = "Interaction")
+	float InteractionCheckFrequency;
+
+	//How far we'll trace when we check if the player is looking at an interactable object
+	UPROPERTY(EditDefaultsOnly, Category = "Interaction")
+	float InteractionCheckDistance;
+	
+	//Information about the current state of the player's interaction
+	UPROPERTY()
+	FInteractionData InteractionData;
+
+	//Helper function to make grabbing interactables faster
+	FORCEINLINE class UInteractionComponent* GetInteractable() const {return InteractionData.ViewedInteractionComponent;}
+	
+	FTimerHandle TimerHandle_Interact;
+
+public:
+
+	//True if we're interacting with an item that has an interaction time. For example a light that takes 2 seconds to turn on.
+	bool IsInteracting() const;
+
+	//Get the time till we interact witht he current interactable
+	float GetRemainingInteractTime() const;
+
+protected:
+
+	void PerformInteractionCheck();
+	void CouldntFindInteractable();
+	void FoundNewInteractable(UInteractionComponent* Interactable);
+
+	UFUNCTION(BlueprintCallable)
+	void BeginInteract();
+	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
+	void Server_BeginInteract();
+	bool Server_BeginInteract_Validate();
+	void Server_BeginInteract_Implementation();
+
+	UFUNCTION(BlueprintCallable)
+	void EndInteract();
+	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
+	void Server_EndInteract();
+	bool Server_EndInteract_Validate();
+	void Server_EndInteract_Implementation();
+
+	void Interact();
 };

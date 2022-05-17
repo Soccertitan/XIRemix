@@ -8,6 +8,11 @@ UItemEquipment::UItemEquipment()
 
 }
 
+USkeletalMesh* UItemEquipment::GetMesh(ERace Race)
+{
+    return GetMesh(Race, false);
+}
+
 USkeletalMesh* UItemEquipment::GetMesh(ERace Race, bool bWeaponInSubHand = false)
 {
     

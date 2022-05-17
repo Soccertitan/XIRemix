@@ -43,8 +43,6 @@ void UXIEquipmentManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetIsReplicated(true);
-
 	HeroCharacter = Cast<AXICharacterBaseHero>(GetOwner());
 
 	if(!HeroCharacter)
