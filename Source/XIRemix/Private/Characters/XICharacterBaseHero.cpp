@@ -38,7 +38,7 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 	// Creates the Equipment Manager Component
 	XIEquipmentManager = CreateDefaultSubobject<UXIEquipmentManagerComponent>(TEXT("XIEquipmentManager"));
 	XIEquipmentManager->SetIsReplicated(true);
-	XIEquipmentManager->OnMeshUpdated.AddDynamic(this, &AXICharacterBaseHero::SetCharacterMesh);
+	XIEquipmentManager->OnUpdateMesh.AddDynamic(this, &AXICharacterBaseHero::SetCharacterMesh);
 	XIEquipmentManager->OnCombatStyleChanged.AddDynamic(this, &AXICharacterBaseHero::SetCombatStyle);
 
 	//Mesh Merge Map
@@ -303,7 +303,7 @@ void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshM
 
 	if (Item)
 	{
-		if (SKMeshMergeType == ESkeletalMeshMergeType::SubHand)
+		if (SKMeshMergeType == ESkeletalMeshMergeType::SubHand && Item->ItemType == EItemType::WeaponMelee)
 		{
 			TargetMesh = Item->GetMesh(Race, true);
 		}
@@ -312,14 +312,14 @@ void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshM
 			TargetMesh = Item->GetMesh(Race, false);
 		}
 
-		if(Item->CombatStyle == ECombatStyle::Hand2Hand)
+		if(SKMeshMergeType == ESkeletalMeshMergeType::MainHand && Item->CombatStyle == ECombatStyle::Hand2Hand)
 		{
 			int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
 			SKMeshMergeParams.MeshesToMerge[SubHandKey] = Item->GetMesh(Race, true);
 		}
 	}
 
-	if(!XIEquipmentManager->GetSubHandItem() && ECombatStyle::Hand2Hand != CombatStyle)
+	if(!XIEquipmentManager->FindEquippedItemBySlot(EEquipSlot::SubHand) && CombatStyle != ECombatStyle::Hand2Hand)
 	{
 		int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
 		SKMeshMergeParams.MeshesToMerge[SubHandKey] = nullptr;

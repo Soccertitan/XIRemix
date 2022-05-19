@@ -3,6 +3,7 @@
 
 #include "Components/XIEquipmentManagerComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagsManager.h"
 #include "Characters/XICharacterBaseHero.h"
@@ -10,32 +11,53 @@
 // Sets default values for this component's properties
 UXIEquipmentManagerComponent::UXIEquipmentManagerComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+	SetComponentTickEnabled(false);
+	SetIsReplicatedByDefault(true);
+
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::MainHand, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::SubHand, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ranged, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ammo, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Head, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Neck, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ear1, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ear2, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Body, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Hands, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ring1, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Ring2, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Back, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Waist, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Legs, nullptr));
+	EquippedItems.Add(FXIEquippedItem::FXIEquippedItem(EEquipSlot::Feet, nullptr));
 }
 
 void UXIEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, MainHand, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, SubHand, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ranged, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ammo, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Head, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Neck, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ear1, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ear2, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Body, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Hands, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ring1, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Ring2, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Back, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Waist, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Legs, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, Feet, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXIEquipmentManagerComponent, EquippedItems, COND_None, REPNOTIFY_Always);
+}
+
+bool UXIEquipmentManagerComponent::ReplicateSubobjects(class UActorChannel *Channel, class FOutBunch *Bunch, FReplicationFlags *RepFlags)
+{
+	bool bWroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+	//Check if the array of items needs to replicate
+	if (Channel->KeyNeedsToReplicate(0, ReplicatedItemsKey))
+	{
+		for (auto& Item : EquippedItems)
+		{
+			if (Channel->KeyNeedsToReplicate(Item.ItemEquipment->GetUniqueID(), Item.ItemEquipment->RepKey))
+			{
+				bWroteSomething |= Channel->ReplicateSubobject(Item.ItemEquipment, *Bunch, *RepFlags);
+			}
+		}
+	}
+
+	return bWroteSomething;
 }
 
 // Called when the game starts
@@ -97,111 +119,112 @@ void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandl
 	}
 }
 
-void UXIEquipmentManagerComponent::SetGameplayEffectMeleeDelay()
+void UXIEquipmentManagerComponent::SetGameplayEffectAttackDelay(float Delay, FActiveGameplayEffectHandle& AGEHandle, bool bIsMelee)
 {
-	if(GetOwnerRole() != ROLE_Authority || !GEMeleeAttackDelay || !GEWeaponTags)
+	if(GetOwnerRole() != ROLE_Authority || !GEMeleeAttackDelay || !GEWeaponTags || !GERangeAttackDelay)
 	{
 		return;
 	}
 
 	if(AbilitySystemComponent)
 	{
-		// Removes the old Gameplay Effect
-		AbilitySystemComponent->RemoveActiveGameplayEffect(AGEMeleeDelayTags);
+		//Removes the old Gameplay Effect
+		AbilitySystemComponent->RemoveActiveGameplayEffect(AGEHandle);
 
-		float Delay = 480.f;
-
-		// Applies the appropriate Melee Tags
-		if(MainHand)
-		{
-
-			if (MainHand->CombatStyle == ECombatStyle::Hand2Hand)
-			{
-				Delay += MainHand->Delay;
-			}
-			else
-			{
-				Delay = MainHand->Delay;
-			}
-
-			FGameplayEffectContextHandle GECH;
-			FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEWeaponTags, 1.f, GECH);
-			FGameplayEffectSpec* Spec = GEC.Data.Get();
-
-			if (Spec)
-			{
-				if(SubHand)
-				{
-					if(SubHand->ItemType == EItemType::WeaponMelee)
-					{
-						Delay = (Delay + SubHand->Delay) / 2.f ;
-						Spec->DynamicGrantedTags.AddTag(DualWielding);
-					}
-					Spec->DynamicGrantedTags.AddTag(SubHand->WeaponType);
-				}
-
-				Spec->DynamicGrantedTags.AddTag(MainHand->WeaponType);
-				AGEMeleeDelayTags = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
-			}
-		}
-
-		// Applies the instant Gameplay Effect for the Melee Attack Delay
 		FGameplayEffectContextHandle GECH;
-		FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEMeleeAttackDelay, 1.f, GECH);
+		FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEWeaponTags, 1.f, GECH);
 		FGameplayEffectSpec* Spec = GEC.Data.Get();
 
 		if (Spec)
 		{
-			Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.AttackSpeed"), Delay);
-			AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
+			if(bIsMelee)
+			{
+				UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+				UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+
+				if(MainHand)
+				{
+					Spec->DynamicGrantedTags.AddTag(MainHand->WeaponType);
+				}
+				if(SubHand)
+				{
+					Spec->DynamicGrantedTags.AddTag(SubHand->WeaponType);
+					if(SubHand->ItemType == EItemType::WeaponMelee)
+					{
+						Spec->DynamicGrantedTags.AddTag(DualWielding);
+					}
+				}
+
+				// Applies the instant Gameplay Effect for the Melee Attack Delay
+				FGameplayEffectContextHandle GECHInstant;
+				FGameplayEffectSpecHandle GECInstant = AbilitySystemComponent->MakeOutgoingSpec(GEMeleeAttackDelay, 1.f, GECHInstant);
+				FGameplayEffectSpec* SpecInstant = GECInstant.Data.Get();
+
+				if (SpecInstant)
+				{
+					SpecInstant->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.AttackSpeed"), Delay);
+					AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GECInstant);
+				}
+			}
+			else // Ranged Weapon
+			{
+				UItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
+				
+				if(Ranged)
+				{
+					Spec->DynamicGrantedTags.AddTag(Ranged->WeaponType);
+				}
+
+				// Applies the instant Gameplay Effect for the Ranged Attack Delay
+				FGameplayEffectContextHandle GECHInstant;
+				FGameplayEffectSpecHandle GECInstant = AbilitySystemComponent->MakeOutgoingSpec(GERangeAttackDelay, 1.f, GECHInstant);
+				FGameplayEffectSpec* SpecInstant = GECInstant.Data.Get();
+
+				if (SpecInstant)
+				{
+					SpecInstant->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.AttackSpeed"), Delay);
+					AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GECInstant);
+				}
+			}
+
+			// Applies the Gameplay Tags
+			AGEHandle = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
 		}
 	}
 }
 
-void UXIEquipmentManagerComponent::SetGameplayEffectRangeDelay()
+float UXIEquipmentManagerComponent::GetAttackDelay(bool bIsMelee) const
 {
-	if(GetOwnerRole() != ROLE_Authority || !GERangeAttackDelay || !GEWeaponTags)
+	float Delay = 480.f;
+
+	if(bIsMelee)
 	{
-		return;
+		UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+		UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+
+		if(MainHand && MainHand->CombatStyle == ECombatStyle::Hand2Hand)
+		{
+			Delay += MainHand->Delay;
+		}
+		else if(SubHand && SubHand->ItemType == EItemType::WeaponMelee)
+		{
+			Delay = (MainHand->Delay + SubHand->Delay) / 2.f ;
+		}
+		else if (MainHand)
+		{
+			Delay = MainHand->Delay;
+		}
 	}
-
-	if(AbilitySystemComponent)
+	else
 	{
-		// Removes the old Gameplay Effect
-		AbilitySystemComponent->RemoveActiveGameplayEffect(AGERangeDelayTags);
-
-		float Delay = 480.f;
-
-		// Applies the Infinite GE for the weapon tags.
+		UItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
 		if(Ranged)
 		{
-			if(Ranged->ItemType == EItemType::WeaponRange)
-			{
-				Delay = Ranged->Delay;
-
-				FGameplayEffectContextHandle GECH;
-				FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GEWeaponTags, 1.f, GECH);
-				FGameplayEffectSpec* Spec = GEC.Data.Get();
-
-				if (Spec)
-				{
-					Spec->DynamicGrantedTags.AddTag(Ranged->WeaponType);
-					AGERangeDelayTags = AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
-				}
-			}
-		}
-
-		// Applies the instant GE for the Ranged Attack.
-		FGameplayEffectContextHandle GECH;
-		FGameplayEffectSpecHandle GEC = AbilitySystemComponent->MakeOutgoingSpec(GERangeAttackDelay, 1.f, GECH);
-		FGameplayEffectSpec* Spec = GEC.Data.Get();
-
-		if (Spec)
-		{
-			Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.RangedAttackSpeed"), Delay);
-			AbilitySystemComponent->BP_ApplyGameplayEffectSpecToSelf(GEC);
+			Delay = Ranged->Delay;
 		}
 	}
+
+	return Delay;
 }
 
 void UXIEquipmentManagerComponent::InitializeSpecSetByCaller(FGameplayEffectSpec* InSpec)
@@ -217,8 +240,9 @@ void UXIEquipmentManagerComponent::InitializeSpecSetByCaller(FGameplayEffectSpec
 
 bool UXIEquipmentManagerComponent::IsItemEquipable(UItemEquipment* Item) const
 {
-	if(!HeroCharacter)
+	if(!HeroCharacter || !Item)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Warning! The Item or the Hero is invalid."));
 		return false;
 	}
 
@@ -244,192 +268,155 @@ bool UXIEquipmentManagerComponent::Server_EquipItem_Validate(UItemEquipment* Ite
 
 void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UItemEquipment* Item, EEquipSlot EquipSlot)
 {
-	if(!Item)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("The Item to equip is invalid."));
+	if(!Item || !IsItemEquipable(Item))
+	{	
 		return;
 	}
 
-	switch (EquipSlot)
+	for(auto& Equipment : EquippedItems)
 	{
-		case EEquipSlot::MainHand:
-			if(Item->EquipSlot.Contains(EEquipSlot::MainHand) && IsItemEquipable(Item))
-			{
+		//Skip to next iteration of the loop if the EquipSlot is not equal to the Array's equip slot.
+		if(!(Equipment.EquipSlot == EquipSlot))
+		{
+			continue;
+		}
+
+		//The item cannot be equipped to that slot!.
+		if(!Item->EquipSlot.Contains(EquipSlot))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Item cannot be equipped to that slot"));
+			return;
+		}
+
+		switch (EquipSlot)
+		{
+			case EEquipSlot::MainHand:
+				
+				// Unequip the item from Subhand because we're weilding a 2Handed weapon.
 				if(!Item->EquipSlot.Contains(EEquipSlot::SubHand))
 				{
-					SubHand = nullptr;
-					SetGameplayEffects(AGESubHand, SubHand);
-					OnRep_SubHand();
+					for(auto& SubItem : EquippedItems)
+					{
+						if(SubItem.EquipSlot == EEquipSlot::SubHand)
+						{
+							SubItem.ItemEquipment = nullptr;
+							SetGameplayEffects(SubItem.ActiveGEHandle, nullptr);
+							OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
+							break;
+						}
+					}
 				}
-				MainHand = Item;
+
+				Equipment.ItemEquipment = Item;
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
 				CheckCombatStyle();
-				SetGameplayEffects(AGEMainHand, MainHand);
-				SetGameplayEffectMeleeDelay();
-				OnRep_MainHand();
-			}
-			break;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::MainHand);
+				break;
 
-		case EEquipSlot::SubHand:
-			if(Item->EquipSlot.Contains(EEquipSlot::SubHand) && IsItemEquipable(Item))
-			{
-				if(!MainHand->EquipSlot.Contains(EEquipSlot::SubHand))
+			case EEquipSlot::SubHand:
+
+				for(auto& MainItem : EquippedItems)
 				{
-					MainHand = nullptr;
-					SetGameplayEffects(AGEMainHand, MainHand);
-					OnRep_MainHand();
+					if(MainItem.EquipSlot == EEquipSlot::MainHand)
+					{
+						if(MainItem.ItemEquipment)
+						{
+							if(MainItem.ItemEquipment->EquipSlot.Contains(EEquipSlot::SubHand))
+							{
+								MainItem.ItemEquipment = nullptr;
+								SetGameplayEffects(MainItem.ActiveGEHandle, nullptr);
+							}
+						}
+						break;
+					}
 				}
 
-				if(!(Item->ItemType == EItemType::WeaponMelee && AbilitySystemComponent->HasMatchingGameplayTag(DualWield)))
+				if(Item->ItemType == EItemType::WeaponMelee && !AbilitySystemComponent->HasMatchingGameplayTag(DualWield))
 				{
-					break;
+					// Don't equip the subHand item. We can't dual wield.
+					return;
 				}
 
-				SubHand = Item;
+				Equipment.ItemEquipment = Item;
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
 				CheckCombatStyle();
-				SetGameplayEffects(AGESubHand, SubHand);
-				SetGameplayEffectMeleeDelay();
-				OnRep_SubHand();
-			}
-			break;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::SubHand);
+				break;
 
-		case EEquipSlot::Ranged:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ranged) && IsItemEquipable(Item))
-			{
-				Ranged = Item;
-				SetGameplayEffects(AGERanged, Ranged);
-				SetGameplayEffectRangeDelay();
-				OnRep_Ranged();
-			}
-			break;
+			case EEquipSlot::Ranged:
 
-		case EEquipSlot::Ammo:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ammo) && IsItemEquipable(Item))
-			{
-				Ammo = Item;
-				SetGameplayEffects(AGEAmmo, Ammo);
-				OnRep_Ammo();
-			}
-			break;
-
-		case EEquipSlot::Head:
-			if(Item->EquipSlot.Contains(EEquipSlot::Head) && IsItemEquipable(Item))
-			{
-				if(Body && Body->GrantedTags.HasTag(NoHeadGear))
+				Equipment.ItemEquipment = Item;
+				SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
+				/*
+				TODO: Add logic to remove ammo if not appropriate.
+				*/
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Range);
+				break;
+			
+			case EEquipSlot::Ammo:
+				//TODO for Ammo logic.
+				break;
+			
+			case EEquipSlot::Head:
+				//Unequips Body equipment if body does not allow head gear.
+				for(auto& Body : EquippedItems)
 				{
-					Body = nullptr;
-					SetGameplayEffects(AGEBody, Body);
-					OnRep_Body();
+					if(Body.EquipSlot == EEquipSlot::Body)
+					{
+						if(Body.ItemEquipment && Body.ItemEquipment->GrantedTags.HasTag(NoHeadGear))
+						{
+							Body.ItemEquipment = nullptr;
+							SetGameplayEffects(Body.ActiveGEHandle, nullptr);
+							OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
+						}
+						break;
+					}
 				}
-				Head = Item;
-				SetGameplayEffects(AGEHead, Head);
-				OnRep_Head();
-			}
-			break;
-
-		case EEquipSlot::Neck:
-			if(Item->EquipSlot.Contains(EEquipSlot::Neck) && IsItemEquipable(Item))
-			{
-				Neck = Item;
-				SetGameplayEffects(AGENeck, Neck);
-				OnRep_Neck();
-			}
-			break;
-
-		case EEquipSlot::Ear1:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ear1) && IsItemEquipable(Item))
-			{
-				Ear1 = Item;
-				SetGameplayEffects(AGEEar1, Ear1);
-				OnRep_Ear1();
-			}
-			break;
-
-		case EEquipSlot::Ear2:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ear2) && IsItemEquipable(Item))
-			{
-				Ear2 = Item;
-				SetGameplayEffects(AGEEar2, Ear2);
-				OnRep_Ear2();
-			}
-			break;
-
-		case EEquipSlot::Body:
-			if(Item->EquipSlot.Contains(EEquipSlot::Body) && IsItemEquipable(Item))
-			{
-				if(Item->GrantedTags.HasTag(NoHeadGear))
+				Equipment.ItemEquipment = Item;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Head);
+				break;
+			
+			case EEquipSlot::Body:
+				//Unequips Head equipment if body does not allow head gear.
+				for(auto& Head : EquippedItems)
 				{
-					Head = nullptr;
-					SetGameplayEffects(AGEHead, Head);
-					OnRep_Head();
+					if(Head.EquipSlot == EEquipSlot::Head)
+					{
+						if(Head.ItemEquipment && Equipment.ItemEquipment->GrantedTags.HasTag(NoHeadGear))
+						{
+							Head.ItemEquipment = nullptr;
+							SetGameplayEffects(Head.ActiveGEHandle, nullptr);
+							OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
+						}
+						break;
+					}
 				}
-				Body = Item;
-				SetGameplayEffects(AGEBody, Body);
-				OnRep_Body();
-			}
-			break;
+				Equipment.ItemEquipment = Item;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Body);
+				break;
 
-		case EEquipSlot::Hands:
-			if(Item->EquipSlot.Contains(EEquipSlot::Hands) && IsItemEquipable(Item))
-			{
-				Hands = Item;
-				SetGameplayEffects(AGEHands, Hands);
-				OnRep_Hands();
-			}
-			break;
+			case EEquipSlot::Hands:
+				Equipment.ItemEquipment = Item;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Hands);
+				break;
 
-		case EEquipSlot::Ring1:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ring1) && IsItemEquipable(Item))
-			{
-				Ring1 = Item;
-				SetGameplayEffects(AGERing1, Ring1);
-				OnRep_Ring1();
-			}
-			break;
+			case EEquipSlot::Legs:
+				Equipment.ItemEquipment = Item;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Legs);
+				break;
 
-		case EEquipSlot::Ring2:
-			if(Item->EquipSlot.Contains(EEquipSlot::Ring2) && IsItemEquipable(Item))
-			{
-				Ring2 = Item;
-				SetGameplayEffects(AGERing2, Ring2);
-				OnRep_Ring2();
-			}
-			break;
+			case EEquipSlot::Feet:
+				Equipment.ItemEquipment = Item;
+				OnUpdateMesh.Broadcast(Item, ESkeletalMeshMergeType::Feet);
+				break;
+		}
 
-		case EEquipSlot::Back:
-			if(Item->EquipSlot.Contains(EEquipSlot::Back) && IsItemEquipable(Item))
-			{
-				Back = Item;
-				SetGameplayEffects(AGEBack, Back);
-				OnRep_Back();
-			}
-			break;
-
-		case EEquipSlot::Waist:
-			if(Item->EquipSlot.Contains(EEquipSlot::Waist) && IsItemEquipable(Item))
-			{
-				Waist = Item;
-				SetGameplayEffects(AGEWaist, Waist);
-				OnRep_Waist();
-			}
-			break;
-
-		case EEquipSlot::Legs:
-			if(Item->EquipSlot.Contains(EEquipSlot::Legs) && IsItemEquipable(Item))
-			{
-				Legs = Item;
-				SetGameplayEffects(AGELegs, Legs);
-				OnRep_Legs();
-			}
-			break;
-
-		case EEquipSlot::Feet:
-			if(Item->EquipSlot.Contains(EEquipSlot::Feet) && IsItemEquipable(Item))
-			{
-				Feet = Item;
-				SetGameplayEffects(AGEFeet, Feet);
-				OnRep_Feet();
-			}
-			break;
+		Equipment.ItemEquipment = Item;
+		SetGameplayEffects(Equipment.ActiveGEHandle, Equipment.ItemEquipment);
+		OnItemEquipped.Broadcast(Item, EquipSlot);
+		OnRep_EquippedItems();
+		
+		return;
 	}
 	return;
 }
@@ -441,123 +428,83 @@ bool UXIEquipmentManagerComponent::Server_UnEquipItem_Validate(EEquipSlot EquipS
 
 void UXIEquipmentManagerComponent::Server_UnEquipItem_Implementation(EEquipSlot EquipSlot)
 {
-	switch (EquipSlot)
+	for(auto& Equipment : EquippedItems)
 	{
-		case EEquipSlot::MainHand:
-			MainHand = nullptr;
-			CheckCombatStyle();
-			SetGameplayEffects(AGEMainHand, MainHand);
-			SetGameplayEffectMeleeDelay();
-			OnRep_MainHand();
-			break;
-		case EEquipSlot::SubHand:
-			SubHand = nullptr;
-			CheckCombatStyle();
-			SetGameplayEffects(AGESubHand, SubHand);
-			SetGameplayEffectMeleeDelay();
-			OnRep_SubHand();
-			break;
-		case EEquipSlot::Ranged:
-			Ranged = nullptr;
-			SetGameplayEffects(AGERanged, Ranged);
-			SetGameplayEffectRangeDelay();
-			OnRep_Ranged();
-			break;
-		case EEquipSlot::Ammo:
-			Ammo = nullptr;
-			SetGameplayEffects(AGEAmmo, Ammo);
-			OnRep_Ammo();
-			break;
-		case EEquipSlot::Head:
-			Head = nullptr;
-			SetGameplayEffects(AGEHead, Head);
-			OnRep_Head();
-			break;
-		case EEquipSlot::Neck:
-			Neck = nullptr;
-			SetGameplayEffects(AGENeck, Neck);
-			OnRep_Neck();
-			break;
-		case EEquipSlot::Ear1:
-			Ear1 = nullptr;
-			SetGameplayEffects(AGEEar1, Ear1);
-			OnRep_Ear1();
-			break;
-		case EEquipSlot::Ear2:	
-			Ear2 = nullptr;
-			SetGameplayEffects(AGEEar2, Ear2);
-			OnRep_Ear2();
-			break;
-		case EEquipSlot::Body:	
-			Body = nullptr;
-			SetGameplayEffects(AGEBody, Body);
-			OnRep_Body();
-			break;
-		case EEquipSlot::Hands:
-			Hands = nullptr;
-			SetGameplayEffects(AGEHands, Hands);
-			OnRep_Hands();
-			break;
-		case EEquipSlot::Ring1:
-			Ring1 = nullptr;
-			SetGameplayEffects(AGERing1, Ring1);
-			OnRep_Ring1();
-			break;
-		case EEquipSlot::Ring2:
-			Ring2 = nullptr;
-			SetGameplayEffects(AGERing2, Ring2);
-			OnRep_Ring2();
-			break;
-		case EEquipSlot::Back:
-			Back = nullptr;
-			SetGameplayEffects(AGEBack, Back);
-			OnRep_Back();
-			break;
-		case EEquipSlot::Waist:
-			Waist = nullptr;
-			SetGameplayEffects(AGEWaist, Waist);
-			OnRep_Waist();
-			break;
-		case EEquipSlot::Legs:
-			Legs = nullptr;
-			SetGameplayEffects(AGELegs, Legs);
-			OnRep_Legs();
-			break;
-		case EEquipSlot::Feet:
-			Feet = nullptr;
-			SetGameplayEffects(AGEFeet, Feet);
-			OnRep_Feet();
-			break;
+		if(Equipment.EquipSlot == EquipSlot)
+		{
+			switch(EquipSlot)
+			{
+				case EEquipSlot::MainHand:
+					Equipment.ItemEquipment = nullptr;
+					SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::MainHand);
+					CheckCombatStyle();
+					break;
+				
+				case EEquipSlot::SubHand:
+					Equipment.ItemEquipment = nullptr;
+					SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
+					CheckCombatStyle();
+					break;
+
+				case EEquipSlot::Ranged:
+					Equipment.ItemEquipment = nullptr;
+					SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Range);
+					break;
+
+				case EEquipSlot::Head:
+					Equipment.ItemEquipment = nullptr;
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
+					break;
+
+				case EEquipSlot::Body:
+					Equipment.ItemEquipment = nullptr;
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
+					break;
+
+				case EEquipSlot::Hands:
+					Equipment.ItemEquipment = nullptr;
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Hands);
+					break;
+
+				case EEquipSlot::Legs:
+					Equipment.ItemEquipment = nullptr;
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Legs);
+					break;
+
+				case EEquipSlot::Feet:
+					Equipment.ItemEquipment = nullptr;
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Feet);
+					break;
+			}
+
+			Equipment.ItemEquipment = nullptr;
+			SetGameplayEffects(Equipment.ActiveGEHandle, nullptr);
+			OnItemEquipped.Broadcast(nullptr, EquipSlot);
+			OnRep_EquippedItems();
+		}
 	}
 }
 
-FXIEquippedItemsReference UXIEquipmentManagerComponent::GetEquippedItems() const
+UItemEquipment* UXIEquipmentManagerComponent::FindEquippedItemBySlot(EEquipSlot EquipSlot) const
 {
-	return EquipmentReference;
-}
-
-UItemEquipment* UXIEquipmentManagerComponent::GetMainHandItem() const
-{
-	return MainHand;
-}
-
-UItemEquipment* UXIEquipmentManagerComponent::GetSubHandItem() const
-{
-	return SubHand;
-}
-
-UItemEquipment* UXIEquipmentManagerComponent::GetRangedItem() const
-{
-	return Ranged;
-}
-
-UItemEquipment* UXIEquipmentManagerComponent::GetAmmoItem() const
-{
-	return Ammo;
+	for(auto& EquippedItem : EquippedItems)
+	{
+		if(EquippedItem.EquipSlot == EquipSlot)
+		{
+			return EquippedItem.ItemEquipment;
+		}
+	}
+	return nullptr;
 }
 
 ECombatStyle UXIEquipmentManagerComponent::CheckCombatStyle()
 {
+	UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+	UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+
 	if(MainHand && !SubHand)
 	{
 		if (MainHand->CombatStyle != CombatStyleReference)
@@ -595,132 +542,9 @@ ECombatStyle UXIEquipmentManagerComponent::CheckCombatStyle()
 
 void UXIEquipmentManagerComponent::InitializeEquippedItems()
 {
-	SetGameplayEffects(AGEMainHand, MainHand);
-	SetGameplayEffects(AGESubHand, SubHand);
-	SetGameplayEffects(AGERanged, Ranged);
-	SetGameplayEffects(AGEAmmo, Ammo);
-	SetGameplayEffects(AGEHead, Head);
-	SetGameplayEffects(AGENeck, Neck);
-	SetGameplayEffects(AGEEar1, Ear1);
-	SetGameplayEffects(AGEEar2, Ear2);
-	SetGameplayEffects(AGEBody, Body);
-	SetGameplayEffects(AGEHands, Hands);
-	SetGameplayEffects(AGERing1, Ring1);
-	SetGameplayEffects(AGERing2, Ring2);
-	SetGameplayEffects(AGEBack, Back);
-	SetGameplayEffects(AGEWaist, Waist);
-	SetGameplayEffects(AGELegs, Legs);
-	SetGameplayEffects(AGEFeet, Feet);
-	SetGameplayEffectMeleeDelay();
-	SetGameplayEffectRangeDelay();
-	CheckCombatStyle();
-}
-
-#pragma region OnRepFunctions
-
-void UXIEquipmentManagerComponent::OnRep_MainHand()
-{
-	EquipmentReference.MainHand = MainHand;
-	OnMeshUpdated.Broadcast(MainHand, ESkeletalMeshMergeType::MainHand);
-	OnItemChanged.Broadcast(MainHand, EEquipSlot::MainHand);
-}
-
-void UXIEquipmentManagerComponent::OnRep_SubHand()
-{
-	EquipmentReference.SubHand = SubHand;
-	OnMeshUpdated.Broadcast(SubHand, ESkeletalMeshMergeType::SubHand);
-	OnItemChanged.Broadcast(SubHand, EEquipSlot::SubHand);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ranged()
-{
-	EquipmentReference.Ranged = Ranged;
-	OnMeshUpdated.Broadcast(Ranged, ESkeletalMeshMergeType::Range);
-	OnItemChanged.Broadcast(Ranged, EEquipSlot::Ranged);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ammo()
-{
-	EquipmentReference.Ammo = Ammo;
-	OnItemChanged.Broadcast(Ammo, EEquipSlot::Ammo);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Head()
-{
-	EquipmentReference.Head = Head;
-	OnMeshUpdated.Broadcast(Head, ESkeletalMeshMergeType::Head);
-	OnItemChanged.Broadcast(Head, EEquipSlot::Head);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Neck()
-{
-	EquipmentReference.Neck = Neck;
-	OnItemChanged.Broadcast(Neck, EEquipSlot::Neck);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ear1()
-{
-	EquipmentReference.Ear1 = Ear1;
-	OnItemChanged.Broadcast(Ear1, EEquipSlot::Ear1);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ear2()
-{
-	EquipmentReference.Ear2 = Ear2;
-	OnItemChanged.Broadcast(Ear2, EEquipSlot::Ear2);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Body()
-{
-	EquipmentReference.Body = Body;
-	OnMeshUpdated.Broadcast(Body, ESkeletalMeshMergeType::Body);
-	OnItemChanged.Broadcast(Body, EEquipSlot::Body);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Hands()
-{
-	EquipmentReference.Hands = Hands;
-	OnMeshUpdated.Broadcast(Hands, ESkeletalMeshMergeType::Hands);
-	OnItemChanged.Broadcast(Hands, EEquipSlot::Hands);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ring1()
-{
-	EquipmentReference.Ring1 = Ring1;
-	OnItemChanged.Broadcast(Ring1, EEquipSlot::Ring1);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Ring2()
-{
-	EquipmentReference.Ring2 = Ring2;
-	OnItemChanged.Broadcast(Ring2, EEquipSlot::Ring2);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Back()
-{
-	EquipmentReference.Back = Back;
-	OnItemChanged.Broadcast(Back, EEquipSlot::Back);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Waist()
-{
-	EquipmentReference.Waist = Waist;
-	OnItemChanged.Broadcast(Waist, EEquipSlot::Waist);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Legs()
-{
-	EquipmentReference.Legs = Legs;
-	OnMeshUpdated.Broadcast(Legs, ESkeletalMeshMergeType::Legs);
-	OnItemChanged.Broadcast(Legs, EEquipSlot::Legs);
-}
-
-void UXIEquipmentManagerComponent::OnRep_Feet()
-{
-	EquipmentReference.Feet = Feet;
-	OnMeshUpdated.Broadcast(Feet, ESkeletalMeshMergeType::Feet);
-	OnItemChanged.Broadcast(Feet, EEquipSlot::Feet);
-}	
-
-#pragma endregion OnRepFunctions
 	
+}
+
+void UXIEquipmentManagerComponent::OnRep_EquippedItems()
+{
+}

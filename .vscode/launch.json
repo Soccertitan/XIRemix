@@ -2,118 +2,141 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "XIRemix (Debug)",
+			"name": "Launch XIRemix (Debug)",
 			"request": "launch",
+			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
 			"preLaunchTask": "XIRemix Win64 Debug Build",
-			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UE4-Win64-Debug.exe",
 			"args": [
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemix (DebugGame)",
+			"name": "Launch XIRemix (DebugGame)",
 			"request": "launch",
+			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
 			"preLaunchTask": "XIRemix Win64 DebugGame Build",
-			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UE4-Win64-DebugGame.exe",
 			"args": [
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemix (Development)",
+			"name": "Launch XIRemix (Development)",
 			"request": "launch",
+			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UnrealGame.exe",
 			"preLaunchTask": "XIRemix Win64 Development Build",
-			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UE4.exe",
 			"args": [
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemix (Shipping)",
+			"name": "Launch XIRemix (Test)",
 			"request": "launch",
-			"preLaunchTask": "XIRemix Win64 Shipping Build",
-			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UE4-Win64-Shipping.exe",
-			"args": [
-			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
-			"stopAtEntry": false,
-			"externalConsole": true,
-			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
-		},
-		{
-			"name": "XIRemix (Test)",
-			"request": "launch",
+			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
 			"preLaunchTask": "XIRemix Win64 Test Build",
-			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UE4-Win64-Test.exe",
 			"args": [
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemixEditor (Debug)",
+			"name": "Launch XIRemix (Shipping)",
 			"request": "launch",
+			"program": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+			"preLaunchTask": "XIRemix Win64 Shipping Build",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch XIRemixEditor (Debug)",
+			"request": "launch",
+			"program": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
 			"preLaunchTask": "XIRemixEditor Win64 Debug Build",
-			"program": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Binaries\\Win64\\UE4Editor-Win64-Debug.exe",
 			"args": [
 				"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\XIRemix.uproject"
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemixEditor (DebugGame)",
+			"name": "Launch XIRemixEditor (DebugGame)",
 			"request": "launch",
+			"program": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
 			"preLaunchTask": "XIRemixEditor Win64 DebugGame Build",
-			"program": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Binaries\\Win64\\UE4Editor-Win64-DebugGame.exe",
 			"args": [
 				"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\XIRemix.uproject"
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
-			"name": "XIRemixEditor (Development)",
+			"name": "Launch XIRemixEditor (Development)",
 			"request": "launch",
+			"program": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
 			"preLaunchTask": "XIRemixEditor Win64 Development Build",
-			"program": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Binaries\\Win64\\UE4Editor.exe",
 			"args": [
 				"C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\XIRemix.uproject"
 			],
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0",
 			"stopAtEntry": false,
-			"externalConsole": true,
+			"console": "externalTerminal",
 			"type": "cppvsdbg",
-			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "C:\\Program Files\\Epic Games\\UE_5.0"
+			}
 		},
 		{
 			"name": "Generate Project Files",
-			"type": "clr",
+			"type": "coreclr",
 			"request": "launch",
-			"program": "C:\\Program Files\\Epic Games\\UE_4.26\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe",
-			"console": "externalTerminal",
+			"program": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool",
 			"args": [
 				"-projectfiles",
 				"-vscode",
@@ -121,8 +144,9 @@
 				"-game",
 				"-engine"
 			],
-			"internalConsoleOptions": "openOnSessionStart",
-			"cwd": "C:\\Program Files\\Epic Games\\UE_4.26"
+			"console": "externalTerminal",
+			"stopAtEntry": false,
+			"cwd": "C:\\Program Files\\Epic Games\\UE_5.0"
 		}
 	]
 }

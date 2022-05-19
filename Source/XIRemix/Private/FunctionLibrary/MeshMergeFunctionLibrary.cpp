@@ -16,7 +16,7 @@ static void ToMergeParams(const TArray<FSkelMeshMergeSectionMapping_BP>& InSecti
         }
     }
 };
-static void ToMergeParams(const TArray<FSkelMeshMergeUVTransformMappingOLD>& InUVTransformsPerMesh, TArray<FSkelMeshMergeUVTransforms>& OutUVTransformsPerMesh)
+static void ToMergeParams(const TArray<FSkelMeshMergeUVTransformMapping_BP>& InUVTransformsPerMesh, TArray<FSkelMeshMergeUVTransforms>& OutUVTransformsPerMesh)
 {
     if (InUVTransformsPerMesh.Num() > 0)
     {

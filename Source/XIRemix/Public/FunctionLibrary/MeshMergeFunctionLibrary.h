@@ -33,7 +33,7 @@ struct XIREMIX_API FSkelMeshMergeUVTransform
 * Info to map all the sections about how to transform their UVs
 */
 USTRUCT(BlueprintType)
-struct XIREMIX_API FSkelMeshMergeUVTransformMappingOLD
+struct XIREMIX_API FSkelMeshMergeUVTransformMapping_BP
 {
     GENERATED_BODY()
         /** For each UV channel on each mesh, how the UVS should be transformed. */
@@ -59,7 +59,7 @@ struct XIREMIX_API FSkeletalMeshMergeParams
         TArray < FSkelMeshMergeSectionMapping_BP > MeshSectionMappings;
     // An optional array to transform the UVs in each mesh
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-        TArray < FSkelMeshMergeUVTransformMappingOLD > UVTransformsPerMesh;
+        TArray < FSkelMeshMergeUVTransformMapping_BP > UVTransformsPerMesh;
     // The list of skeletal meshes to merge.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
         TArray < USkeletalMesh* > MeshesToMerge;

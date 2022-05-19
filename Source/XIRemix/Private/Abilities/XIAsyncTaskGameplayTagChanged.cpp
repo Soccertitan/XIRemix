@@ -40,7 +40,7 @@ void UXIAsyncTaskGameplayTagChanged::EndTask()
 	}
 
 	SetReadyToDestroy();
-	MarkPendingKill();
+	MarkAsGarbage();
 }
 
 void UXIAsyncTaskGameplayTagChanged::TagChanged(const FGameplayTag Tag, int32 NewCount)

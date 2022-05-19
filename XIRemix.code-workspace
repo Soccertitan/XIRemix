@@ -5,8 +5,8 @@
 			"path": "."
 		},
 		{
-			"name": "UE4",
-			"path": "C:\\Program Files\\Epic Games\\UE_4.26"
+			"name": "UE5",
+			"path": "C:\\Program Files\\Epic Games\\UE_5.0"
 		}
 	],
 	"settings": {

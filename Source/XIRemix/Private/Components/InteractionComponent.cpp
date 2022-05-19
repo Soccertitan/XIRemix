@@ -80,7 +80,9 @@ void UInteractionComponent::BeginFocus(class AXICharacterBaseHero* Character)
 	{
 		SetHiddenInGame(false);
 		
-		for (auto& VisualComp : GetOwner()->GetComponentsByClass(UPrimitiveComponent::StaticClass()))
+		TArray<UActorComponent*> Components;
+		GetOwner()->GetComponents(UPrimitiveComponent::StaticClass(), Components, false);
+		for (auto& VisualComp : Components)
 		{
 			if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(VisualComp))
 			{
@@ -100,7 +102,9 @@ void UInteractionComponent::EndFocus(class AXICharacterBaseHero* Character)
 	{
 		SetHiddenInGame(true);
 
-		for (auto& VisualComp : GetOwner()->GetComponentsByClass(UPrimitiveComponent::StaticClass()))
+		TArray<UActorComponent*> Components;
+		GetOwner()->GetComponents(UPrimitiveComponent::StaticClass(), Components, false);
+		for (auto& VisualComp : Components)
 		{
 			if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(VisualComp))
 			{
