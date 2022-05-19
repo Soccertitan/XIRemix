@@ -3,7 +3,7 @@
 
 #include "Abilities/XIGameplayAbilityMagicBase.h"
 #include "FunctionLibrary/CombatFunctionLibrary.h"
-#include "DataAssets/XICharacterCombatMontages.h"
+#include "DataAssets/XICharacterAnimMontages.h"
 
 UXIGameplayAbilityMagicBase::UXIGameplayAbilityMagicBase()
 {
@@ -11,33 +11,11 @@ UXIGameplayAbilityMagicBase::UXIGameplayAbilityMagicBase()
 
 UAnimMontage* UXIGameplayAbilityMagicBase::GetCastingAnimMontage()
 {
-    UXICharacterCombatMontages* CombatMontages = UCombatFunctionLibrary::GetXICharacterCombatMontages(AvatarActor);
-    if(!CombatMontages)
+    UXICharacterAnimMontages* AnimMontages = UCombatFunctionLibrary::GetXICharacterAnimMontages(AvatarActor);
+    if(!AnimMontages)
     {
         return nullptr;
     }
 
-    switch(XIMagicType)
-    {
-        case EXIMagicType::Black:
-        return CombatMontages->BlackMagic;
-
-        case EXIMagicType::Blue:
-        return CombatMontages->BlueMagic;
-
-        case EXIMagicType::Geomancy:
-        return CombatMontages->GeoMagic;
-
-        case EXIMagicType::Ninjitsu:
-        return CombatMontages->NinjitsuMagic;
-
-        case EXIMagicType::Summoner:
-        return CombatMontages->SummonerMagic;
-
-        case EXIMagicType::HandBell:
-        return CombatMontages->HandbellMagic;
-
-        default:
-        return CombatMontages->WhiteMagic;
-    }
+    return AnimMontages->GetMagicMontage(XIMagicType);
 }

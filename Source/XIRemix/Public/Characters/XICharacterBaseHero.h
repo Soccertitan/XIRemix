@@ -187,15 +187,11 @@ protected:
 	void BeginInteract();
 	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
 	void Server_BeginInteract();
-	bool Server_BeginInteract_Validate();
-	void Server_BeginInteract_Implementation();
 
 	UFUNCTION(BlueprintCallable)
 	void EndInteract();
 	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
 	void Server_EndInteract();
-	bool Server_EndInteract_Validate();
-	void Server_EndInteract_Implementation();
 
 	void Interact();
 };

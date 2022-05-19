@@ -9,7 +9,7 @@
 #include "XIEquipmentManagerComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FUpdateMesh, UItemEquipment*, Item, ESkeletalMeshMergeType, SKMeshMergeType);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FItemEquipped, UItemEquipment*, Item, EEquipSlot, EquipSlot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEquipmentUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCombatStyleChanged, ECombatStyle, CombatStyle);
 
 USTRUCT(BlueprintType)
@@ -28,6 +28,7 @@ struct XIREMIX_API FXIEquippedItem
 
 	FXIEquippedItem()
 	{
+		EquipSlot = EEquipSlot::MainHand;
 		ItemEquipment = nullptr;
 	}
 
@@ -56,25 +57,27 @@ public:
 	UItemEquipment* FindEquippedItemBySlot(EEquipSlot EquipSlot) const;
 
 	UFUNCTION(BlueprintPure, Category = "XIEquipmentManager")
-	bool IsItemEquipable(UItemEquipment* Item) const;
+	bool IsItemEquipable(UItem* Item) const;
 
-	// Equips an item to a character.
-	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XIEquipmentManager")
-	void Server_EquipItem(UItemEquipment* Item, EEquipSlot EquipSlot);
-	bool Server_EquipItem_Validate(UItemEquipment* Item, EEquipSlot EquipSlot);
-	void Server_EquipItem_Implementation(UItemEquipment* Item, EEquipSlot EquipSlot);
+	/**Server equips the item.*/
+	UFUNCTION(BlueprintCallable, Category = "XIEquipmentManager")
+	void EquipItem(UItem* Item, EEquipSlot EquipSlot);
 
-	// Unequips an Item from a Character.
-	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XIEquipmentManager")
+	UFUNCTION(Server, WithValidation, Reliable)
+	void Server_EquipItem(UItem* Item, EEquipSlot EquipSlot);
+
+	/**Server un-equips the item.*/
+	UFUNCTION(BlueprintCallable, Category = "XIEquipmentManager")
+	void UnEquipItem(EEquipSlot EquipSlot);
+
+	UFUNCTION(Server, WithValidation, Reliable)
 	void Server_UnEquipItem(EEquipSlot EquipSlot);
-	bool Server_UnEquipItem_Validate(EEquipSlot EquipSlot);
-	void Server_UnEquipItem_Implementation(EEquipSlot EquipSlot);
 
 	UPROPERTY(BlueprintAssignable)
 	FUpdateMesh OnUpdateMesh;
 
 	UPROPERTY(BlueprintAssignable)
-	FItemEquipped OnItemEquipped;
+	FEquipmentUpdated OnEquipmentUpdated;
 
 	UPROPERTY(BlueprintAssignable)
 	FCombatStyleChanged OnCombatStyleChanged;

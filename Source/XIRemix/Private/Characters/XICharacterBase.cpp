@@ -102,14 +102,26 @@ void AXICharacterBase::InitializeAttributes()
 
 #pragma region CharacterName
 
-bool AXICharacterBase::Server_SetCharacterName_Validate(FText Name)
+void AXICharacterBase::SetCharacterName(FText Name)
+{
+	if(HasAuthority())
+	{
+		CharacterName = Name;
+	}
+	else
+	{
+		Server_SetCharacterName(Name);
+	}
+}
+
+bool AXICharacterBase::Server_SetCharacterName_Validate(const FText& Name)
 {
 	return true;
 }
 
-void AXICharacterBase::Server_SetCharacterName_Implementation(FText Name)
+void AXICharacterBase::Server_SetCharacterName_Implementation(const FText& Name)
 {
-	CharacterName = Name;
+	SetCharacterName(Name);
 }
 
 #pragma endregion CharacterName
@@ -150,103 +162,25 @@ void AXICharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(AXICharacterBase, CombatStyle, COND_None, REPNOTIFY_Always);
 }
 
-#pragma region AnimationMontages
-
-UAnimMontage* AXICharacterBase::GetRandomMontage(TArray <UAnimMontage*> AnimMontage) const
-{
-	if (!AnimMontage.IsValidIndex(0))
-	{
-		return nullptr;
-	}
-	int number = FMath::RandRange(0, AnimMontage.Num() - 1);
-	return AnimMontage[number];
-}
-
 UAnimMontage* AXICharacterBase::GetCombatStartMontage()
 {
-	if (!CombatMontages)
+	if (!AnimMontages)
 	{
 		return nullptr;
 	}
 
-	switch (CombatStyle)
-	{
-		case ECombatStyle::Unarmed:
-		return CombatMontages->UnarmedStartCombat;
-
-		case ECombatStyle::Sword:
-		return CombatMontages->SwordStartCombat;
-
-		case ECombatStyle::Axe:
-		return CombatMontages->AxeStartCombat;
-
-		case ECombatStyle::Dagger:
-		return CombatMontages->DaggerStartCombat;
-
-		case ECombatStyle::Club:
-		return CombatMontages->ClubStartCombat;
-
-		case ECombatStyle::Katana:
-		return CombatMontages->KatanaStartCombat;
-
-		case ECombatStyle::Hand2Hand:
-		return CombatMontages->H2HStartCombat;
-
-		case ECombatStyle::GreatKatana:
-		return CombatMontages->GreatKatanaStartCombat;
-
-		case ECombatStyle::GreatSword:
-		return CombatMontages->GreatSwordStartCombat;
-
-		case ECombatStyle::TwoHanded:
-		return CombatMontages->TwoHandedStartCombat;
-	}
-	return nullptr;
+	return AnimMontages->GetCombatStartMontage(CombatStyle);
 }
 
 UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 {
-	if (!CombatMontages)
+	if (!AnimMontages)
 	{
 		return nullptr;
 	}
 
-	switch (CombatStyle)
-	{
-		case ECombatStyle::Unarmed:
-		return CombatMontages->UnarmedExitCombat;
-
-		case ECombatStyle::Sword:
-		return CombatMontages->SwordExitCombat;
-
-		case ECombatStyle::Axe:
-		return CombatMontages->AxeExitCombat;
-
-		case ECombatStyle::Dagger:
-		return CombatMontages->DaggerExitCombat;
-
-		case ECombatStyle::Club:
-		return CombatMontages->ClubExitCombat;
-
-		case ECombatStyle::Katana:
-		return CombatMontages->KatanaExitCombat;
-
-		case ECombatStyle::Hand2Hand:
-		return CombatMontages->H2HExitCombat;
-
-		case ECombatStyle::GreatKatana:
-		return CombatMontages->GreatKatanaExitCombat;
-
-		case ECombatStyle::GreatSword:
-		return CombatMontages->GreatSwordExitCombat;
-
-		case ECombatStyle::TwoHanded:
-		return CombatMontages->TwoHandedExitCombat;
-	}
-	return nullptr;
+	return AnimMontages->GetCombatExitMontage(CombatStyle);
 }
-
-#pragma endregion AnimationMontages
 
 #pragma region XICharacterInterfaceFunctions
 
@@ -326,198 +260,19 @@ bool AXICharacterBase::IsAlive() const
 UAnimMontage* AXICharacterBase::GetAutoAttackMontage() const
 {
 	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
-	if(IntAnimBP && CombatMontages)
+	if(IntAnimBP && AnimMontages)
 	{
 		float Speed = IntAnimBP->GetSpeed();
 		float Direction = IntAnimBP->GetDirection();
 		
-		// Stationary Attack
-		if(FMath::IsNearlyZero(Speed))
-		{
-			switch (CombatStyle)
-			{
-				case ECombatStyle::Unarmed:
-				return GetRandomMontage(CombatMontages->UnarmedBasicAttacks);
-
-				case ECombatStyle::Sword:
-				return GetRandomMontage(CombatMontages->SwordBasicAttacks);
-
-				case ECombatStyle::Axe:
-				return GetRandomMontage(CombatMontages->AxeBasicAttacks);
-
-				case ECombatStyle::Dagger:
-				return GetRandomMontage(CombatMontages->DaggerBasicAttacks);
-
-				case ECombatStyle::Club:
-				return GetRandomMontage(CombatMontages->ClubBasicAttacks);
-
-				case ECombatStyle::Katana:
-				return GetRandomMontage(CombatMontages->KatanaBasicAttacks);
-
-				case ECombatStyle::Hand2Hand:
-				return GetRandomMontage(CombatMontages->H2HBasicAttacks);
-
-				case ECombatStyle::GreatKatana:
-				return GetRandomMontage(CombatMontages->GreatKatanaBasicAttacks);
-
-				case ECombatStyle::GreatSword:
-				return GetRandomMontage(CombatMontages->GreatSwordBasicAttacks);
-
-				case ECombatStyle::TwoHanded:
-				return GetRandomMontage(CombatMontages->TwoHandedBasicAttacks);
-			}
-		}
-		// Moving Right Attack Montage
-		else if((Direction > 40) & (Direction < 140))
-		{
-			switch (CombatStyle)
-			{
-				case ECombatStyle::Unarmed:
-				return CombatMontages->UnarmedAtkRight;
-
-				case ECombatStyle::Sword:
-				return CombatMontages->SwordAtkRight;
-
-				case ECombatStyle::Axe:
-				return CombatMontages->AxeAtkRight;
-
-				case ECombatStyle::Dagger:
-				return CombatMontages->DaggerAtkRight;
-
-				case ECombatStyle::Club:
-				return CombatMontages->ClubAtkRight;
-
-				case ECombatStyle::Katana:
-				return CombatMontages->KatanaAtkRight;
-
-				case ECombatStyle::Hand2Hand:
-				return CombatMontages->H2HAtkRight;
-
-				case ECombatStyle::GreatKatana:
-				return CombatMontages->GreatKatanaAtkRight;
-
-				case ECombatStyle::GreatSword:
-				return CombatMontages->GreatSwordAtkRight;
-
-				case ECombatStyle::TwoHanded:
-				return CombatMontages->TwoHandedAtkRight;
-			}
-		}
-		// Moving Left Attack Montage
-		else if((Direction > -140) & (Direction < -40))
-		{
-			switch (CombatStyle)
-			{
-				case ECombatStyle::Unarmed:
-				return CombatMontages->UnarmedAtkLeft;
-
-				case ECombatStyle::Sword:
-				return CombatMontages->SwordAtkLeft;
-
-				case ECombatStyle::Axe:
-				return CombatMontages->AxeAtkLeft;
-
-				case ECombatStyle::Dagger:
-				return CombatMontages->DaggerAtkLeft;
-
-				case ECombatStyle::Club:
-				return CombatMontages->ClubAtkLeft;
-
-				case ECombatStyle::Katana:
-				return CombatMontages->KatanaAtkLeft;
-
-				case ECombatStyle::Hand2Hand:
-				return CombatMontages->H2HAtkLeft;
-
-				case ECombatStyle::GreatKatana:
-				return CombatMontages->GreatKatanaAtkLeft;
-
-				case ECombatStyle::GreatSword:
-				return CombatMontages->GreatSwordAtkLeft;
-
-				case ECombatStyle::TwoHanded:
-				return CombatMontages->TwoHandedAtkLeft;
-			}
-		}
-		// Moving Backwards Attack Montage
-		else if((Direction >= 140) | (Direction <= -140))
-		{
-			switch (CombatStyle)
-			{
-				case ECombatStyle::Unarmed:
-				return CombatMontages->UnarmedAtkNeutral;
-
-				case ECombatStyle::Sword:
-				return CombatMontages->SwordAtkNeutral;
-
-				case ECombatStyle::Axe:
-				return CombatMontages->AxeAtkNeutral;
-
-				case ECombatStyle::Dagger:
-				return CombatMontages->DaggerAtkNeutral;
-
-				case ECombatStyle::Club:
-				return CombatMontages->ClubAtkNeutral;
-
-				case ECombatStyle::Katana:
-				return CombatMontages->KatanaAtkNeutral;
-
-				case ECombatStyle::Hand2Hand:
-				return CombatMontages->H2HAtkNeutral;
-
-				case ECombatStyle::GreatKatana:
-				return CombatMontages->GreatKatanaAtkNeutral;
-
-				case ECombatStyle::GreatSword:
-				return CombatMontages->GreatSwordAtkNeutral;
-
-				case ECombatStyle::TwoHanded:
-				return CombatMontages->TwoHandedAtkNeutral;
-			}
-		}
-		// Moving Forwards Attack Montage
-		else
-		{
-			switch (CombatStyle)
-			{
-				case ECombatStyle::Unarmed:
-				return CombatMontages->UnarmedAtkFw;
-
-				case ECombatStyle::Sword:
-				return CombatMontages->SwordAtkFw;
-
-				case ECombatStyle::Axe:
-				return CombatMontages->AxeAtkFw;
-
-				case ECombatStyle::Dagger:
-				return CombatMontages->DaggerAtkFw;
-
-				case ECombatStyle::Club:
-				return CombatMontages->ClubAtkFw;
-
-				case ECombatStyle::Katana:
-				return CombatMontages->KatanaAtkFw;
-
-				case ECombatStyle::Hand2Hand:
-				return CombatMontages->H2HAtkFw;
-
-				case ECombatStyle::GreatKatana:
-				return CombatMontages->GreatKatanaAtkFw;
-
-				case ECombatStyle::GreatSword:
-				return CombatMontages->GreatSwordAtkFw;
-
-				case ECombatStyle::TwoHanded:
-				return CombatMontages->TwoHandedAtkFw;
-			}
-		}
+		return AnimMontages->GetAutoAttackMontage(CombatStyle, Speed, Direction);
 	}
 	return nullptr;
 }
 
-UXICharacterCombatMontages* AXICharacterBase::GetXICharacterCombatMontages() const
+UXICharacterAnimMontages* AXICharacterBase::GetXICharacterAnimMontages() const
 {
-	return CombatMontages;
+	return AnimMontages;
 }
 
 #pragma endregion AnimationMontageGetters

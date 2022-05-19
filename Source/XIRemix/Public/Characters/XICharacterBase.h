@@ -10,7 +10,7 @@
 #include "XIEnums.h"
 #include "XIRemix/XIRemix.h"
 #include "Interfaces/XICharacterInterface.h"
-#include "DataAssets/XICharacterCombatMontages.h"
+#include "DataAssets/XICharacterAnimMontages.h"
 #include "DataAssets/XIAbilitySet.h"
 #include "DataAssets/XIStatsGrowthRank.h"
 #include "DataAssets/XIStatsGrowthData.h"
@@ -52,7 +52,7 @@ public:
 	virtual EXITeam GetXITeam() const override;
 	virtual float GetCapsuleRadius() const override;
 	virtual bool IsAlive() const override;
-	virtual UXICharacterCombatMontages* GetXICharacterCombatMontages() const override;
+	virtual UXICharacterAnimMontages* GetXICharacterAnimMontages() const override;
 	virtual UAnimMontage* GetAutoAttackMontage() const override;
 	virtual UXIStatsGrowthRank* GetXIStatsGrowthRank() const override;
 	virtual UXIStatsGrowthData* GetXIStatsGrowthData() const override;
@@ -75,8 +75,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
 	UAnimMontage* GetCombatExitMontage();
 
-	UFUNCTION(BlueprintPure, Category = "XICharacter|AnimMontages")
-	UAnimMontage* GetRandomMontage(TArray <UAnimMontage*> AnimMontage) const;
+	// Server sets the character name.
+	UFUNCTION(BlueprintCallable, Category = "XICharacter|Name")
+	void SetCharacterName(FText Name);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void Server_SetCharacterName(const FText& Name);
 
 protected:
 	// Called when the game starts or when spawned
@@ -102,7 +106,7 @@ protected:
 	// Widget TargetUI; // Future Implementation
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "XICharacter|Combat")
-	class UXICharacterCombatMontages* CombatMontages;
+	class UXICharacterAnimMontages* AnimMontages;
 
 	UPROPERTY()
 	class UXIAbilitySystemComponent* AbilitySystemComponent;
@@ -147,11 +151,6 @@ protected:
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
-
-	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable, Category = "XICharacter|Name")
-	void Server_SetCharacterName(const FText &Name);
-	bool Server_SetCharacterName_Validate(FText Name);
-	void Server_SetCharacterName_Implementation(FText Name);
 
 	//Default Death Event. Should be overridden by child classes.
 	void Die();

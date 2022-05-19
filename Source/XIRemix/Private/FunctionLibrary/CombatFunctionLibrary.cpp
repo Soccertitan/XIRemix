@@ -162,12 +162,12 @@ UAnimMontage* UCombatFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)
     return nullptr;
 }
 
-UXICharacterCombatMontages* UCombatFunctionLibrary::GetXICharacterCombatMontages(AActor* OwnerActor)
+UXICharacterAnimMontages* UCombatFunctionLibrary::GetXICharacterAnimMontages(AActor* OwnerActor)
 {
     IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
     if(XICharacterInt)
     {
-        return XICharacterInt->GetXICharacterCombatMontages();
+        return XICharacterInt->GetXICharacterAnimMontages();
     }
     return nullptr;
 }

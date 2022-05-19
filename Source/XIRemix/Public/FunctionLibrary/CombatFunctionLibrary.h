@@ -58,7 +58,7 @@ public:
 
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Combat|Animation")
-	static class UXICharacterCombatMontages* GetXICharacterCombatMontages(AActor* OwnerActor);
+	static class UXICharacterAnimMontages* GetXICharacterAnimMontages(AActor* OwnerActor);
 
 	//XICharacter Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIRemix|Character")

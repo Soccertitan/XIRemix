@@ -28,7 +28,7 @@ public:
 	virtual class AXICharacterBase* GetXICharacterBase() PURE_VIRTUAL(IXICharacterInterface::GetXICharacterBase(), return nullptr;);
 
 	// Getter for combat montage Data Asset.
-	virtual class UXICharacterCombatMontages* GetXICharacterCombatMontages() const PURE_VIRTUAL(IXICharacterInterface::GetXICharacterCombatMontages(), return nullptr;);
+	virtual class UXICharacterAnimMontages* GetXICharacterAnimMontages() const PURE_VIRTUAL(IXICharacterInterface::GetXICharacterAnimMontages(), return nullptr;);
 	virtual UAnimMontage* GetAutoAttackMontage() const PURE_VIRTUAL(IXICharacterInterface::GetAutoAttackMontage(), return nullptr;);
 
 	// GetCharacterName is Implemented in C++
