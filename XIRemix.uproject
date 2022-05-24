@@ -13,7 +13,8 @@
 				"GameplayAbilities",
 				"CoreUObject",
 				"AIModule",
-				"UMG"
+				"UMG",
+				"UINavigation"
 			]
 		}
 	],

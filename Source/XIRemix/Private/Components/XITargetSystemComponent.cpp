@@ -60,6 +60,11 @@ void UXITargetSystemComponent::BeginPlay()
 	}
 
 	SetupLocalPlayerController();
+
+	if(GetOwner()->HasAuthority())
+	{
+		SetComponentTickEnabled(false);
+	}
 	
 }
 

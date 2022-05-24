@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayTagsManager.h"
 #include "Characters/XICharacterBaseHero.h"
+#include "InventorySystem/InventoryComponent.h"
 
 // Sets default values for this component's properties
 UXIEquipmentManagerComponent::UXIEquipmentManagerComponent()
@@ -250,6 +251,7 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UItem* Item) const
 	if(!EquipItem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Warning! The item is not an Equipment Item."))
+		return false;
 	}
 
 	FXICharacterHeroActiveJobsLevels CharacterJobsLevels;
@@ -281,9 +283,10 @@ void UXIEquipmentManagerComponent::EquipItem(UItem* Item, EEquipSlot EquipSlot)
 		}
 
 		UItemEquipment* EquipItem = Cast<UItemEquipment>(Item);
-		if(!EquipItem)
+		if(!EquipItem && EquipItem->OwningInventory && EquipItem->OwningInventory->FindItem(EquipItem))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Warning! The item is not an Equipment Item."))
+			UE_LOG(LogTemp, Warning, TEXT("Warning! The item cannot be equipped. Because it's either invalid, does not have an owning inventory, or does not exist in the inventory."))
+			return;
 		}
 
 		for(auto& Equipment : EquippedItems)
@@ -459,58 +462,51 @@ void UXIEquipmentManagerComponent::UnEquipItem(EEquipSlot EquipSlot)
 					//Item is already null. No action
 					return;
 				}
+
+				Equipment.ItemEquipment = nullptr;
+				SetGameplayEffects(Equipment.ActiveGEHandle, nullptr);
 				
 				switch(EquipSlot)
 				{
 					case EEquipSlot::MainHand:
-						Equipment.ItemEquipment = nullptr;
 						SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::MainHand);
 						CheckCombatStyle();
 						break;
 					
 					case EEquipSlot::SubHand:
-						Equipment.ItemEquipment = nullptr;
 						SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
 						CheckCombatStyle();
 						break;
 
 					case EEquipSlot::Ranged:
-						Equipment.ItemEquipment = nullptr;
 						SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Range);
 						break;
 
 					case EEquipSlot::Head:
-						Equipment.ItemEquipment = nullptr;
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
 						break;
 
 					case EEquipSlot::Body:
-						Equipment.ItemEquipment = nullptr;
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
 						break;
 
 					case EEquipSlot::Hands:
-						Equipment.ItemEquipment = nullptr;
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Hands);
 						break;
 
 					case EEquipSlot::Legs:
-						Equipment.ItemEquipment = nullptr;
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Legs);
 						break;
 
 					case EEquipSlot::Feet:
-						Equipment.ItemEquipment = nullptr;
 						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Feet);
 						break;
-				}
-
-				Equipment.ItemEquipment = nullptr;
-				SetGameplayEffects(Equipment.ActiveGEHandle, nullptr);
+				}				
 				OnRep_EquippedItems();
+				return;
 			}
 		}
 	}

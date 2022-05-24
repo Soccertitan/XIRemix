@@ -4,26 +4,55 @@
 #include "Player/XIPlayerControllerAction.h"
 #include "Interfaces/XICharacterInterface.h"
 #include "UI/XIPlayerHUD.h"
+#include "UI/TargetPlateWidget.h"
+#include "UI/MainMenuWidget.h"
+#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "EnhancedInputComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Components/XITargetSystemComponent.h"
+#include "Interfaces/XITargetSystemInterface.h"
+
+AXIPlayerControllerAction::AXIPlayerControllerAction()
+{
+    UINavPC = CreateDefaultSubobject<UUINavPCComponent>("UINavPC");
+}
 
 void AXIPlayerControllerAction::BeginPlay()
 {
     Super::BeginPlay();
-    PlayerPawn = GetPawn();
 
+    EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(this->GetLocalPlayer());
+
+    if (EnhancedInputSubsystem)
+    {
+        EnhancedInputSubsystem->AddMappingContext(ICMovement, ICMovementPriority);
+        EnhancedInputSubsystem->AddMappingContext(ICCamera, ICCameraPriority);
+        EnhancedInputSubsystem->AddMappingContext(ICTarget, ICTargetPriority);
+    }
+
+}
+
+void AXIPlayerControllerAction::AcknowledgePossession(class APawn* P)
+{
+    Super::AcknowledgePossession(P);
+
+    PlayerPawn = AcknowledgedPawn.Get();
     
+    CreateHUD();
+    InitializeTargetSystem();
 }
 
 void AXIPlayerControllerAction::CreateHUD()
 {
     // Only Create Once
-    if(UIHUDWidget)
+    if(XIPlayerHudWidget)
     {
         return;
     }
 
-    if (!UIHUDWidgetClass)
+    if (!XIPlayerHudClass)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Missing UIHUDWidgetClass. Please fill in on the Blueprint of the PlayerController."), *FString(__FUNCTION__));
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing XIPlayerHudClass. Please fill in on the Blueprint of the PlayerController."), *FString(__FUNCTION__));
 		return;
 	}
 
@@ -37,26 +66,26 @@ void AXIPlayerControllerAction::CreateHUD()
     IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(PlayerPawn);
     if(!XICharInt)
     {
-        UE_LOG(LogTemp, Error, TEXT("%s() PlayerPawn doesn't implemented interface"), *FString(__FUNCTION__));
+        UE_LOG(LogTemp, Error, TEXT("%s() PlayerPawn doesn't implement interface XICharacterInterface"), *FString(__FUNCTION__));
         return;
     }
 
     //Create the Widget!
-    UIHUDWidget = CreateWidget<UXIPlayerHUD>(this, UIHUDWidgetClass);
-    UIHUDWidget->AddToViewport();
+    XIPlayerHudWidget = CreateWidget<UXIPlayerHUD>(this, XIPlayerHudClass);
+    XIPlayerHudWidget->AddToViewport();
 
     //Set Attributes
-    UIHUDWidget->SetHitPoints(XICharInt->GetHitPoints());
-    UIHUDWidget->SetHitPointsMax(XICharInt->GetHitPointsMax());
-    UIHUDWidget->SetManaPoints(XICharInt->GetManaPoints());
-    UIHUDWidget->SetManaPointsMax(XICharInt->GetManaPointsMax());
-    UIHUDWidget->SetTacticalPoints(XICharInt->GetTacticalPoints());
-    UIHUDWidget->SetTacticalPointsMax(XICharInt->GetTacticalPointsMax());
+    XIPlayerHudWidget->SetHitPoints(XICharInt->GetHitPoints());
+    XIPlayerHudWidget->SetHitPointsMax(XICharInt->GetHitPointsMax());
+    XIPlayerHudWidget->SetManaPoints(XICharInt->GetManaPoints());
+    XIPlayerHudWidget->SetManaPointsMax(XICharInt->GetManaPointsMax());
+    XIPlayerHudWidget->SetTacticalPoints(XICharInt->GetTacticalPoints());
+    XIPlayerHudWidget->SetTacticalPointsMax(XICharInt->GetTacticalPointsMax());
 }
 
 UXIPlayerHUD * AXIPlayerControllerAction::GetHUD() const
 {
-    return UIHUDWidget;
+    return XIPlayerHudWidget;
 }
 
 void AXIPlayerControllerAction::OnRep_PlayerState()
@@ -70,4 +99,152 @@ void AXIPlayerControllerAction::OnRep_PlayerState()
 void AXIPlayerControllerAction::SetIsMoveable_Implementation(bool bIsMoveable)
 {
     bCanMove = bIsMoveable;
+}
+
+#pragma region EnhancedInput
+
+void AXIPlayerControllerAction::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+
+    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+    {
+        if(IAMovement)
+        {
+            EnhancedInputComponent->BindAction(IAMovement, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedMovement);
+        }
+        if(IACamera)
+        {
+            EnhancedInputComponent->BindAction(IACamera, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedCamera);
+        }
+        if(IATargetCycle)
+        {
+            EnhancedInputComponent->BindAction(IATargetCycle, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedTargetCycle);
+        }
+        if(IATargetLock)
+        {
+            EnhancedInputComponent->BindAction(IATargetLock, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedTargetLock);
+        }
+        if(IAMenuToggle)
+        {
+            EnhancedInputComponent->BindAction(IAMenuToggle, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedMenuToggle);
+        }
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedMovement(const FInputActionValue& Value)
+{
+    if(PlayerPawn && bCanMove)
+    {
+        FRotator Rotation = PlayerPawn->GetControlRotation();
+        FVector ForwardVector = UKismetMathLibrary::GetForwardVector(FRotator(0,Rotation.Yaw,0));
+        FVector RightVector = UKismetMathLibrary::GetRightVector(FRotator(0,Rotation.Yaw,0));
+        PlayerPawn->AddMovementInput(ForwardVector, Value[1], false);
+        PlayerPawn->AddMovementInput(RightVector, Value[0], false);
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedCamera(const FInputActionValue& Value)
+{
+    if(PlayerPawn)
+    {
+        PlayerPawn->AddControllerPitchInput(Value[1]);
+        PlayerPawn->AddControllerYawInput(Value[0]);
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedTargetCycle(const FInputActionValue& Value)
+{
+    if(XITargetSystemCompRef)
+    {
+        XITargetSystemCompRef->TargetActor(XITeamAttitude, Value.GetMagnitude());
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedTargetLock(const FInputActionValue& Value)
+{
+    if(XITargetSystemCompRef)
+    {
+        XITargetSystemCompRef->LockCamera();
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Value)
+{
+    if(!MainMenuWidget)
+    {
+        MainMenuWidget = CreateWidget<UMainMenuWidget>(this, MainMenuClass);
+    }
+
+    if(MainMenuWidget)
+    {
+        if(MainMenuWidget->IsInViewport())
+        {
+            UINavPC->GetActiveWidget()->ReturnToParent(true);
+
+            if(EnhancedInputSubsystem)
+            {
+                EnhancedInputSubsystem->AddMappingContext(ICTarget, ICTargetPriority);
+            }
+
+            FInputModeGameOnly InputMode;
+            SetInputMode(InputMode);
+            bShowMouseCursor = false;
+        }
+        else
+        {
+            if(EnhancedInputSubsystem)
+            {
+                EnhancedInputSubsystem->RemoveMappingContext(ICTarget);
+            }
+            
+            MainMenuWidget->AddToViewport();
+            
+            FInputModeGameAndUI InputMode;
+            SetInputMode(InputMode);
+            bShowMouseCursor = true;
+        }
+    }
+}
+
+#pragma endregion
+
+void AXIPlayerControllerAction::TargetSelected(AActor* Actor)
+{
+    if(!TargetPlateWidget && IsLocalPlayerController())
+    {
+        TargetPlateWidget = CreateWidget<UTargetPlateWidget>(this, TargetPlateWidgetClass);
+        if(TargetPlateWidget)
+        {
+            TargetPlateWidget->TargetedActor = Actor;
+            TargetPlateWidget->AddToViewport();
+
+            UCombatFunctionLibrary::SetMainTarget(PlayerPawn, Actor);
+        }
+    }
+}
+
+void AXIPlayerControllerAction::TargetRemoved(AActor* Actor)
+{
+    if(TargetPlateWidget && IsLocalPlayerController())
+    {
+        TargetPlateWidget->RemoveFromParent();
+        TargetPlateWidget = nullptr;
+        UCombatFunctionLibrary::SetMainTarget(PlayerPawn, nullptr);
+    }
+}
+
+void AXIPlayerControllerAction::InitializeTargetSystem()
+{
+    IXITargetSystemInterface* XITargetInt = Cast<IXITargetSystemInterface>(PlayerPawn);
+    if(XITargetInt)
+    {
+        XITargetSystemCompRef = XITargetInt->GetXITargetSystemComponent();
+
+        if(XITargetSystemCompRef)
+        {
+            XITargetSystemCompRef->OnTargetSelected.AddDynamic(this, &AXIPlayerControllerAction::TargetSelected);
+            XITargetSystemCompRef->OnTargetRemoved.AddDynamic(this, &AXIPlayerControllerAction::TargetRemoved);
+        }
+    }
 }
