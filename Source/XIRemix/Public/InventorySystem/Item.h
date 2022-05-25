@@ -41,6 +41,10 @@ public:
 	UPROPERTY(Transient)
 	class UWorld* World;
 
+	/**The mesh to display for this items pickup*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	class UStaticMesh* PickupMesh;
+
 	/** Item Name */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 	FText Name;
