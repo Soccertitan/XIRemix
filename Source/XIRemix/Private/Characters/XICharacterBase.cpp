@@ -169,7 +169,7 @@ UAnimMontage* AXICharacterBase::GetCombatStartMontage()
 		return nullptr;
 	}
 
-	return AnimMontages->GetCombatStartMontage(CombatStyle);
+	return AnimMontages->DefaultStartCombat;
 }
 
 UAnimMontage* AXICharacterBase::GetCombatExitMontage()
@@ -179,7 +179,7 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 		return nullptr;
 	}
 
-	return AnimMontages->GetCombatExitMontage(CombatStyle);
+	return AnimMontages->DefaultExitCombat;
 }
 
 #pragma region XICharacterInterfaceFunctions

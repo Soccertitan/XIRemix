@@ -16,4 +16,9 @@ float UXIHeroAnimInstance::GetDirection()
 void UXIHeroAnimInstance::SetCombatStyle_Implementation(ECombatStyle InCombatStyle)
 {
     CombatStyle = InCombatStyle;
+
+    if(BlendSpaces)
+    {
+        BlendSpaces->GetCombatBlendSpace(CombatUpperBody, CombatLowerBody, InCombatStyle);
+    }
 }

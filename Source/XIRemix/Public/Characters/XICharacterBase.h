@@ -82,6 +82,9 @@ public:
 	UFUNCTION(Server, WithValidation, Reliable)
 	void Server_SetCharacterName(const FText& Name);
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "XICharacter|Combat")
+	class UXICharacterAnimMontages* AnimMontages;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -105,10 +108,7 @@ protected:
 	// UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter")
 	// Widget TargetUI; // Future Implementation
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "XICharacter|Combat")
-	class UXICharacterAnimMontages* AnimMontages;
-
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	class UXIAbilitySystemComponent* AbilitySystemComponent;
 	UPROPERTY()
 	class UAttributeSetGlobal* AttributeSet;

@@ -35,7 +35,7 @@ UAnimMontage* UXICharacterAnimMontages::GetAutoAttackMontage(ECombatStyle Combat
             // Moving Backwards Attack Montage
 		    else if((Direction >= 140) | (Direction <= -140))
 		    {
-                return Montage.AtkNeutral;
+                return Montage.AtkBw;
             }
 
             // Moving Forwards Attack Montage
@@ -43,30 +43,6 @@ UAnimMontage* UXICharacterAnimMontages::GetAutoAttackMontage(ECombatStyle Combat
 		    {
                 return Montage.AtkFw;
             }
-        }
-    }
-    return nullptr;
-}
-
-UAnimMontage* UXICharacterAnimMontages::GetCombatStartMontage(ECombatStyle CombatStyle) const
-{
-    for(auto& CombatMontage : CombatMontages)
-    {
-        if(CombatMontage.CombatStyle == CombatStyle)
-        {
-            return CombatMontage.StartCombat;
-        }
-    }
-    return nullptr;
-}
-
-UAnimMontage* UXICharacterAnimMontages::GetCombatExitMontage(ECombatStyle CombatStyle) const
-{
-    for(auto& CombatMontage : CombatMontages)
-    {
-        if(CombatMontage.CombatStyle == CombatStyle)
-        {
-            return CombatMontage.ExitCombat;
         }
     }
     return nullptr;
@@ -81,7 +57,7 @@ UAnimMontage* UXICharacterAnimMontages::GetRangedMontage(FGameplayTag RangedWeap
             return Montage.AnimMontage;
         }
     }
-    return nullptr;
+    return DefaultRanged;
 }
 
 UAnimMontage* UXICharacterAnimMontages::GetMagicMontage(EXIMagicType MagicType) const
@@ -93,7 +69,7 @@ UAnimMontage* UXICharacterAnimMontages::GetMagicMontage(EXIMagicType MagicType) 
             return Montage.AnimMontage;
         }
     }
-    return nullptr;
+    return DefaultMagic;
 }
 
 UAnimMontage* UXICharacterAnimMontages::GetJobAbilityMontage(bool bIsWeaponOut) const

@@ -203,7 +203,7 @@ float UXIEquipmentManagerComponent::GetAttackDelay(bool bIsMelee) const
 		UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
 		UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
 
-		if(MainHand && MainHand->CombatStyle == ECombatStyle::Hand2Hand)
+		if(MainHand && MainHand->CombatStyle == ECombatStyle::Battle3)
 		{
 			Delay += MainHand->Delay;
 		}
@@ -564,9 +564,9 @@ ECombatStyle UXIEquipmentManagerComponent::CheckCombatStyle()
 	}
 	else if(!MainHand)
 	{
-		if(CombatStyleReference != ECombatStyle::Unarmed)
+		if(CombatStyleReference != ECombatStyle::Battle9)
 		{
-			CombatStyleReference = ECombatStyle::Unarmed;
+			CombatStyleReference = ECombatStyle::Battle9;
 			OnCombatStyleChanged.Broadcast(CombatStyleReference);
 		}
 	}

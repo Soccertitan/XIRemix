@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "Interfaces/AnimBPInterface.h"
 #include "XIEnums.h"
+#include "DataAssets/XICharacterBlendSpaces.h"
 #include "XIHeroAnimInstance.generated.h"
 
 /**
@@ -27,6 +28,13 @@ public:
 
 protected:	
 	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UXICharacterBlendSpaces* BlendSpaces;
+	UPROPERTY(BlueprintReadOnly)
+	UBlendSpace* CombatUpperBody;
+	UPROPERTY(BlueprintReadOnly)
+	UBlendSpace* CombatLowerBody;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECombatStyle CombatStyle;
 	

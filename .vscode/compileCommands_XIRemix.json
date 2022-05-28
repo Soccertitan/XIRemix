@@ -185,6 +185,11 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\DataAssets\\XICharacterBlendSpaces.cpp",
+		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\DataAssets\\XICharacterHeroDefaultMesh.cpp",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
@@ -300,12 +305,12 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Player\\PlayerStateXIGameplay.cpp",
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Player\\XIPlayerControllerAction.cpp",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Player\\XIPlayerControllerAction.cpp",
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Player\\XIPlayerStateAction.cpp",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
@@ -530,6 +535,11 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\DataAssets\\XICharacterBlendSpaces.h",
+		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\DataAssets\\XICharacterHeroDefaultMesh.h",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
@@ -645,12 +655,12 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Player\\PlayerStateXIGameplay.h",
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Player\\XIPlayerControllerAction.h",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Player\\XIPlayerControllerAction.h",
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Player\\XIPlayerStateAction.h",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},

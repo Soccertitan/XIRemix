@@ -312,14 +312,14 @@ void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshM
 			TargetMesh = Item->GetMesh(Race, false);
 		}
 
-		if(SKMeshMergeType == ESkeletalMeshMergeType::MainHand && Item->CombatStyle == ECombatStyle::Hand2Hand)
+		if(SKMeshMergeType == ESkeletalMeshMergeType::MainHand && Item->CombatStyle == ECombatStyle::Battle3)
 		{
 			int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
 			SKMeshMergeParams.MeshesToMerge[SubHandKey] = Item->GetMesh(Race, true);
 		}
 	}
 
-	if(!XIEquipmentManager->FindEquippedItemBySlot(EEquipSlot::SubHand) && CombatStyle != ECombatStyle::Hand2Hand)
+	if(!XIEquipmentManager->FindEquippedItemBySlot(EEquipSlot::SubHand) && CombatStyle != ECombatStyle::Battle3)
 	{
 		int32 SubHandKey = SKMeshMergeMap.FindRef(ESkeletalMeshMergeType::SubHand);
 		SKMeshMergeParams.MeshesToMerge[SubHandKey] = nullptr;

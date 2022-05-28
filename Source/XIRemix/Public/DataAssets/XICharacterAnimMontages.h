@@ -19,15 +19,11 @@ struct FCharacterCombatMontages
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ECombatStyle CombatStyle;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* StartCombat;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* ExitCombat;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray <UAnimMontage*> BasicAttacks;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimMontage* AtkFw;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* AtkNeutral;
+	UAnimMontage* AtkBw;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimMontage* AtkLeft;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -74,12 +70,6 @@ public:
 	UAnimMontage* GetAutoAttackMontage(ECombatStyle CombatStyle, float Speed, float Direction) const;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
-	UAnimMontage* GetCombatStartMontage(ECombatStyle CombatStyle) const;
-
-	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
-	UAnimMontage* GetCombatExitMontage(ECombatStyle CombatStyle) const;
-
-	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
 	UAnimMontage* GetRangedMontage(FGameplayTag RangedWeapon) const;
 
 	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
@@ -87,6 +77,16 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
 	UAnimMontage* GetJobAbilityMontage(bool bIsWeaponOut) const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* JobAbility;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* JobAbilityCombat;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DefaultStartCombat;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DefaultExitCombat;
 
 protected:
 
@@ -97,10 +97,12 @@ protected:
 	TArray<FCharacterRangedMontages> RangedMontages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DefaultRanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FCharacterMagicMontages> MagicMontages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* JobAbility;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* JobAbilityCombat;
+	UAnimMontage* DefaultMagic;
+
 };

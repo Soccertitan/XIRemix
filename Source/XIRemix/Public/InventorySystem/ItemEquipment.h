@@ -77,13 +77,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides, Categories="DamageType"))
 	FGameplayTagContainer DamageTypes;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
-	ECombatStyle CombatStyle;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes")
 	TArray<FXIGrantedAttribute> Attributes;
 
-	/**The Equipment Manager that has this item equipped*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	ECombatStyle CombatStyle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	UAnimMontage* CombatStart;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	UAnimMontage* CombatExit;
+
+	/**The Equipment component that has this item equipped*/
 	UPROPERTY()
 	class UXIEquipmentManagerComponent* OwningEquipmentManager;
 

@@ -8,16 +8,16 @@
 UENUM(BlueprintType, Category="XIRemix")
 enum class ECombatStyle : uint8
 {
-	Unarmed UMETA(DisplayName = "Unarmed"),
-	Sword UMETA(DisplayName = "Sword"),
-	Axe UMETA(DisplayName = "Axe"),
-	Dagger UMETA(DisplayName = "Dagger"),
-	Club UMETA(DisplayName = "Club"),
-	Katana UMETA(DisplayName = "Katana"),
-	Hand2Hand UMETA(DisplayName = "Hand2Hand"),
-	GreatSword UMETA(DisplayName = "GreatSword"),
-	GreatKatana UMETA(DisplayName = "GreatKatana"),
-	TwoHanded UMETA(DisplayName = "TwoHanded")
+	Battle1 UMETA(DisplayName = "Axe/Club"),
+	Battle2 UMETA(DisplayName = "Sword"),
+	Battle3 UMETA(DisplayName = "Hand2Hand"),
+	Battle4 UMETA(DisplayName = "Dagger"),
+	Battle5 UMETA(DisplayName = "GreatSword"),
+	Battle6 UMETA(DisplayName = "GreatAxe/Scythe/Staff"),
+	Battle7 UMETA(DisplayName = "GreatKatana"),
+	Battle8 UMETA(DisplayName = "Polearm"),
+	Battle9 UMETA(DisplayName = "Unarmed"),
+	Battle10 UMETA(DisplayName = "Katana")
 };
 
 UENUM(BlueprintType, Category="XIRemix")
