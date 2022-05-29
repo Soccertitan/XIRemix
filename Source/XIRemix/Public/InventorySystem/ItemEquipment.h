@@ -13,14 +13,30 @@ struct XIREMIX_API FXISKMeshEquipment
 {
 	GENERATED_BODY()
  
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ERace Race;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USkeletalMesh* MeshDefault;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USkeletalMesh* MeshSecondary;
+
+};
+
+USTRUCT(BlueprintType)
+struct XIREMIX_API FXICombatStartExit
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ERace Race;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* CombatStart;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* CombatExit;
 
 };
 
@@ -29,10 +45,10 @@ struct XIREMIX_API FXIGrantedAttribute
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="SetByCaller.Attributes"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories="SetByCaller.Attributes"))
 	FGameplayTag AttributeTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Value;
 };
 
@@ -52,42 +68,36 @@ public:
 	USkeletalMesh* GetMesh(ERace Race);
 	USkeletalMesh* GetMesh(ERace Race, bool bWeaponInSubHand);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment")
 	TArray<EEquipSlot> EquipSlot;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment")
 	float LevelRequirement;
 
 	/* Leave empty to include all Jobs*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment")
 	UXIJobTagCollection* JobRequirements;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment")
 	FGameplayTagContainer GrantedTags;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
 	float Damage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides))
 	float Delay;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Instrument || ItemType == EItemType::Ammo", EditConditionHides, Categories="Weapon"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Instrument || ItemType == EItemType::Ammo", EditConditionHides, Categories="Weapon"))
 	FGameplayTag WeaponType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides, Categories="DamageType"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Attributes", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Ammo", EditConditionHides, Categories="DamageType"))
 	FGameplayTagContainer DamageTypes;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Attributes")
 	TArray<FXIGrantedAttribute> Attributes;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
 	ECombatStyle CombatStyle;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
-	UAnimMontage* CombatStart;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
-	UAnimMontage* CombatExit;
 
 	/**The Equipment component that has this item equipped*/
 	UPROPERTY()
@@ -95,7 +105,10 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	TArray<FXICombatStartExit> CombatMontage;
+
 	//For any item that can only be 'equipped' into a single slot.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Equipment|Mesh", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Shield || ItemType == EItemType::Instrument || ItemType == EItemType::Armor", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Mesh", meta = (EditCondition="ItemType == EItemType::WeaponMelee || ItemType == EItemType::WeaponRange || ItemType == EItemType::Shield || ItemType == EItemType::Instrument || ItemType == EItemType::Armor", EditConditionHides))
 	TArray<FXISKMeshEquipment> SKMesh;
 };
