@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Interfaces/AnimBPInterface.h"
+#include "Interfaces/XIAnimBPInterface.h"
 #include "XIEnums.h"
 #include "DataAssets/XICharacterBlendSpaces.h"
 #include "XIHeroAnimInstance.generated.h"
@@ -13,13 +13,13 @@
  * 
  */
 UCLASS()
-class XIREMIX_API UXIHeroAnimInstance : public UAnimInstance, public IAnimBPInterface
+class XIREMIX_API UXIHeroAnimInstance : public UAnimInstance, public IXIAnimBPInterface
 {
 	GENERATED_BODY()
 
 public:
 
-	// IAnimBPInterface Implemented Functions
+	// IXIAnimBPInterface Implemented Functions
 	virtual float GetDirection() override;
 	virtual float GetSpeed() override;
 

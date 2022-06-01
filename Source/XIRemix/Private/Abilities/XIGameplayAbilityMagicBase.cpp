@@ -2,7 +2,7 @@
 
 
 #include "Abilities/XIGameplayAbilityMagicBase.h"
-#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 #include "DataAssets/XICharacterAnimMontages.h"
 
 UXIGameplayAbilityMagicBase::UXIGameplayAbilityMagicBase()
@@ -11,7 +11,7 @@ UXIGameplayAbilityMagicBase::UXIGameplayAbilityMagicBase()
 
 UAnimMontage* UXIGameplayAbilityMagicBase::GetCastingAnimMontage()
 {
-    UXICharacterAnimMontages* AnimMontages = UCombatFunctionLibrary::GetXICharacterAnimMontages(AvatarActor);
+    UXICharacterAnimMontages* AnimMontages = UXIGameplayFunctionLibrary::GetXICharacterAnimMontages(AvatarActor);
     if(!AnimMontages)
     {
         return nullptr;

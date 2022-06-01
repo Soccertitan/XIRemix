@@ -2,10 +2,10 @@
 
 
 #include "World/Pickup.h"
-#include "InventorySystem/Item.h"
-#include "InventorySystem/InventoryComponent.h"
+#include "Items/XIItem.h"
+#include "Components/XIInventoryComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Components/InteractionComponent.h"
+#include "Components/XIInteractionComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/ActorChannel.h"
 
@@ -17,7 +17,7 @@ APickup::APickup()
 
 	SetRootComponent(PickupMesh);
 
-	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>("PickupInteractionComponent");
+	InteractionComponent = CreateDefaultSubobject<UXIInteractionComponent>("PickupInteractionComponent");
 	InteractionComponent->InteractionTime = 0.f;
 	InteractionComponent->InteractionDistance = 200.f;
 	InteractionComponent->InteractableNameText = FText::FromString("Pickup");
@@ -28,11 +28,11 @@ APickup::APickup()
 	SetReplicates(true);
 }
 
-void APickup::InitializePickup(const TSubclassOf<class UItem> ItemClass, const int32 Quantity)
+void APickup::InitializePickup(const TSubclassOf<class UXIItem> ItemClass, const int32 Quantity)
 {
 	if (HasAuthority() && ItemClass && Quantity > 0)
 	{
-		Item = NewObject<UItem>(this, ItemClass);
+		Item = NewObject<UXIItem>(this, ItemClass);
 		Item->SetQuantity(Quantity);
 
 		OnRep_Item();

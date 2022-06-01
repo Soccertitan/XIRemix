@@ -32,11 +32,11 @@ struct XIREMIX_API FXICharacterHeroActiveJobsLevels
 };
 
 USTRUCT()
-struct XIREMIX_API FInteractionData
+struct XIREMIX_API FXIInteractionData
 {
 	GENERATED_BODY()
 
-	FInteractionData()
+	FXIInteractionData()
 	{
 		ViewedInteractionComponent = nullptr;
 		LastInteractionCheckTime = 0.f;
@@ -45,7 +45,7 @@ struct XIREMIX_API FInteractionData
 
 	//The current interactable component we're viewing, if there is one
 	UPROPERTY()
-	class UInteractionComponent* ViewedInteractionComponent;
+	class UXIInteractionComponent* ViewedInteractionComponent;
 
 	//The time when we last checked for an interactable
 	UPROPERTY()
@@ -63,6 +63,8 @@ UCLASS()
 class XIREMIX_API AXICharacterBaseHero : public AXICharacterBase, public IXITargetSystemInterface, public IXIEquipmentManagerInterface
 {
 	GENERATED_BODY()
+
+	friend class UXIEquipmentManagerComponent;
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -99,7 +101,7 @@ public:
 	FXICharacterHeroActiveJobsLevels GetCharacterActiveJobsAndLevels() const;
 
 	UFUNCTION(BlueprintCallable, Category = "XICharacter|Mesh")
-	void SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType);
+	void SetCharacterMesh(UXIItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType);
 
 protected:
 	
@@ -162,10 +164,10 @@ protected:
 	
 	//Information about the current state of the player's interaction
 	UPROPERTY()
-	FInteractionData InteractionData;
+	FXIInteractionData InteractionData;
 
 	//Helper function to make grabbing interactables faster
-	FORCEINLINE class UInteractionComponent* GetInteractable() const {return InteractionData.ViewedInteractionComponent;}
+	FORCEINLINE class UXIInteractionComponent* GetInteractable() const {return InteractionData.ViewedInteractionComponent;}
 	
 	FTimerHandle TimerHandle_Interact;
 
@@ -181,7 +183,7 @@ protected:
 
 	void PerformInteractionCheck();
 	void CouldntFindInteractable();
-	void FoundNewInteractable(UInteractionComponent* Interactable);
+	void FoundNewInteractable(UXIInteractionComponent* Interactable);
 
 	UFUNCTION(BlueprintCallable)
 	void BeginInteract();

@@ -20,28 +20,28 @@ public:
 	AXIPlayerStateAction();
 
 	UFUNCTION(BlueprintPure, Category = "Inventory")
-	UInventoryComponent* GetInventory(EItemType ItemType);
+	UXIInventoryComponent* GetInventory(EItemType ItemType);
 
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryMelee;
+	class UXIInventoryComponent* InventoryMelee;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryRanged;
+	class UXIInventoryComponent* InventoryRanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryArmor;
+	class UXIInventoryComponent* InventoryArmor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryAccessories;
+	class UXIInventoryComponent* InventoryAccessories;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryConsumables;
+	class UXIInventoryComponent* InventoryConsumables;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryMaterials;
+	class UXIInventoryComponent* InventoryMaterials;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-	class UInventoryComponent* InventoryKeyItems;
+	class UXIInventoryComponent* InventoryKeyItems;
 };

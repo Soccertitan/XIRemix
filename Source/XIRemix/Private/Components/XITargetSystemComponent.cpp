@@ -11,7 +11,7 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
-#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
@@ -19,7 +19,7 @@ UXITargetSystemComponent::UXITargetSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	LockedOnWidgetClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/XIRemix/Core/Player/UI/WBP_TargetDot.WBP_TargetDot_C'"));
+	LockedOnWidgetClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/XIRemix/Core/UMG/Widgets/WBP_TargetDot.WBP_TargetDot'"));
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
 
 	// Defining the SphereComponentParameters
@@ -115,7 +115,7 @@ void UXITargetSystemComponent::TargetActor(EXITeamAttitude XIAttitude, float Dir
 	TArray<AActor *> Actors;
 	for (AActor* Actor : GetXIOverlappingActors())
 	{
-		if (XIAttitude == UCombatFunctionLibrary::GetAttitudeTowardsActor(OwnerActor, Actor))
+		if (XIAttitude == UXIGameplayFunctionLibrary::GetAttitudeTowardsActor(OwnerActor, Actor))
 		{
 			Actors.AddUnique(Actor);
 		}

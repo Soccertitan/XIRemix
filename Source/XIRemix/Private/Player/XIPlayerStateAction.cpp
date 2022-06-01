@@ -5,16 +5,16 @@
 
 AXIPlayerStateAction::AXIPlayerStateAction()
 {
-    InventoryMelee = CreateDefaultSubobject<UInventoryComponent>("MeleeItems");
-    InventoryRanged = CreateDefaultSubobject<UInventoryComponent>("RangedItems");
-    InventoryArmor = CreateDefaultSubobject<UInventoryComponent>("ArmorItems");
-    InventoryAccessories = CreateDefaultSubobject<UInventoryComponent>("AccessoryItems");
-    InventoryConsumables = CreateDefaultSubobject<UInventoryComponent>("ConsumableItems");
-    InventoryMaterials = CreateDefaultSubobject<UInventoryComponent>("MaterialsItems");
-    InventoryKeyItems = CreateDefaultSubobject<UInventoryComponent>("KeyItems");
+    InventoryMelee = CreateDefaultSubobject<UXIInventoryComponent>("MeleeItems");
+    InventoryRanged = CreateDefaultSubobject<UXIInventoryComponent>("RangedItems");
+    InventoryArmor = CreateDefaultSubobject<UXIInventoryComponent>("ArmorItems");
+    InventoryAccessories = CreateDefaultSubobject<UXIInventoryComponent>("AccessoryItems");
+    InventoryConsumables = CreateDefaultSubobject<UXIInventoryComponent>("ConsumableItems");
+    InventoryMaterials = CreateDefaultSubobject<UXIInventoryComponent>("MaterialsItems");
+    InventoryKeyItems = CreateDefaultSubobject<UXIInventoryComponent>("KeyItems");
 }
 
-UInventoryComponent* AXIPlayerStateAction::GetInventory(EItemType ItemType)
+UXIInventoryComponent* AXIPlayerStateAction::GetInventory(EItemType ItemType)
 {
     if(ItemType == EItemType::WeaponMelee || ItemType == EItemType::Shield)
     {

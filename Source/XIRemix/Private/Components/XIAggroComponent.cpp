@@ -4,7 +4,7 @@
 #include "Components/XIAggroComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
-#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 #include "AbilitySystemInterface.h"
 #include "Abilities/XIAbilitySystemComponent.h"
 
@@ -66,8 +66,8 @@ void UXIAggroComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	for (AActor* Actor : HostileActors)
 	{
-		bWithinRange = UCombatFunctionLibrary::CheckTargetWithinRange(OwnerActor, Actor, Angle, Range);
-		bIsAlive = UCombatFunctionLibrary::IsAlive(Actor);
+		bWithinRange = UXIGameplayFunctionLibrary::CheckTargetWithinRange(OwnerActor, Actor, Angle, Range);
+		bIsAlive = UXIGameplayFunctionLibrary::IsAlive(Actor);
 		
 		if(!bIsAlive)
 		{
@@ -130,7 +130,7 @@ void UXIAggroComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp
 
 	if (OtherActor && (OtherActor != OwnerActor) && OtherComp)
 	{
-		EXITeamAttitude XITeamAttitude = UCombatFunctionLibrary::GetAttitudeTowardsActor(OwnerActor, OtherActor);
+		EXITeamAttitude XITeamAttitude = UXIGameplayFunctionLibrary::GetAttitudeTowardsActor(OwnerActor, OtherActor);
 
 		if(XITeamAttitude == EXITeamAttitude::Hostile)
 		{

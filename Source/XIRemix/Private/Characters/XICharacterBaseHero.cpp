@@ -8,7 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
-#include "Components/InteractionComponent.h"
+#include "Components/XIInteractionComponent.h"
 #include "UI/XIPlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayTagsManager.h"
@@ -81,6 +81,8 @@ void AXICharacterBaseHero::BeginPlay()
 	}
 
 	InitializeMeshesToMerge();
+
+	OnRep_CombatStyle();
 }
 
 void AXICharacterBaseHero::Tick(float DeltaTime)
@@ -292,7 +294,7 @@ void AXICharacterBaseHero::OnRep_SKMeshMergeParams()
 	}
 }
 
-void AXICharacterBaseHero::SetCharacterMesh(UItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType)
+void AXICharacterBaseHero::SetCharacterMesh(UXIItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType)
 {
 	if(!HasAuthority())
 	{
@@ -420,7 +422,7 @@ void AXICharacterBaseHero::PerformInteractionCheck()
 		//Check if we hit an interactable object
 		if(TraceHit.GetActor())
 		{
-			if(UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(TraceHit.GetActor()->GetComponentByClass(UInteractionComponent::StaticClass())))
+			if(UXIInteractionComponent* InteractionComponent = Cast<UXIInteractionComponent>(TraceHit.GetActor()->GetComponentByClass(UXIInteractionComponent::StaticClass())))
 			{
 				float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
 
@@ -449,7 +451,7 @@ void AXICharacterBaseHero::CouldntFindInteractable()
 	}
 
 	//Tell the interactable we've stopped focusing on it and clear the current interactable.
-	if(UInteractionComponent* Interactable = GetInteractable())
+	if(UXIInteractionComponent* Interactable = GetInteractable())
 	{
 		Interactable->EndFocus(this);
 		
@@ -462,11 +464,11 @@ void AXICharacterBaseHero::CouldntFindInteractable()
 	InteractionData.ViewedInteractionComponent = nullptr;
 }
 
-void AXICharacterBaseHero::FoundNewInteractable(UInteractionComponent* Interactable)
+void AXICharacterBaseHero::FoundNewInteractable(UXIInteractionComponent* Interactable)
 {
 	EndInteract();
 
-	if(UInteractionComponent* OldInteractable = GetInteractable())
+	if(UXIInteractionComponent* OldInteractable = GetInteractable())
 	{
 		OldInteractable->EndFocus(this);
 	}
@@ -492,7 +494,7 @@ void AXICharacterBaseHero::BeginInteract()
 
 	InteractionData.bInteractHeld = true;
 
-	if (UInteractionComponent* Interactable = GetInteractable())
+	if (UXIInteractionComponent* Interactable = GetInteractable())
 	{
 		Interactable->BeginInteract(this);
 
@@ -528,7 +530,7 @@ void AXICharacterBaseHero::EndInteract()
 
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interact);
 
-	if(UInteractionComponent* Interactable = GetInteractable())
+	if(UXIInteractionComponent* Interactable = GetInteractable())
 	{
 		Interactable->EndInteract(this);
 	}
@@ -548,7 +550,7 @@ void AXICharacterBaseHero::Interact()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interact);
 
-	if(UInteractionComponent* Interactable = GetInteractable())
+	if(UXIInteractionComponent* Interactable = GetInteractable())
 	{
 		Interactable->Interact(this);
 	}

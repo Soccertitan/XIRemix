@@ -7,7 +7,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
-#include "Interfaces/AnimBPInterface.h"
+#include "Interfaces/XIAnimBPInterface.h"
 
 
 UXICharacterMovementComponent::UXICharacterMovementComponent()
@@ -20,7 +20,7 @@ float UXICharacterMovementComponent::GetMaxSpeed() const
 {
 	IXICharacterInterface* Owner = Cast<IXICharacterInterface>(GetOwner());
 	IAbilitySystemInterface* ASC = Cast<IAbilitySystemInterface>(GetOwner());
-	IAnimBPInterface* ABPInt = Cast<IAnimBPInterface>((GetCharacterOwner())->GetMesh()->GetAnimInstance());
+	IXIAnimBPInterface* ABPInt = Cast<IXIAnimBPInterface>((GetCharacterOwner())->GetMesh()->GetAnimInstance());
 
 	if (!Owner)
 	{

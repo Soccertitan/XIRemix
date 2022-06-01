@@ -8,7 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
 #include "Characters/XICharacterMovementComponent.h"
-#include "Interfaces/AnimBPInterface.h"
+#include "Interfaces/XIAnimBPInterface.h"
 #include "AI/XIAIControllerBase.h"
 
 // Sets default values
@@ -259,7 +259,7 @@ bool AXICharacterBase::IsAlive() const
 
 UAnimMontage* AXICharacterBase::GetAutoAttackMontage() const
 {
-	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
+	IXIAnimBPInterface* IntAnimBP = Cast<IXIAnimBPInterface>(GetMesh()->GetAnimInstance());
 	if(IntAnimBP && AnimMontages)
 	{
 		float Speed = IntAnimBP->GetSpeed();
@@ -383,7 +383,7 @@ void AXICharacterBase::Die()
 
 void AXICharacterBase::OnRep_CombatStyle()
 {
-	IAnimBPInterface* IntAnimBP = Cast<IAnimBPInterface>(GetMesh()->GetAnimInstance());
+	IXIAnimBPInterface* IntAnimBP = Cast<IXIAnimBPInterface>(GetMesh()->GetAnimInstance());
 	if(IntAnimBP)
 	{
 		IntAnimBP->SetCombatStyle_Implementation(CombatStyle);
