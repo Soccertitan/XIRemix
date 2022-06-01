@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "XIPlayerHUD.generated.h"
+#include "UI/XIUserWidget.h"
+#include "XIPlayerHudWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UXIPlayerHUD : public UUserWidget
+class XIREMIX_API UXIPlayerHudWidget : public UXIUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	
 	/**
@@ -51,4 +51,5 @@ protected:
 	float TacticalPoints;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
 	float TacticalPointsMax;
+
 };

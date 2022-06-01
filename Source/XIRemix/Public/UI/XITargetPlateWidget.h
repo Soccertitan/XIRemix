@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "TargetPlateWidget.generated.h"
+#include "UI/XIUserWidget.h"
+#include "XITargetPlateWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UTargetPlateWidget : public UUserWidget
+class XIREMIX_API UXITargetPlateWidget : public UXIUserWidget
 {
 	GENERATED_BODY()
 

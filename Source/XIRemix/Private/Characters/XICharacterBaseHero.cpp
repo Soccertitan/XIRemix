@@ -9,7 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
 #include "Components/XIInteractionComponent.h"
-#include "UI/XIPlayerHUD.h"
+#include "UI/XIPlayerHudWidget.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayTagsManager.h"
 
@@ -189,7 +189,7 @@ void AXICharacterBaseHero::HitPointsChanged(const FOnAttributeChangeData & Data)
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetHitPoints(HitPoints);
@@ -204,7 +204,7 @@ void AXICharacterBaseHero::HitPointsMaxChanged(const FOnAttributeChangeData & Da
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetHitPointsMax(HitPointsMax);
@@ -219,7 +219,7 @@ void AXICharacterBaseHero::ManaPointsChanged(const FOnAttributeChangeData& Data)
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetManaPoints(ManaPoints);
@@ -234,7 +234,7 @@ void AXICharacterBaseHero::ManaPointsMaxChanged(const FOnAttributeChangeData& Da
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetManaPointsMax(ManaPointsMax);
@@ -249,7 +249,7 @@ void AXICharacterBaseHero::TacticalPointsChanged(const FOnAttributeChangeData& D
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetTacticalPoints(TacticalPoints);
@@ -264,7 +264,7 @@ void AXICharacterBaseHero::TacticalPointsMaxChanged(const FOnAttributeChangeData
 	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
 	if(PCInt)
 	{
-		UXIPlayerHUD* PlayerHUD = PCInt->GetHUD();
+		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
 		if(PlayerHUD)
 		{
 			PlayerHUD->SetTacticalPointsMax(TacticalPointsMax);

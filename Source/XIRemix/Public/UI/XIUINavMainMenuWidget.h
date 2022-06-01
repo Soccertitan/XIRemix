@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UINavWidget.h"
-#include "MainMenuWidget.generated.h"
+#include "UI/XIUINavWidget.h"
+#include "XIUINavMainMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class XIREMIX_API UMainMenuWidget : public UUINavWidget
+class XIREMIX_API UXIUINavMainMenuWidget : public UXIUINavWidget
 {
 	GENERATED_BODY()
 	

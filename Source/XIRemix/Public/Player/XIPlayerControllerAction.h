@@ -33,7 +33,7 @@ public:
 
 	virtual void CreateHUD() override;
 
-	virtual class UXIPlayerHUD* GetHUD() const override;
+	virtual class UXIPlayerHudWidget* GetHUD() const override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "XIPCInt")
 	void SetIsMoveable(bool bIsMoveable); void SetIsMoveable_Implementation(bool bIsMoveable) override;
@@ -45,22 +45,22 @@ protected:
 #pragma region Widgets
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
-	TSubclassOf<class UXIPlayerHUD> XIPlayerHudClass;
+	TSubclassOf<class UXIPlayerHudWidget> XIPlayerHudClass;
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
-	class UXIPlayerHUD* XIPlayerHudWidget;
+	class UXIPlayerHudWidget* XIPlayerHudWidget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
-	TSubclassOf<class UTargetPlateWidget> TargetPlateWidgetClass;
+	TSubclassOf<class UXITargetPlateWidget> TargetPlateWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
-	class UTargetPlateWidget* TargetPlateWidget;
+	class UXITargetPlateWidget* TargetPlateWidget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
-	TSubclassOf<class UMainMenuWidget> MainMenuClass;
+	TSubclassOf<class UXIUINavMainMenuWidget> MainMenuClass;
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
-	class UMainMenuWidget* MainMenuWidget;
+	class UXIUINavMainMenuWidget* MainMenuWidget;
 
 #pragma endregion
 

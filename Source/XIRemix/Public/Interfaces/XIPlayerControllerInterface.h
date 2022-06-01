@@ -23,6 +23,6 @@ class XIREMIX_API IXIPlayerControllerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual class UXIPlayerHUD* GetHUD() const PURE_VIRTUAL(IXIPlayerControllerInterface::GetHUD(), return nullptr;);
+	virtual class UXIPlayerHudWidget* GetHUD() const PURE_VIRTUAL(IXIPlayerControllerInterface::GetHUD(), return nullptr;);
 	virtual void CreateHUD() PURE_VIRTUAL(IXIPlayerControllerInterface::CreateHUD());
 };

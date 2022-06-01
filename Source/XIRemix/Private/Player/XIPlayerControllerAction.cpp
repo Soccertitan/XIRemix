@@ -3,9 +3,9 @@
 
 #include "Player/XIPlayerControllerAction.h"
 #include "Interfaces/XICharacterInterface.h"
-#include "UI/XIPlayerHUD.h"
-#include "UI/TargetPlateWidget.h"
-#include "UI/MainMenuWidget.h"
+#include "UI/XIPlayerHudWidget.h"
+#include "UI/XITargetPlateWidget.h"
+#include "UI/XIUINavMainMenuWidget.h"
 #include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -71,7 +71,7 @@ void AXIPlayerControllerAction::CreateHUD()
     }
 
     //Create the Widget!
-    XIPlayerHudWidget = CreateWidget<UXIPlayerHUD>(this, XIPlayerHudClass);
+    XIPlayerHudWidget = CreateWidget<UXIPlayerHudWidget>(this, XIPlayerHudClass);
     XIPlayerHudWidget->AddToViewport();
 
     //Set Attributes
@@ -83,7 +83,7 @@ void AXIPlayerControllerAction::CreateHUD()
     XIPlayerHudWidget->SetTacticalPointsMax(XICharInt->GetTacticalPointsMax());
 }
 
-UXIPlayerHUD * AXIPlayerControllerAction::GetHUD() const
+UXIPlayerHudWidget * AXIPlayerControllerAction::GetHUD() const
 {
     return XIPlayerHudWidget;
 }
@@ -173,7 +173,7 @@ void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Valu
 {
     if(!MainMenuWidget)
     {
-        MainMenuWidget = CreateWidget<UMainMenuWidget>(this, MainMenuClass);
+        MainMenuWidget = CreateWidget<UXIUINavMainMenuWidget>(this, MainMenuClass);
     }
 
     if(MainMenuWidget)
@@ -213,7 +213,7 @@ void AXIPlayerControllerAction::TargetSelected(AActor* Actor)
 {
     if(!TargetPlateWidget && IsLocalPlayerController())
     {
-        TargetPlateWidget = CreateWidget<UTargetPlateWidget>(this, TargetPlateWidgetClass);
+        TargetPlateWidget = CreateWidget<UXITargetPlateWidget>(this, TargetPlateWidgetClass);
         if(TargetPlateWidget)
         {
             TargetPlateWidget->TargetedActor = Actor;
