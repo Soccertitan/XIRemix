@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayTagsManager.h"
 #include "Characters/XICharacterBaseHero.h"
-#include "InventorySystem/InventoryComponent.h"
+#include "Components/XIInventoryComponent.h"
 
 // Sets default values for this component's properties
 UXIEquipmentManagerComponent::UXIEquipmentManagerComponent()
@@ -83,10 +83,12 @@ void UXIEquipmentManagerComponent::BeginPlay()
 		ChildTags.GetGameplayTagArray(SetByCallerChildTags);
 	}
 
+	CombatStyleReference = HeroCharacter->CombatStyle;
+
 	InitializeEquippedItems();
 }
 
-void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandle& AGEHandle, UItemEquipment* Item)
+void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandle& AGEHandle, UXIItemEquipment* Item)
 {
 	if(GetOwnerRole() != ROLE_Authority || !GEEquipment)
 	{
@@ -108,7 +110,7 @@ void UXIEquipmentManagerComponent::SetGameplayEffects(FActiveGameplayEffectHandl
 			{
 				InitializeSpecSetByCaller(Spec);
 
-				for (FXIGrantedAttribute Attribute : Item->Attributes)
+				for (auto& Attribute : Item->Attributes)
 				{
 					Spec->SetSetByCallerMagnitude(Attribute.AttributeTag, Attribute.Value);
 				}
@@ -140,8 +142,8 @@ void UXIEquipmentManagerComponent::SetGameplayEffectAttackDelay(float Delay, FAc
 		{
 			if(bIsMelee)
 			{
-				UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
-				UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+				UXIItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+				UXIItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
 
 				if(MainHand)
 				{
@@ -169,7 +171,7 @@ void UXIEquipmentManagerComponent::SetGameplayEffectAttackDelay(float Delay, FAc
 			}
 			else // Ranged Weapon
 			{
-				UItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
+				UXIItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
 				
 				if(Ranged)
 				{
@@ -200,8 +202,8 @@ float UXIEquipmentManagerComponent::GetAttackDelay(bool bIsMelee) const
 
 	if(bIsMelee)
 	{
-		UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
-		UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+		UXIItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+		UXIItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
 
 		if(MainHand && MainHand->CombatStyle == ECombatStyle::Battle3)
 		{
@@ -218,7 +220,7 @@ float UXIEquipmentManagerComponent::GetAttackDelay(bool bIsMelee) const
 	}
 	else
 	{
-		UItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
+		UXIItemEquipment* Ranged = FindEquippedItemBySlot(EEquipSlot::Ranged);
 		if(Ranged)
 		{
 			Delay = Ranged->Delay;
@@ -239,7 +241,7 @@ void UXIEquipmentManagerComponent::InitializeSpecSetByCaller(FGameplayEffectSpec
 	}
 }
 
-bool UXIEquipmentManagerComponent::IsItemEquipable(UItem* Item) const
+bool UXIEquipmentManagerComponent::IsItemEquipable(UXIItem* Item) const
 {
 	if(!HeroCharacter || !Item)
 	{
@@ -247,7 +249,7 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UItem* Item) const
 		return false;
 	}
 	
-	UItemEquipment* EquipItem = Cast<UItemEquipment>(Item);
+	UXIItemEquipment* EquipItem = Cast<UXIItemEquipment>(Item);
 	if(!EquipItem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Warning! The item is not an Equipment Item."))
@@ -269,7 +271,7 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UItem* Item) const
 	return false;
 }
 
-void UXIEquipmentManagerComponent::EquipItem(UItem* Item, EEquipSlot EquipSlot)
+void UXIEquipmentManagerComponent::EquipItem(UXIItem* Item, EEquipSlot EquipSlot)
 {
 	if(!GetOwner()->HasAuthority())
 	{
@@ -282,7 +284,7 @@ void UXIEquipmentManagerComponent::EquipItem(UItem* Item, EEquipSlot EquipSlot)
 			return;
 		}
 
-		UItemEquipment* EquipItem = Cast<UItemEquipment>(Item);
+		UXIItemEquipment* EquipItem = Cast<UXIItemEquipment>(Item);
 		if(!EquipItem && EquipItem->OwningInventory && EquipItem->OwningInventory->FindItem(EquipItem))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Warning! The item cannot be equipped. Because it's either invalid, does not have an owning inventory, or does not exist in the inventory."))
@@ -435,12 +437,12 @@ void UXIEquipmentManagerComponent::EquipItem(UItem* Item, EEquipSlot EquipSlot)
 	}
 }
 
-bool UXIEquipmentManagerComponent::Server_EquipItem_Validate(UItem* Item, EEquipSlot EquipSlot)
+bool UXIEquipmentManagerComponent::Server_EquipItem_Validate(UXIItem* Item, EEquipSlot EquipSlot)
 {
 	return true;
 }
 
-void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UItem* Item, EEquipSlot EquipSlot)
+void UXIEquipmentManagerComponent::Server_EquipItem_Implementation(UXIItem* Item, EEquipSlot EquipSlot)
 {
 	EquipItem(Item, EquipSlot);
 }
@@ -522,7 +524,7 @@ void UXIEquipmentManagerComponent::Server_UnEquipItem_Implementation(EEquipSlot 
 	UnEquipItem(EquipSlot);
 }
 
-UItemEquipment* UXIEquipmentManagerComponent::FindEquippedItemBySlot(EEquipSlot EquipSlot) const
+UXIItemEquipment* UXIEquipmentManagerComponent::FindEquippedItemBySlot(EEquipSlot EquipSlot) const
 {
 	for(auto& EquippedItem : EquippedItems)
 	{
@@ -536,8 +538,8 @@ UItemEquipment* UXIEquipmentManagerComponent::FindEquippedItemBySlot(EEquipSlot 
 
 ECombatStyle UXIEquipmentManagerComponent::CheckCombatStyle()
 {
-	UItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
-	UItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
+	UXIItemEquipment* MainHand = FindEquippedItemBySlot(EEquipSlot::MainHand);
+	UXIItemEquipment* SubHand = FindEquippedItemBySlot(EEquipSlot::SubHand);
 
 	if(MainHand && !SubHand)
 	{

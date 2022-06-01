@@ -16,7 +16,7 @@ public:
 	APickup();
 
 	//Takes the item to represent and creates the pickup from it. Done on BeginPlay and when a player drops an item on the ground.
-	void InitializePickup(const TSubclassOf<class UItem> ItemClass, const int32 Quantity);
+	void InitializePickup(const TSubclassOf<class UXIItem> ItemClass, const int32 Quantity);
 
 	/**Align pickups rotation with ground rotation. */
 	UFUNCTION(BlueprintImplementableEvent)
@@ -24,14 +24,14 @@ public:
 
 	//This is used as a template to create the pickup when spawned in
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced)
-	class UItem* ItemTemplate;
+	class UXIItem* ItemTemplate;
 
 
 protected:
 
 	//The item that will be added to the inventory when this pickup is taken
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, ReplicatedUsing = OnRep_Item)
-	class UItem* Item;
+	class UXIItem* Item;
 
 	UFUNCTION()
 	void OnRep_Item();
@@ -57,6 +57,6 @@ protected:
 	class UStaticMeshComponent* PickupMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class UInteractionComponent* InteractionComponent;
+	class UXIInteractionComponent* InteractionComponent;
 
 };

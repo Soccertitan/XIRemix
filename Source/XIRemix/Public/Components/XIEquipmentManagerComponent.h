@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InventorySystem/ItemEquipment.h"
+#include "Items/XIItemEquipment.h"
 #include "GameplayEffectTypes.h"
 #include "XIEquipmentManagerComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FUpdateMesh, UItemEquipment*, Item, ESkeletalMeshMergeType, SKMeshMergeType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FUpdateMesh, UXIItemEquipment*, Item, ESkeletalMeshMergeType, SKMeshMergeType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEquipmentUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCombatStyleChanged, ECombatStyle, CombatStyle);
 
@@ -21,7 +21,7 @@ struct XIREMIX_API FXIEquippedItem
 	EEquipSlot EquipSlot;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UItemEquipment* ItemEquipment;
+	UXIItemEquipment* ItemEquipment;
 
 	UPROPERTY()
 	FActiveGameplayEffectHandle ActiveGEHandle;
@@ -32,7 +32,7 @@ struct XIREMIX_API FXIEquippedItem
 		ItemEquipment = nullptr;
 	}
 
-	FXIEquippedItem(EEquipSlot InEquipSlot, UItemEquipment* InItem)
+	FXIEquippedItem(EEquipSlot InEquipSlot, UXIItemEquipment* InItem)
 	{
 		EquipSlot = InEquipSlot;
 		ItemEquipment = InItem;
@@ -44,8 +44,6 @@ class XIREMIX_API UXIEquipmentManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	friend class AXICharacterBaseHero;
-
 public:	
 	// Sets default values for this component's properties
 	UXIEquipmentManagerComponent();
@@ -54,17 +52,17 @@ public:
 	FORCEINLINE TArray<FXIEquippedItem> GetEquippedItems() const { return EquippedItems; };
 
 	UFUNCTION(BlueprintPure, Category = "XIEquipmentManager")
-	UItemEquipment* FindEquippedItemBySlot(EEquipSlot EquipSlot) const;
+	UXIItemEquipment* FindEquippedItemBySlot(EEquipSlot EquipSlot) const;
 
 	UFUNCTION(BlueprintPure, Category = "XIEquipmentManager")
-	bool IsItemEquipable(UItem* Item) const;
+	bool IsItemEquipable(UXIItem* Item) const;
 
 	/**Server equips the item.*/
 	UFUNCTION(BlueprintCallable, Category = "XIEquipmentManager")
-	void EquipItem(UItem* Item, EEquipSlot EquipSlot);
+	void EquipItem(UXIItem* Item, EEquipSlot EquipSlot);
 
 	UFUNCTION(Server, WithValidation, Reliable)
-	void Server_EquipItem(UItem* Item, EEquipSlot EquipSlot);
+	void Server_EquipItem(UXIItem* Item, EEquipSlot EquipSlot);
 
 	/**Server un-equips the item.*/
 	UFUNCTION(BlueprintCallable, Category = "XIEquipmentManager")
@@ -90,7 +88,7 @@ protected:
 	virtual bool ReplicateSubobjects(class UActorChannel *Channel, class FOutBunch *Bunch, FReplicationFlags *RepFlags) override;
 
 	// Sets attributes for any equippable item. Use the Melee and Ranged versions to apply Delay.
-	void SetGameplayEffects(FActiveGameplayEffectHandle& AGEHandle, UItemEquipment* Item);
+	void SetGameplayEffects(FActiveGameplayEffectHandle& AGEHandle, UXIItemEquipment* Item);
 
 	// Sets the attack delay
 	void SetGameplayEffectAttackDelay(float Delay, FActiveGameplayEffectHandle& AGEHandle, bool bIsMelee);

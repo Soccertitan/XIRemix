@@ -2,7 +2,7 @@
 
 
 #include "Abilities/XIGameplayAbility.h"
-#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 
 UXIGameplayAbility::UXIGameplayAbility()
 {
@@ -12,8 +12,8 @@ UXIGameplayAbility::UXIGameplayAbility()
 
 bool UXIGameplayAbility::IsTargetValid(AActor* SourceActorLocation, AActor* InTargetActor, float InRange, float InAngle, EXITeamAttitude InTargetAttitude) const
 {
-    bool bIsInRange = UCombatFunctionLibrary::CheckTargetWithinRange(SourceActorLocation, InTargetActor, InAngle, (InRange+CapsuleRadius));
-    bool bEqualAttitudes = (UCombatFunctionLibrary::GetAttitudeTowardsActor(GetAvatarActorFromActorInfo(), InTargetActor) == InTargetAttitude);
+    bool bIsInRange = UXIGameplayFunctionLibrary::CheckTargetWithinRange(SourceActorLocation, InTargetActor, InAngle, (InRange+CapsuleRadius));
+    bool bEqualAttitudes = (UXIGameplayFunctionLibrary::GetAttitudeTowardsActor(GetAvatarActorFromActorInfo(), InTargetActor) == InTargetAttitude);
 
     if ((bIsInRange == true) && (bEqualAttitudes == true))
     {
@@ -253,7 +253,7 @@ bool UXIGameplayAbility::GetEnmity(float OutCumulativeEnmity, float OutVolatileE
 void UXIGameplayAbility::InitializeAbilityData()
 {
     AvatarActor = GetAvatarActorFromActorInfo();
-    CapsuleRadius = UCombatFunctionLibrary::GetCapsuleRadius(AvatarActor);
+    CapsuleRadius = UXIGameplayFunctionLibrary::GetCapsuleRadius(AvatarActor);
 }
 
 void UXIGameplayAbility::GiveXIGameplayAbility(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UXIGameplayAbility> XIGameplayAbility, AActor* SourceActor)

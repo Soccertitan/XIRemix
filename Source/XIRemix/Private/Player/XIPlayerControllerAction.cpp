@@ -6,7 +6,7 @@
 #include "UI/XIPlayerHUD.h"
 #include "UI/TargetPlateWidget.h"
 #include "UI/MainMenuWidget.h"
-#include "FunctionLibrary/CombatFunctionLibrary.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/XITargetSystemComponent.h"
@@ -219,7 +219,7 @@ void AXIPlayerControllerAction::TargetSelected(AActor* Actor)
             TargetPlateWidget->TargetedActor = Actor;
             TargetPlateWidget->AddToViewport();
 
-            UCombatFunctionLibrary::SetMainTarget(PlayerPawn, Actor);
+            UXIGameplayFunctionLibrary::SetMainTarget(PlayerPawn, Actor);
         }
     }
 }
@@ -230,7 +230,7 @@ void AXIPlayerControllerAction::TargetRemoved(AActor* Actor)
     {
         TargetPlateWidget->RemoveFromParent();
         TargetPlateWidget = nullptr;
-        UCombatFunctionLibrary::SetMainTarget(PlayerPawn, nullptr);
+        UXIGameplayFunctionLibrary::SetMainTarget(PlayerPawn, nullptr);
     }
 }
 
