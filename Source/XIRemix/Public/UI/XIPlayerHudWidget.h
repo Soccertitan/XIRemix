@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, Blueprintable, BlueprintType, ClassGroup = UI)
 class XIREMIX_API UXIPlayerHudWidget : public UXIUserWidget
 {
 	GENERATED_BODY()

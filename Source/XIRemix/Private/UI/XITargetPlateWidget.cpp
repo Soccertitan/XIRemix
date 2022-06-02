@@ -2,8 +2,20 @@
 
 
 #include "UI/XITargetPlateWidget.h"
+#include "Abilities/XIAbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
+#include "Abilities/AttributeSetGlobal.h"
+#include "UI/Components/XIAttributeProgressBar.h"
+#include "Components/TextBlock.h"
+#include "FunctionLibrary/XIGameplayFunctionLibrary.h"
 
-float UXITargetPlateWidget::GetHitPointsPercent()
+void UXITargetPlateWidget::SetupXITargetPlateWidget(AActor* Actor)
 {
-    return HitPoints / FMath::Max(HitPointsMax, 1.f);
+    TargetedActor = Actor;
+    TargetHPProgressBar->SetupAttributeCallback(Actor);
+
+    if(TargetedActor)
+    {
+        TargetName->SetText(UXIGameplayFunctionLibrary::GetCharacterName(TargetedActor));
+    }
 }

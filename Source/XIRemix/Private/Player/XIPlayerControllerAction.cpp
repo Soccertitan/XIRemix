@@ -211,16 +211,22 @@ void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Valu
 
 void AXIPlayerControllerAction::TargetSelected(AActor* Actor)
 {
-    if(!TargetPlateWidget && IsLocalPlayerController())
+    if(!IsLocalPlayerController())
+    {
+        return;
+    }
+
+    if(!TargetPlateWidget)
     {
         TargetPlateWidget = CreateWidget<UXITargetPlateWidget>(this, TargetPlateWidgetClass);
-        if(TargetPlateWidget)
-        {
-            TargetPlateWidget->TargetedActor = Actor;
-            TargetPlateWidget->AddToViewport();
+    }
 
-            UXIGameplayFunctionLibrary::SetMainTarget(PlayerPawn, Actor);
-        }
+    if(TargetPlateWidget)
+    {
+        TargetPlateWidget->SetupXITargetPlateWidget(Actor);
+        TargetPlateWidget->AddToViewport();
+
+        UXIGameplayFunctionLibrary::SetMainTarget(PlayerPawn, Actor);
     }
 }
 
@@ -229,7 +235,7 @@ void AXIPlayerControllerAction::TargetRemoved(AActor* Actor)
     if(TargetPlateWidget && IsLocalPlayerController())
     {
         TargetPlateWidget->RemoveFromParent();
-        TargetPlateWidget = nullptr;
+        TargetPlateWidget->SetupXITargetPlateWidget(nullptr);
         UXIGameplayFunctionLibrary::SetMainTarget(PlayerPawn, nullptr);
     }
 }

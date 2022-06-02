@@ -9,25 +9,26 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, Blueprintable, BlueprintType, ClassGroup = UI)
 class XIREMIX_API UXITargetPlateWidget : public UXIUserWidget
 {
 	GENERATED_BODY()
 
 public:
 
-	UFUNCTION(BlueprintPure, Category = "TargetPlate")
-	float GetHitPointsPercent();
-
-	UPROPERTY(BlueprintReadWrite, Category = "TargetPlate", meta = (ExposeOnSpawn))
-	AActor* TargetedActor;
+	//Sets up the widget and binds to the Actor's Ability System Component different events.
+	UFUNCTION(BlueprintCallable, Category = "TargetPlateWidget")
+	void SetupXITargetPlateWidget(AActor* Actor);
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, Category = "TargetPlate")
-	float HitPoints;
+	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget", meta = (BindWidget))
+	class UXIAttributeProgressBar* TargetHPProgressBar;
 
-	UPROPERTY(BlueprintReadWrite, Category = "TargetPlate")
-	float HitPointsMax;
+	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget", meta = (BindWidget))
+	class UTextBlock* TargetName;
+
+	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget")
+	AActor* TargetedActor;
 
 };
