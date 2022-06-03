@@ -9,7 +9,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/XIPlayerControllerInterface.h"
 #include "Components/XIInteractionComponent.h"
-#include "UI/XIPlayerHudWidget.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayTagsManager.h"
 
@@ -74,12 +73,6 @@ void AXICharacterBaseHero::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AbilitySystemComponent)
-	{
-		ManaPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaPointsMaxAttribute()).AddUObject(this, &AXICharacterBaseHero::ManaPointsMaxChanged);
-		TacticalPointsMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetTacticalPointsMaxAttribute()).AddUObject(this, &AXICharacterBaseHero::TacticalPointsMaxChanged);
-	}
-
 	InitializeMeshesToMerge();
 
 	OnRep_CombatStyle();
@@ -119,12 +112,6 @@ void AXICharacterBaseHero::OnRep_PlayerState()
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	InitializeAttributes();
-	
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		PCInt->CreateHUD();
-	}
 }
 
 #pragma region AttributeGetters
@@ -184,92 +171,6 @@ FXICharacterHeroActiveJobsLevels AXICharacterBaseHero::GetCharacterActiveJobsAnd
 void AXICharacterBaseHero::HitPointsChanged(const FOnAttributeChangeData & Data)
 {
 	Super::HitPointsChanged(Data);
-	float HitPoints = Data.NewValue;
-	
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetHitPoints(HitPoints);
-		}
-	}
-}
-
-void AXICharacterBaseHero::HitPointsMaxChanged(const FOnAttributeChangeData & Data)
-{
-	float HitPointsMax = Data.NewValue;
-
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetHitPointsMax(HitPointsMax);
-		}
-	}
-}
-
-void AXICharacterBaseHero::ManaPointsChanged(const FOnAttributeChangeData& Data)
-{
-	float ManaPoints = Data.NewValue;
-
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetManaPoints(ManaPoints);
-		}
-	}
-}
-
-void AXICharacterBaseHero::ManaPointsMaxChanged(const FOnAttributeChangeData& Data)
-{
-	float ManaPointsMax = Data.NewValue;
-
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetManaPointsMax(ManaPointsMax);
-		}
-	}
-}
-
-void AXICharacterBaseHero::TacticalPointsChanged(const FOnAttributeChangeData& Data)
-{
-	float TacticalPoints = Data.NewValue;
-
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetTacticalPoints(TacticalPoints);
-		}
-	}
-}
-
-void AXICharacterBaseHero::TacticalPointsMaxChanged(const FOnAttributeChangeData& Data)
-{
-	float TacticalPointsMax = Data.NewValue;
-
-	IXIPlayerControllerInterface* PCInt = Cast<IXIPlayerControllerInterface>(GetController());
-	if(PCInt)
-	{
-		UXIPlayerHudWidget* PlayerHUD = PCInt->GetHUD();
-		if(PlayerHUD)
-		{
-			PlayerHUD->SetTacticalPointsMax(TacticalPointsMax);
-		}
-	}
 }
 
 #pragma endregion AttributeChangeCallbacks

@@ -16,40 +16,49 @@ class XIREMIX_API UXIPlayerHudWidget : public UXIUserWidget
 
 public:
 	
-	/**
-	* Attribute setters
-	*/
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetHitPoints(float Value);
+	//Sets up the widget and binds to the Actor's Ability System Component different events.
+	UFUNCTION(BlueprintCallable, Category = "XIPlayerHudWidget")
+	void SetupXIPlayerHudWidget(AActor* Actor);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetHitPointsMax(float Value);
+	UFUNCTION(BlueprintImplementableEvent, Category = "XIPlayerHudWidget")
+	void HPValueChanged(float OldValue, float NewValue);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetManaPoints(float Value);
+	UFUNCTION(BlueprintImplementableEvent, Category = "XIPlayerHudWidget")
+	void MPValueChanged(float OldValue, float NewValue);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetManaPointsMax(float Value);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetTacticalPoints(float Value);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetTacticalPointsMax(float Value);
+	UFUNCTION(BlueprintImplementableEvent, Category = "XIPlayerHudWidget")
+	void TPValueChanged(float OldValue, float NewValue);
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float HitPoints;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float HitPointsMax;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float ManaPoints;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float ManaPointsMax;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float TacticalPoints;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attributes")
-	float TacticalPointsMax;
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget")
+	AActor* PlayerActor;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UXIAttributeProgressBar* HPProgressBar;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UXIAttributeProgressBar* MPProgressBar;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UXIAttributeProgressBar* TPProgressBar;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UTextBlock* HPValue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UTextBlock* MPValue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
+	class UTextBlock* TPValue;
+
+	UFUNCTION()
+	void HPAttributeChanged(float OldValue, float NewValue);
+
+	UFUNCTION()
+	void MPAttributeChanged(float OldValue, float NewValue);
+
+	UFUNCTION()
+	void TPAttributeChanged(float OldValue, float NewValue);
 
 };

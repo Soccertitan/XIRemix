@@ -8,7 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "XIAttributeProgressBar.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValueChanged, float, NewValue, float, OldValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValueChanged, float, OldValue, float, NewValue);
 
 /**
  * 
@@ -30,7 +30,13 @@ public:
 	FValueChanged OnMaxValueChanged;
 
 	UFUNCTION(BlueprintPure, Category = "XIAttributeProgressBar")
-	float GetPercentValue();
+	float GetPercentValue() const;
+
+	UFUNCTION(BlueprintPure, Category = "XIAttributeProgressBar")
+	float GetCurrentValue() const;
+
+	UFUNCTION(BlueprintPure, Category = "XIAttributeProgressBar")
+	float GetMaxValue() const;
 
 protected:
 

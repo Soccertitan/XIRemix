@@ -38,9 +38,19 @@ bool UXIAttributeProgressBar::SetupAttributeCallback(AActor* Actor)
     return true;
 }
 
-float UXIAttributeProgressBar::GetPercentValue()
+float UXIAttributeProgressBar::GetPercentValue() const
 {
     return CurrentValue / FMath::Max(MaxValue, 1.f);
+}
+
+float UXIAttributeProgressBar::GetCurrentValue() const
+{
+    return CurrentValue;
+}
+
+float UXIAttributeProgressBar::GetMaxValue() const
+{
+    return MaxValue;
 }
 
 void UXIAttributeProgressBar::CurrentValueChanged(const FOnAttributeChangeData& Data)

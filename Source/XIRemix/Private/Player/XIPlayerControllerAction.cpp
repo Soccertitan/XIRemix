@@ -44,12 +44,6 @@ void AXIPlayerControllerAction::AcknowledgePossession(class APawn* P)
 
 void AXIPlayerControllerAction::CreateHUD()
 {
-    // Only Create Once
-    if(XIPlayerHudWidget)
-    {
-        return;
-    }
-
     if (!XIPlayerHudClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing XIPlayerHudClass. Please fill in on the Blueprint of the PlayerController."), *FString(__FUNCTION__));
@@ -62,25 +56,17 @@ void AXIPlayerControllerAction::CreateHUD()
         return;
     }
 
-    // Implemented the XICharacterInterface
-    IXICharacterInterface* XICharInt = Cast<IXICharacterInterface>(PlayerPawn);
-    if(!XICharInt)
+    //Create the Widget!
+    if(!XIPlayerHudWidget)
     {
-        UE_LOG(LogTemp, Error, TEXT("%s() PlayerPawn doesn't implement interface XICharacterInterface"), *FString(__FUNCTION__));
-        return;
+        XIPlayerHudWidget = CreateWidget<UXIPlayerHudWidget>(this, XIPlayerHudClass);
     }
 
-    //Create the Widget!
-    XIPlayerHudWidget = CreateWidget<UXIPlayerHudWidget>(this, XIPlayerHudClass);
-    XIPlayerHudWidget->AddToViewport();
-
-    //Set Attributes
-    XIPlayerHudWidget->SetHitPoints(XICharInt->GetHitPoints());
-    XIPlayerHudWidget->SetHitPointsMax(XICharInt->GetHitPointsMax());
-    XIPlayerHudWidget->SetManaPoints(XICharInt->GetManaPoints());
-    XIPlayerHudWidget->SetManaPointsMax(XICharInt->GetManaPointsMax());
-    XIPlayerHudWidget->SetTacticalPoints(XICharInt->GetTacticalPoints());
-    XIPlayerHudWidget->SetTacticalPointsMax(XICharInt->GetTacticalPointsMax());
+    if(XIPlayerHudWidget)
+    {
+        XIPlayerHudWidget->SetupXIPlayerHudWidget(PlayerPawn);
+        XIPlayerHudWidget->AddToViewport();
+    }
 }
 
 UXIPlayerHudWidget * AXIPlayerControllerAction::GetHUD() const
@@ -91,9 +77,6 @@ UXIPlayerHudWidget * AXIPlayerControllerAction::GetHUD() const
 void AXIPlayerControllerAction::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-
-	// For edge cases where the PlayerState is repped before the Hero is possessed.
-	CreateHUD();
 }
 
 void AXIPlayerControllerAction::SetIsMoveable_Implementation(bool bIsMoveable)
