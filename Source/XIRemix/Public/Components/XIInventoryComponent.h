@@ -86,7 +86,6 @@ class XIREMIX_API UXIInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	friend class UItem;
 	friend class UXIItem;
 
 public:	

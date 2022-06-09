@@ -11,7 +11,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValueChanged, float, OldValue, float, NewValue);
 
 /**
- * 
+ * Sets the percent of the progress bar based on the attributes specified in the editor.
  */
 UCLASS()
 class XIREMIX_API UXIAttributeProgressBar : public UProgressBar

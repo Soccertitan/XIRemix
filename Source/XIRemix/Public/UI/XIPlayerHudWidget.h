@@ -31,9 +31,6 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget")
-	AActor* PlayerActor;
-
 	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
 	class UXIAttributeProgressBar* HPProgressBar;
 
@@ -51,6 +48,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget", meta = (BindWidget))
 	class UTextBlock* TPValue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "XIPlayerHudWidget")
+	AActor* PlayerActor;
 
 	UFUNCTION()
 	void HPAttributeChanged(float OldValue, float NewValue);

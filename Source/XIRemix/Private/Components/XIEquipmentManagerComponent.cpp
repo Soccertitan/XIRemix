@@ -252,7 +252,7 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UXIItem* Item) const
 	UXIItemEquipment* EquipItem = Cast<UXIItemEquipment>(Item);
 	if(!EquipItem)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Warning! The item is not an Equipment Item."))
+		UE_LOG(LogTemp, Warning, TEXT("Warning! The item is not a subclass of UXIItemEquipment."))
 		return false;
 	}
 
@@ -261,7 +261,7 @@ bool UXIEquipmentManagerComponent::IsItemEquipable(UXIItem* Item) const
 
 	if(!EquipItem->JobRequirements)
 	{
-		return true;
+		return false;
 	}
 
 	if((CharacterJobsLevels.MainJobLevel >= EquipItem->LevelRequirement && EquipItem->JobRequirements->JobTags.HasTagExact(CharacterJobsLevels.MainJobTag)) || (CharacterJobsLevels.SubJobLevel >= EquipItem->LevelRequirement && EquipItem->JobRequirements->JobTags.HasTagExact(CharacterJobsLevels.SubJobTag)))
@@ -291,149 +291,154 @@ void UXIEquipmentManagerComponent::EquipItem(UXIItem* Item, EEquipSlot EquipSlot
 			return;
 		}
 
-		for(auto& Equipment : EquippedItems)
+		//The item cannot be equipped to that slot!.
+		if(!EquipItem->EquipSlot.Contains(EquipSlot))
 		{
-			//Skip to next iteration of the loop if the EquipSlot is not equal to the Array's equip slot.
-			if(!(Equipment.EquipSlot == EquipSlot))
-			{
-				continue;
-			}
-
-			//The item cannot be equipped to that slot!.
-			if(!EquipItem->EquipSlot.Contains(EquipSlot))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Item cannot be equipped to that slot"));
-				return;
-			}
-
-			switch (EquipSlot)
-			{
-				case EEquipSlot::MainHand:
-					
-					// Unequip the item from Subhand because we're weilding a 2Handed weapon.
-					if(!EquipItem->EquipSlot.Contains(EEquipSlot::SubHand))
-					{
-						for(auto& SubItem : EquippedItems)
-						{
-							if(SubItem.EquipSlot == EEquipSlot::SubHand)
-							{
-								SubItem.ItemEquipment = nullptr;
-								SetGameplayEffects(SubItem.ActiveGEHandle, nullptr);
-								OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
-								break;
-							}
-						}
-					}
-
-					Equipment.ItemEquipment = EquipItem;
-					SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
-					CheckCombatStyle();
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::MainHand);
-					break;
-
-				case EEquipSlot::SubHand:
-
-					for(auto& MainItem : EquippedItems)
-					{
-						if(MainItem.EquipSlot == EEquipSlot::MainHand)
-						{
-							if(MainItem.ItemEquipment)
-							{
-								if(MainItem.ItemEquipment->EquipSlot.Contains(EEquipSlot::SubHand))
-								{
-									MainItem.ItemEquipment = nullptr;
-									SetGameplayEffects(MainItem.ActiveGEHandle, nullptr);
-								}
-							}
-							break;
-						}
-					}
-
-					if(EquipItem->ItemType == EItemType::WeaponMelee && !AbilitySystemComponent->HasMatchingGameplayTag(DualWield))
-					{
-						// Don't equip the subHand item. We can't dual wield.
-						return;
-					}
-
-					Equipment.ItemEquipment = EquipItem;
-					SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
-					CheckCombatStyle();
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::SubHand);
-					break;
-
-				case EEquipSlot::Ranged:
-
-					Equipment.ItemEquipment = EquipItem;
-					SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
-					/*
-					TODO: Add logic to remove ammo if not appropriate.
-					*/
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Range);
-					break;
-				
-				case EEquipSlot::Ammo:
-					//TODO for Ammo logic.
-					break;
-				
-				case EEquipSlot::Head:
-					//Unequips Body equipment if body does not allow head gear.
-					for(auto& Body : EquippedItems)
-					{
-						if(Body.EquipSlot == EEquipSlot::Body)
-						{
-							if(Body.ItemEquipment && Body.ItemEquipment->GrantedTags.HasTag(NoHeadGear))
-							{
-								Body.ItemEquipment = nullptr;
-								SetGameplayEffects(Body.ActiveGEHandle, nullptr);
-								OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
-							}
-							break;
-						}
-					}
-					Equipment.ItemEquipment = EquipItem;
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Head);
-					break;
-				
-				case EEquipSlot::Body:
-					//Unequips Head equipment if body does not allow head gear.
-					for(auto& Head : EquippedItems)
-					{
-						if(Head.EquipSlot == EEquipSlot::Head)
-						{
-							if(Head.ItemEquipment && Equipment.ItemEquipment->GrantedTags.HasTag(NoHeadGear))
-							{
-								Head.ItemEquipment = nullptr;
-								SetGameplayEffects(Head.ActiveGEHandle, nullptr);
-								OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
-							}
-							break;
-						}
-					}
-					Equipment.ItemEquipment = EquipItem;
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Body);
-					break;
-
-				case EEquipSlot::Hands:
-					Equipment.ItemEquipment = EquipItem;
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Hands);
-					break;
-
-				case EEquipSlot::Legs:
-					Equipment.ItemEquipment = EquipItem;
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Legs);
-					break;
-
-				case EEquipSlot::Feet:
-					Equipment.ItemEquipment = EquipItem;
-					OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Feet);
-					break;
-			}
-
-			Equipment.ItemEquipment = EquipItem;
-			SetGameplayEffects(Equipment.ActiveGEHandle, Equipment.ItemEquipment);
-			OnEquipmentUpdated.Broadcast();
-			OnRep_EquippedItems();
+			UE_LOG(LogTemp, Warning, TEXT("Item cannot be equipped to that slot"));
+			return;
 		}
+
+		// Gets the Index of the array that will equip the item.
+		const FXIEquippedItem ItemSlot = FXIEquippedItem::FXIEquippedItem(EquipSlot);
+		const int Index = EquippedItems.Find(ItemSlot);
+
+		if(Index == -1)
+		{
+			return;
+		}
+
+		switch (EquipSlot)
+		{
+			case EEquipSlot::MainHand:
+			{
+				// Unequip the item from Subhand because we're weilding a 2Handed weapon.
+				if(!EquipItem->EquipSlot.Contains(EEquipSlot::SubHand))
+				{
+					// Gets the Index of the array that will unequip the item.
+					const FXIEquippedItem SubItemSlot = FXIEquippedItem::FXIEquippedItem(EEquipSlot::SubHand);
+					const int SubIndex = EquippedItems.Find(SubItemSlot);
+
+					if(SubIndex != -1)
+					{
+						EquippedItems[SubIndex].ItemEquipment = nullptr;
+						SetGameplayEffects(EquippedItems[SubIndex].ActiveGEHandle, nullptr);
+						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
+					}
+				}
+
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+				CheckCombatStyle();
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::MainHand);
+			}	
+				break;
+
+			case EEquipSlot::SubHand:
+			{
+				// Gets the Index of the array that will unequip the item.
+				const FXIEquippedItem MainItemSlot = FXIEquippedItem::FXIEquippedItem(EEquipSlot::MainHand);
+				const int MainIndex = EquippedItems.Find(MainItemSlot);
+				
+				if(MainIndex != -1 && EquippedItems[MainIndex].ItemEquipment)
+				{
+					// Unequips MainHand item if it cannot be equipped in the sub hand.
+					if(!EquippedItems[MainIndex].ItemEquipment->EquipSlot.Contains(EEquipSlot::SubHand))
+					{
+						EquippedItems[MainIndex].ItemEquipment = nullptr;
+						SetGameplayEffects(EquippedItems[MainIndex].ActiveGEHandle, nullptr);
+					}
+				}
+
+				if(EquipItem->ItemType == EItemType::WeaponMelee && !AbilitySystemComponent->HasMatchingGameplayTag(DualWield))
+				{
+					// Don't equip the subHand item. We can't dual wield.
+					return;
+				}
+
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+				CheckCombatStyle();
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::SubHand);
+			}
+				break;
+
+			case EEquipSlot::Ranged:
+			{
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
+				/*
+				TODO: Add logic to remove ammo if not appropriate.
+				*/
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Range);
+			}
+				break;
+			
+			case EEquipSlot::Ammo:
+				
+				//TODO for Ammo logic.
+				break;
+			
+			case EEquipSlot::Head:
+			{
+				//Unequips Body equipment if body does not allow head gear.
+				// Gets the Index of the array that will unequip the item.
+				const FXIEquippedItem BodyItemSlot = FXIEquippedItem::FXIEquippedItem(EEquipSlot::Body);
+				const int BodyIndex = EquippedItems.Find(BodyItemSlot);
+
+				if(BodyIndex != -1 && EquippedItems[BodyIndex].ItemEquipment && EquippedItems[BodyIndex].ItemEquipment->GrantedTags.HasTag(NoHeadGear))
+				{
+					EquippedItems[BodyIndex].ItemEquipment = nullptr;
+					SetGameplayEffects(EquippedItems[BodyIndex].ActiveGEHandle, nullptr);
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
+				}
+
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Head);
+			}
+				break;
+			
+			case EEquipSlot::Body:
+			{
+				//Unequips Head equipment if body does not allow head gear.
+				// Gets the Index of the array that will unequip the item.
+				const FXIEquippedItem HeadItemSlot = FXIEquippedItem::FXIEquippedItem(EEquipSlot::Head);
+				const int HeadIndex = EquippedItems.Find(HeadItemSlot);
+				
+				if(HeadIndex != -1 && EquippedItems[HeadIndex].ItemEquipment && EquipItem->GrantedTags.HasTag(NoHeadGear))
+				{
+					EquippedItems[HeadIndex].ItemEquipment = nullptr;
+					SetGameplayEffects(EquippedItems[HeadIndex].ActiveGEHandle, nullptr);
+					OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
+				}
+						
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Body);
+			}
+				break;
+
+			case EEquipSlot::Hands:
+				
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Hands);
+				break;
+
+			case EEquipSlot::Legs:
+				
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Legs);
+				break;
+
+			case EEquipSlot::Feet:
+				
+				EquippedItems[Index].ItemEquipment = EquipItem;
+				OnUpdateMesh.Broadcast(EquipItem, ESkeletalMeshMergeType::Feet);
+				break;
+		}
+
+		EquippedItems[Index].ItemEquipment = EquipItem;
+		SetGameplayEffects(EquippedItems[Index].ActiveGEHandle, EquippedItems[Index].ItemEquipment);
+		OnEquipmentUpdated.Broadcast();
+		OnRep_EquippedItems();
 	}
 }
 
@@ -455,62 +460,65 @@ void UXIEquipmentManagerComponent::UnEquipItem(EEquipSlot EquipSlot)
 	}
 	else
 	{
-		for(auto& Equipment : EquippedItems)
+		// Gets the Index of the array that will unequip the item.
+		const FXIEquippedItem ItemSlot = FXIEquippedItem::FXIEquippedItem(EquipSlot);
+		const int Index = EquippedItems.Find(ItemSlot);
+
+		if(Index == -1)
 		{
-			if(Equipment.EquipSlot == EquipSlot)
-			{
-				if(!Equipment.ItemEquipment)
-				{
-					//Item is already null. No action
-					return;
-				}
-
-				Equipment.ItemEquipment = nullptr;
-				SetGameplayEffects(Equipment.ActiveGEHandle, nullptr);
-				
-				switch(EquipSlot)
-				{
-					case EEquipSlot::MainHand:
-						SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::MainHand);
-						CheckCombatStyle();
-						break;
-					
-					case EEquipSlot::SubHand:
-						SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
-						CheckCombatStyle();
-						break;
-
-					case EEquipSlot::Ranged:
-						SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Range);
-						break;
-
-					case EEquipSlot::Head:
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
-						break;
-
-					case EEquipSlot::Body:
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
-						break;
-
-					case EEquipSlot::Hands:
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Hands);
-						break;
-
-					case EEquipSlot::Legs:
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Legs);
-						break;
-
-					case EEquipSlot::Feet:
-						OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Feet);
-						break;
-				}				
-				OnRep_EquippedItems();
-				return;
-			}
+			return;
 		}
+
+		if(!EquippedItems[Index].ItemEquipment)
+		{
+			//Item is already null. No action
+			return;
+		}
+
+		EquippedItems[Index].ItemEquipment = nullptr;
+		SetGameplayEffects(EquippedItems[Index].ActiveGEHandle, nullptr);
+		
+		switch(EquipSlot)
+		{
+			case EEquipSlot::MainHand:
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::MainHand);
+				CheckCombatStyle();
+				break;
+			
+			case EEquipSlot::SubHand:
+				SetGameplayEffectAttackDelay(GetAttackDelay(true), AGEMeleeDelayTags, true);
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::SubHand);
+				CheckCombatStyle();
+				break;
+
+			case EEquipSlot::Ranged:
+				SetGameplayEffectAttackDelay(GetAttackDelay(false), AGERangeDelayTags, false);
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Range);
+				break;
+
+			case EEquipSlot::Head:
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Head);
+				break;
+
+			case EEquipSlot::Body:
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Body);
+				break;
+
+			case EEquipSlot::Hands:
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Hands);
+				break;
+
+			case EEquipSlot::Legs:
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Legs);
+				break;
+
+			case EEquipSlot::Feet:
+				OnUpdateMesh.Broadcast(nullptr, ESkeletalMeshMergeType::Feet);
+				break;
+		}				
+		OnRep_EquippedItems();
+		return;
 	}
 }
 
@@ -526,13 +534,14 @@ void UXIEquipmentManagerComponent::Server_UnEquipItem_Implementation(EEquipSlot 
 
 UXIItemEquipment* UXIEquipmentManagerComponent::FindEquippedItemBySlot(EEquipSlot EquipSlot) const
 {
-	for(auto& EquippedItem : EquippedItems)
+	const FXIEquippedItem ItemRef = FXIEquippedItem::FXIEquippedItem(EquipSlot);
+	const int Index = EquippedItems.Find(ItemRef);
+
+	if(Index != -1)
 	{
-		if(EquippedItem.EquipSlot == EquipSlot)
-		{
-			return EquippedItem.ItemEquipment;
-		}
+		return EquippedItems[Index].ItemEquipment;
 	}
+
 	return nullptr;
 }
 
@@ -583,5 +592,48 @@ void UXIEquipmentManagerComponent::InitializeEquippedItems()
 
 void UXIEquipmentManagerComponent::OnRep_EquippedItems()
 {
+	SetupEquippedItemsReference();
 	OnEquipmentUpdated.Broadcast();
+}
+
+void UXIEquipmentManagerComponent::SetupEquippedItemsReference()
+{
+	//Accessing Items this way to save on iterating through the Array. As we know which index is which item.
+	// Not sure how much this saves. But if this causes problems or bad practice remove this block and re-enable the one below.
+	EquippedItemsReference.MainHand = EquippedItems[0].ItemEquipment;
+	EquippedItemsReference.SubHand = EquippedItems[1].ItemEquipment;
+	EquippedItemsReference.Ranged = EquippedItems[2].ItemEquipment;
+	EquippedItemsReference.Ammo = EquippedItems[3].ItemEquipment;
+	EquippedItemsReference.Head = EquippedItems[4].ItemEquipment;
+	EquippedItemsReference.Neck = EquippedItems[5].ItemEquipment;
+	EquippedItemsReference.Ear1 = EquippedItems[6].ItemEquipment;
+	EquippedItemsReference.Ear2 = EquippedItems[7].ItemEquipment;
+	EquippedItemsReference.Body = EquippedItems[8].ItemEquipment;
+	EquippedItemsReference.Hands = EquippedItems[9].ItemEquipment;
+	EquippedItemsReference.Ring1 = EquippedItems[10].ItemEquipment;
+	EquippedItemsReference.Ring2 = EquippedItems[11].ItemEquipment;
+	EquippedItemsReference.Back = EquippedItems[12].ItemEquipment;
+	EquippedItemsReference.Waist = EquippedItems[13].ItemEquipment;
+	EquippedItemsReference.Legs = EquippedItems[14].ItemEquipment;
+	EquippedItemsReference.Feet = EquippedItems[15].ItemEquipment;
+	
+	// for (auto& Item : EquippedItems)
+	// {
+	// 	if(Item.EquipSlot == EEquipSlot::MainHand) EquippedItemsReference.MainHand = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::SubHand) EquippedItemsReference.SubHand = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ranged) EquippedItemsReference.Ranged = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ammo) EquippedItemsReference.Ammo = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Head) EquippedItemsReference.Head = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Neck) EquippedItemsReference.Neck = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ear1) EquippedItemsReference.Ear1 = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ear2) EquippedItemsReference.Ear2 = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Body) EquippedItemsReference.Body = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Hands) EquippedItemsReference.Hands = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ring1) EquippedItemsReference.Ring1 = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Ring2) EquippedItemsReference.Ring2 = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Back) EquippedItemsReference.Back = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Waist) EquippedItemsReference.Waist = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Legs) EquippedItemsReference.Legs = Item.ItemEquipment;
+	// 	else if(Item.EquipSlot == EEquipSlot::Feet) EquippedItemsReference.Feet = Item.ItemEquipment;
+	// }
 }

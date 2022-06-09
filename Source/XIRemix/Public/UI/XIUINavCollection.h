@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "XIUserWidget.generated.h"
+#include "UINavCollection.h"
+#include "XIUINavCollection.generated.h"
 
 /**
- * The user widget that should be subclassed that do not need navigation.
+ * 
  */
 UCLASS(Abstract, Blueprintable, BlueprintType, ClassGroup = UI)
-class XIREMIX_API UXIUserWidget : public UUserWidget
+class XIREMIX_API UXIUINavCollection : public UUINavCollection
 {
 	GENERATED_BODY()
-
+	
 };

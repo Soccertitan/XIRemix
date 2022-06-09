@@ -12,15 +12,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FUpdateMesh, UXIItemEquipment*, Ite
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEquipmentUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCombatStyleChanged, ECombatStyle, CombatStyle);
 
-USTRUCT(BlueprintType)
+USTRUCT()
 struct XIREMIX_API FXIEquippedItem
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
 	EEquipSlot EquipSlot;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
 	UXIItemEquipment* ItemEquipment;
 
 	UPROPERTY()
@@ -32,11 +32,66 @@ struct XIREMIX_API FXIEquippedItem
 		ItemEquipment = nullptr;
 	}
 
+	FXIEquippedItem(EEquipSlot InEquipSlot)
+	{
+		EquipSlot = InEquipSlot;
+		ItemEquipment = nullptr;
+	}
+
 	FXIEquippedItem(EEquipSlot InEquipSlot, UXIItemEquipment* InItem)
 	{
 		EquipSlot = InEquipSlot;
 		ItemEquipment = InItem;
 	}
+
+	bool operator==(const FXIEquippedItem& V) const
+	{
+		return EquipSlot == V.EquipSlot;
+	}
+	bool operator!=(const FXIEquippedItem& V) const
+	{
+		return EquipSlot != V.EquipSlot;
+	}
+};
+
+// A struct of equipped items to make it easy to get the equipped items outside of the class.
+USTRUCT(BlueprintType)
+struct XIREMIX_API FXIEquippedItems
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* MainHand;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* SubHand;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ranged;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ammo;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Head;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Neck;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ear1;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ear2;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Body;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Hands;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ring1;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Ring2;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Back;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Waist;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Legs;
+	UPROPERTY(BlueprintReadOnly)
+	UXIItemEquipment* Feet;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -49,7 +104,7 @@ public:
 	UXIEquipmentManagerComponent();
 
 	UFUNCTION(BlueprintPure, Category = "XIEquipmentManager")
-	FORCEINLINE TArray<FXIEquippedItem> GetEquippedItems() const { return EquippedItems; };
+	FORCEINLINE FXIEquippedItems GetEquippedItems() const { return EquippedItemsReference; };
 
 	UFUNCTION(BlueprintPure, Category = "XIEquipmentManager")
 	UXIItemEquipment* FindEquippedItemBySlot(EEquipSlot EquipSlot) const;
@@ -103,10 +158,14 @@ protected:
 
 	ECombatStyle CheckCombatStyle();
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_EquippedItems, Category = "Equipment")
+	UPROPERTY(ReplicatedUsing = OnRep_EquippedItems)
 	TArray<FXIEquippedItem> EquippedItems;
 	UFUNCTION()
 	void OnRep_EquippedItems();
+
+	UPROPERTY()
+	FXIEquippedItems EquippedItemsReference;
+	void SetupEquippedItemsReference();
 
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
 	ECombatStyle CombatStyleReference;

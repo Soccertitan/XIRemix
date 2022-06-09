@@ -119,7 +119,7 @@ void UXIThreatTableComponent::RemoveTargetActor(AActor* TargetActor)
 	ThreatTable.RemoveAll([](const FThreatTableStruct Ptr){
 		return Ptr.Actor == nullptr;
 	});
-
+	
 	CheckHighestEnmity();
 }
 

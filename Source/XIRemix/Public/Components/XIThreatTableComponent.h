@@ -13,35 +13,31 @@ struct XIREMIX_API FThreatTableStruct
 {
 	GENERATED_BODY()
 
-	FORCEINLINE FThreatTableStruct();
+	UPROPERTY(BlueprintReadOnly)
+	AActor* Actor;
 
-	UPROPERTY(BlueprintReadWrite)
-	AActor* Actor = nullptr;
+	UPROPERTY(BlueprintReadOnly)
+	float VolatileEnmity;
 
-	UPROPERTY(BlueprintReadWrite)
-	float VolatileEnmity = 0;
+	UPROPERTY(BlueprintReadOnly)
+	float CumulativeEnmity;
 
-	UPROPERTY(BlueprintReadWrite)
-	float CumulativeEnmity = 0;
+	FThreatTableStruct()
+	{
+		Actor = nullptr;
+		VolatileEnmity = 0;
+		CumulativeEnmity = 0;
+	}
 
-	bool operator==(const FThreatTableStruct& V) const;
-	bool operator!=(const FThreatTableStruct& V) const;
+	bool operator==(const FThreatTableStruct& V) const
+	{
+		return Actor == V.Actor;
+	}
+	bool operator!=(const FThreatTableStruct& V) const
+	{
+		return Actor != V.Actor;
+	}
 };
-
-FORCEINLINE FThreatTableStruct::FThreatTableStruct()
-{
-}
-
-FORCEINLINE bool FThreatTableStruct::operator==(const FThreatTableStruct& V) const
-{
-	return Actor == V.Actor;
-}
-
-FORCEINLINE bool FThreatTableStruct::operator!=(const FThreatTableStruct& V) const
-{
-	return Actor != V.Actor;
-}
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class XIREMIX_API UXIThreatTableComponent : public UActorComponent
