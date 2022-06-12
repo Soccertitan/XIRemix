@@ -41,10 +41,6 @@ public:
 	UPROPERTY(Transient)
 	class UWorld* World;
 
-	/**The mesh to display for this items pickup*/
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
-	class UStaticMesh* PickupMesh;
-
 	/** Item Name */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 	FText Name;
@@ -80,6 +76,10 @@ public:
 	/** The item type used for UI*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 	EItemType ItemType;
+
+	/** Determines which inventory bucket this item should belong to. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	EInventoryType InventoryType;
 
 	/** Is item Exclusive to the owner */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")

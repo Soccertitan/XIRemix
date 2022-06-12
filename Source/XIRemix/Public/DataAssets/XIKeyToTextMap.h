@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GameplayTags.h"
+#include "XIEnums.h"
 #include "XIKeyToTextMap.generated.h"
 
 /**
@@ -19,4 +20,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, FText> TagToText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<EEquipSlot, FText> EquipSlotToText;
 };

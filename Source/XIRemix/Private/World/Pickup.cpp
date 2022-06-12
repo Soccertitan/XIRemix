@@ -45,7 +45,7 @@ void APickup::OnRep_Item()
 {
 	if (Item)
 	{
-		PickupMesh->SetStaticMesh(Item->PickupMesh);
+		// PickupMesh->SetStaticMesh(Item->PickupMesh);
 		InteractionComponent->InteractableNameText = Item->Name;
 
 		//Clients bind to this delegate in order to refresh the interaction widget if item quantity changes
@@ -119,7 +119,7 @@ void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 	{
 		if (ItemTemplate)
 		{
-			PickupMesh->SetStaticMesh(ItemTemplate->PickupMesh);
+			// PickupMesh->SetStaticMesh(ItemTemplate->PickupMesh);
 		}
 	}
 }

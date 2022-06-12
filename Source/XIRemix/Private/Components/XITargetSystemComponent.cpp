@@ -19,7 +19,6 @@ UXITargetSystemComponent::UXITargetSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	LockedOnWidgetClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/XIRemix/Core/UMG/Widgets/WBP_TargetDot.WBP_TargetDot'"));
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
 
 	// Defining the SphereComponentParameters

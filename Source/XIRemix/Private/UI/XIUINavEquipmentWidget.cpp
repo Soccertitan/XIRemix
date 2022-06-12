@@ -3,9 +3,10 @@
 
 #include "UI/XIUINavEquipmentWidget.h"
 #include "UI/XIUINavCollectionEquippedItems.h"
-#include "UI/Components/XIUINavComponentEquipSlot.h"
+#include "UI/Components/XIUINavComponentItemEquipSlot.h"
 #include "UI/XICharacterStatusWidget.h"
 #include "UI/XIItemDetailsWidget.h"
+#include "UI/XIUINavInventoryWidget.h"
 #include "Characters/XICharacterBaseHero.h"
 
 void UXIUINavEquipmentWidget::NativeOnInitialized()
@@ -29,7 +30,8 @@ void UXIUINavEquipmentWidget::SetupEquippedItems()
 {
     if(HeroCharacter)
     {
-        EquippedItemsCollection->InitializeEquippedItems(HeroCharacter->GetXIEquipmentManagerComponent());
+        EquipmentManagerRef = HeroCharacter->GetXIEquipmentManagerComponent();
+        EquippedItemsCollection->InitializeEquippedItems(EquipmentManagerRef);
 
         EquippedItemsCollection->BTNMain->OnButtonHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnEquipSlotHovered);
         EquippedItemsCollection->BTNSub->OnButtonHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnEquipSlotHovered);
@@ -47,16 +49,36 @@ void UXIUINavEquipmentWidget::SetupEquippedItems()
         EquippedItemsCollection->BTNWaist->OnButtonHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnEquipSlotHovered);
         EquippedItemsCollection->BTNLegs->OnButtonHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnEquipSlotHovered);
         EquippedItemsCollection->BTNFeet->OnButtonHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnEquipSlotHovered);
+
+        InventoryWidget->XIOnItemSelected.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnItemSelected);
+        InventoryWidget->XIOnItemHover.AddUniqueDynamic(this, &UXIUINavEquipmentWidget::OnItemHovered);
     }
 }
 
 void UXIUINavEquipmentWidget::OnEquipSlotHovered(UXIUINavComponent* XIComponentWidget)
 {
-    UXIUINavComponentEquipSlot* EquipSlotComponent = Cast<UXIUINavComponentEquipSlot>(XIComponentWidget);
+    UXIUINavComponentItemEquipSlot* EquipSlotComponent = Cast<UXIUINavComponentItemEquipSlot>(XIComponentWidget);
     if(EquipSlotComponent)
     {
         EquipSlotReference = EquipSlotComponent->GetEquipSlot();
         ItemDetails->SetupItemDetailsWidget(EquipSlotComponent->GetItem());
+
+        if(EquipSlotReference == EEquipSlot::MainHand || EquipSlotReference == EEquipSlot::SubHand)
+        {
+            InventoryWidget->GenerateItemsArray(EInventoryType::Melee);
+        }
+        else if (EquipSlotReference == EEquipSlot::Ranged || EquipSlotReference == EEquipSlot::Ammo)
+        {
+            InventoryWidget->GenerateItemsArray(EInventoryType::Ranged);
+        }
+        else if (EquipSlotReference == EEquipSlot::Body || EquipSlotReference == EEquipSlot::Head || EquipSlotReference == EEquipSlot::Hands || EquipSlotReference == EEquipSlot::Legs || EquipSlotReference == EEquipSlot::Feet)
+        {
+            InventoryWidget->GenerateItemsArray(EInventoryType::Armor);
+        }
+        else
+        {
+            InventoryWidget->GenerateItemsArray(EInventoryType::Accessory);
+        }
     }
 }
 
@@ -64,4 +86,17 @@ void UXIUINavEquipmentWidget::SetupCharacterStatus()
 {
     CharacterStatus->SetupXICharacterStatusWidget(HeroCharacter);
     CharacterStatusSub->SetupXICharacterStatusWidget(HeroCharacter);
+}
+
+void UXIUINavEquipmentWidget::OnItemHovered(UXIItem* Item)
+{
+    ItemDetails->SetupItemDetailsWidget(Item);
+}
+
+void UXIUINavEquipmentWidget::OnItemSelected(UXIItem* Item)
+{
+    if(EquipmentManagerRef)
+    {
+        EquipmentManagerRef->EquipItem(Item, EquipSlotReference);
+    }
 }

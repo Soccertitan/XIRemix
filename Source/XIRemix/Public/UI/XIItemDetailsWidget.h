@@ -6,6 +6,7 @@
 #include "UI/XIUserWidget.h"
 #include "DataAssets/XIKeyToTextMap.h"
 #include "DataAssets/XIJobTagCollection.h"
+#include "Items/XIItemEquipment.h"
 #include "XIItemDetailsWidget.generated.h"
 
 /**
@@ -38,5 +39,5 @@ protected:
 	FText GetWeaponText(UXIItem* Item);
 	FText GetArmorText(UXIItem* Item);
 	FText GetJobRequirementText(UXIJobTagCollection* JobTagCollection);
-	FText GetAttributeText(UXIItem* Item);
+	FText GetAttributeText(TArray<FXIItemAttributes> Attributes);
 };

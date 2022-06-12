@@ -57,6 +57,18 @@ enum class EItemType : uint8
 };
 
 UENUM(BlueprintType, Category="XIRemix")
+enum class EInventoryType : uint8
+{
+	Melee UMETA(DisplayName = "Melee"),
+	Ranged UMETA(DisplayName = "Ranged"),
+	Armor UMETA(DisplayName = "Armor"),
+	Accessory UMETA(DisplayName = "Accessory"),
+	Consumable UMETA(DisplayName = "Consumable"),
+	Material UMETA(DisplayName = "Material"),
+	KeyItem UMETA(DisplayName = "KeyItem")
+};
+
+UENUM(BlueprintType, Category="XIRemix")
 enum class ERace : uint8
 {
 	HumeMale UMETA(DisplayName = "HumeMale"),

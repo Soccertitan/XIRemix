@@ -23,52 +23,52 @@ public:
 	void InitializeEquippedItems(class UXIEquipmentManagerComponent* EquipmentComponent);
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNMain;
+	class UXIUINavComponentItemEquipSlot* BTNMain;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNSub;
+	class UXIUINavComponentItemEquipSlot* BTNSub;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNRange;
+	class UXIUINavComponentItemEquipSlot* BTNRange;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNAmmo;
+	class UXIUINavComponentItemEquipSlot* BTNAmmo;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNHead;
+	class UXIUINavComponentItemEquipSlot* BTNHead;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNNeck;
+	class UXIUINavComponentItemEquipSlot* BTNNeck;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNEar1;
+	class UXIUINavComponentItemEquipSlot* BTNEar1;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNEar2;
+	class UXIUINavComponentItemEquipSlot* BTNEar2;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNBody;
+	class UXIUINavComponentItemEquipSlot* BTNBody;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNHands;
+	class UXIUINavComponentItemEquipSlot* BTNHands;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNRing1;
+	class UXIUINavComponentItemEquipSlot* BTNRing1;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNRing2;
+	class UXIUINavComponentItemEquipSlot* BTNRing2;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNBack;
+	class UXIUINavComponentItemEquipSlot* BTNBack;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNWaist;
+	class UXIUINavComponentItemEquipSlot* BTNWaist;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNLegs;
+	class UXIUINavComponentItemEquipSlot* BTNLegs;
 
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquippedItems", meta = (BindWidget))
-	class UXIUINavComponentEquipSlot* BTNFeet;
+	class UXIUINavComponentItemEquipSlot* BTNFeet;
 
 protected:
 

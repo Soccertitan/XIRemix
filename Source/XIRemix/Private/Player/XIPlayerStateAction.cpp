@@ -14,11 +14,15 @@ AXIPlayerStateAction::AXIPlayerStateAction()
     InventoryKeyItems = CreateDefaultSubobject<UXIInventoryComponent>("KeyItems");
 }
 
-UXIInventoryComponent* AXIPlayerStateAction::GetInventory(EItemType ItemType)
+UXIInventoryComponent* AXIPlayerStateAction::GetInventory(EInventoryType InventoryType)
 {
-    if(ItemType == EItemType::WeaponMelee || ItemType == EItemType::Shield)
-    {
-        return InventoryMelee;
-    }
+    if(InventoryType == EInventoryType::Melee) return InventoryMelee;
+    if(InventoryType == EInventoryType::Ranged) return InventoryRanged;
+    if(InventoryType == EInventoryType::Armor) return InventoryArmor;
+    if(InventoryType == EInventoryType::Accessory) return InventoryAccessories;
+    if(InventoryType == EInventoryType::Consumable) return InventoryConsumables;
+    if(InventoryType == EInventoryType::Material) return InventoryMaterials;
+    if(InventoryType == EInventoryType::KeyItem) return InventoryKeyItems;
+
     return nullptr;
 }

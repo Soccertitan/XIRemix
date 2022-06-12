@@ -3,7 +3,7 @@
 
 #include "UI/XIUINavCollectionEquippedItems.h"
 #include "Items/XIItemEquipment.h"
-#include "UI/Components/XIUINavComponentEquipSlot.h"
+#include "UI/Components/XIUINavComponentItemEquipSlot.h"
 
 UXIUINavCollectionEquippedItems::UXIUINavCollectionEquippedItems(const FObjectInitializer& ObjectInitializer)
     :Super(ObjectInitializer)

@@ -20,7 +20,7 @@ public:
 	AXIPlayerStateAction();
 
 	UFUNCTION(BlueprintPure, Category = "Inventory")
-	UXIInventoryComponent* GetInventory(EItemType ItemType);
+	UXIInventoryComponent* GetInventory(EInventoryType InventoryType);
 
 protected:
 

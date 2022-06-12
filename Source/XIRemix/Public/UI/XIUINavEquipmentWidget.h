@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UI/XIUINavWidget.h"
 #include "XIEnums.h"
+#include "Components/XIEquipmentManagerComponent.h"
 #include "XIUINavEquipmentWidget.generated.h"
 
 /**
@@ -31,15 +32,18 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "XIEquipmentWidget", meta = (BindWidget))
 	class UXIItemDetailsWidget* ItemDetails;
 
-	UFUNCTION()
-	void OnEquipSlotHovered(UXIUINavComponent* XIComponentWidget);
+	UPROPERTY(BlueprintReadOnly, Category = "XIEquipmentWidget", meta = (BindWidget))
+	class UXIUINavInventoryWidget* InventoryWidget;
 
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AXICharacterBaseHero* HeroCharacter;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
+	UXIEquipmentManagerComponent* EquipmentManagerRef;
+
+	UPROPERTY(BlueprintReadOnly)
 	EEquipSlot EquipSlotReference;
 
 	virtual void NativeOnInitialized() override;
@@ -49,4 +53,13 @@ protected:
 
 	UFUNCTION()
 	void SetupCharacterStatus();
+
+	UFUNCTION()
+	void OnEquipSlotHovered(UXIUINavComponent* XIComponentWidget);
+
+	UFUNCTION()
+	void OnItemHovered(UXIItem* Item);
+
+	UFUNCTION()
+	void OnItemSelected(UXIItem* Item);
 };

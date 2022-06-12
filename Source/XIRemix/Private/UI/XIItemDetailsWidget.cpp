@@ -5,6 +5,7 @@
 #include "Items/XIItemEquipment.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "XIEnums.h"
 
 #define LOCTEXT_NAMESPACE "ItemDetails"
 
@@ -23,52 +24,53 @@ void UXIItemDetailsWidget::SetupItemDetailsWidget(UXIItem* Item)
         {
             case EItemType::Accessory:
             {
+                ItemDescriptionText->SetText(GetArmorText(Item));
                 break;
             }
 
             case EItemType::Ammo:
             {
                 ItemDescriptionText->SetText(GetWeaponText(Item));
-                this->SetVisibility(ESlateVisibility::Visible);
                 break;
             }
 
             case EItemType::Armor:
             {
+                ItemDescriptionText->SetText(GetArmorText(Item));
                 break;
             }
 
             case EItemType::Instrument:
             {
+                ItemDescriptionText->SetText(GetArmorText(Item));
                 break;
             }
 
             case EItemType::Shield:
             {
+                ItemDescriptionText->SetText(GetArmorText(Item));
                 break;
             }
             
             case EItemType::WeaponMelee:
             {
                 ItemDescriptionText->SetText(GetWeaponText(Item));
-                this->SetVisibility(ESlateVisibility::Visible);
                 break;
             }
 
             case EItemType::WeaponRange:
             {
                 ItemDescriptionText->SetText(GetWeaponText(Item));
-                this->SetVisibility(ESlateVisibility::Visible);
                 break;
             }
 
             default:
             {
                 ItemDescriptionText->SetText(Item->Description);
-                this->SetVisibility(ESlateVisibility::Visible);
                 break;
             }
         }
+        this->SetVisibility(ESlateVisibility::Visible);
     }
 }
 
@@ -80,26 +82,30 @@ FText UXIItemDetailsWidget::GetWeaponText(UXIItem* Item)
         return FText();
     }
 
-    FText JobReq = GetJobRequirementText(ItemEquipment->JobRequirements);
-    FText WeaponType = TextMap->TagToText.FindRef(ItemEquipment->WeaponType);
+    FText FinalText;
 
     FFormatNamedArguments Args;
-    Args.Add(TEXT("Jobs"), JobReq);
-    Args.Add(TEXT("WeaponType"), WeaponType);
+    Args.Add(TEXT("Jobs"), GetJobRequirementText(ItemEquipment->JobRequirements));
+    Args.Add(TEXT("WeaponType"), TextMap->TagToText.FindRef(ItemEquipment->WeaponType));
     Args.Add(TEXT("Damage"), FText::AsNumber(ItemEquipment->Damage));
     Args.Add(TEXT("Delay"), FText::AsNumber(ItemEquipment->Delay));
     Args.Add(TEXT("Level"), FText::AsNumber(ItemEquipment->LevelRequirement));
-    Args.Add(TEXT("Description"), ItemEquipment->Description);
+    Args.Add(TEXT("Attributes"), GetAttributeText(ItemEquipment->Attributes));
 
-    FText FinalText;
+    FText Description = ItemEquipment->Description;
+    if(!Description.IsEmptyOrWhitespace())
+    {
+        Description = FText::Format(LOCTEXT("Description", "{Description}\n"), Description);
+    }
+    Args.Add(TEXT("Description"), Description);
 
     if(ItemEquipment->WeaponType == FGameplayTag::RequestGameplayTag("Weapon.Melee.HandToHand"))
     {
-        FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: +{Damage} Delay: +{Delay}\n{Description}\nLV.{Level} {Jobs}"), Args);
+        FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: +{Damage} Delay: +{Delay}\n{Attributes}{Description}LV.{Level} {Jobs}"), Args);
     }
     else
     {
-       FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: {Damage} Delay: {Delay}\n{Description}\nLV.{Level} {Jobs}"), Args);
+       FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: {Damage} Delay: {Delay}\n{Attributes}{Description}LV.{Level} {Jobs}"), Args);
     }
     
     return FinalText;
@@ -113,28 +119,22 @@ FText UXIItemDetailsWidget::GetArmorText(UXIItem* Item)
         return FText();
     }
 
-    FText JobReq = GetJobRequirementText(ItemEquipment->JobRequirements);
-    EEquipSlot EquipSlot = ItemEquipment->EquipSlot[0];
-    // FText ArmorType = FText::FromString();
-
-    FFormatNamedArguments Args;
-    Args.Add(TEXT("Jobs"), JobReq);
-    // Args.Add(TEXT("WeaponType"), WeaponType);
-    Args.Add(TEXT("Damage"), FText::AsNumber(ItemEquipment->Damage));
-    Args.Add(TEXT("Delay"), FText::AsNumber(ItemEquipment->Delay));
-    Args.Add(TEXT("Level"), FText::AsNumber(ItemEquipment->LevelRequirement));
-    Args.Add(TEXT("Description"), ItemEquipment->Description);
-
     FText FinalText;
 
-    // if(ItemEquipment->WeaponType == FGameplayTag::RequestGameplayTag("Weapon.Melee.HandToHand"))
-    // {
-    //     FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: +{Damage} Delay: +{Delay}\n{Description}\nLV.{Level} {Jobs}"), Args);
-    // }
-    // else
-    // {
-    //    FinalText = FText::Format(LOCTEXT("WeaponText", "{WeaponType}\nDMG: {Damage} Delay: {Delay}\n{Description}\nLV.{Level} {Jobs}"), Args);
-    // }
+    FFormatNamedArguments Args;
+    Args.Add(TEXT("Jobs"), GetJobRequirementText(ItemEquipment->JobRequirements));
+    Args.Add(TEXT("ArmorType"), TextMap->EquipSlotToText.FindRef(ItemEquipment->EquipSlot[0]));
+    Args.Add(TEXT("Attributes"), GetAttributeText(ItemEquipment->Attributes));
+    Args.Add(TEXT("Level"), FText::AsNumber(ItemEquipment->LevelRequirement));
+
+    FText Description = ItemEquipment->Description;
+    if(!Description.IsEmptyOrWhitespace())
+    {
+        Description = FText::Format(LOCTEXT("Description", "\n{Description}"), Description);
+    }
+    Args.Add(TEXT("Description"), Description);
+    
+    FinalText = FText::Format(LOCTEXT("ArmorText", "{ArmorType}\n{Attributes}LV.{Level} {Jobs}"), Args);
     
     return FinalText;
 }
@@ -170,9 +170,65 @@ FText UXIItemDetailsWidget::GetJobRequirementText(UXIJobTagCollection* JobTagCol
     return FText();
 }
 
-FText UXIItemDetailsWidget::GetAttributeText(UXIItem* Item)
+FText UXIItemDetailsWidget::GetAttributeText(TArray<FXIItemAttributes> Attributes)
 {
-    return FText();
+    FText FinalText;
+
+    if(TextMap)
+    {
+        FText DefenseText;
+        FText AttributeText;
+        FText AttributeCollection;
+        float Value = 0;
+
+        FFormatNamedArguments Args;
+        Args.Add(TEXT("AttributeCollection"), AttributeCollection);
+
+        for(auto& Attribute : Attributes)
+        {
+            Value = Attribute.Value;
+            Args.Add(TEXT("Value"), FText::AsNumber(Value));
+
+            if(Attribute.AttributeTag == FGameplayTag::RequestGameplayTag("SetByCaller.Attributes.Defense"))
+            {
+                DefenseText = FText::Format(LOCTEXT("Defense", "DEF:{Value}"), Args);
+                Args.Add(TEXT("Defense"), DefenseText);
+            }
+            else
+            {
+                AttributeText = TextMap->TagToText.FindRef(Attribute.AttributeTag);
+                Args.Add(TEXT("Attribute"), AttributeText);
+
+                if(!AttributeText.IsEmptyOrWhitespace())
+                {
+                    if (Value > 0)
+                    {
+                        AttributeCollection = FText::Format(LOCTEXT("Attribute", "{AttributeCollection}{Attribute}+{Value} "), Args);
+                    }
+                    else
+                    {
+                        AttributeCollection = FText::Format(LOCTEXT("Attribute", "{AttributeCollection}{Attribute}{Value} "), Args);
+                    }
+                    Args.Add(TEXT("AttributeCollection"), AttributeCollection);
+                }
+            }
+        }
+
+        if (DefenseText.IsEmptyOrWhitespace() && !AttributeCollection.IsEmptyOrWhitespace())
+        {
+            FinalText = FText::Format(LOCTEXT("FinalAttributes", "{AttributeCollection}\n"), Args);
+        }
+        else if (!DefenseText.IsEmptyOrWhitespace() && !AttributeCollection.IsEmptyOrWhitespace())
+        {
+            FinalText = FText::Format(LOCTEXT("FinalAttributes", "{Defense} {AttributeCollection}\n"), Args);
+
+        }
+        else if (!DefenseText.IsEmptyOrWhitespace())
+        {
+            FinalText = FText::Format(LOCTEXT("FinalAttributes", "{Defense}\n"), Args);
+        }
+    }
+    return FinalText;
 }
 
 #undef LOCTEXT_NAMESPACE
