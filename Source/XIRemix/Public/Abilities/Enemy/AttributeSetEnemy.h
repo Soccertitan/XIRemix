@@ -32,16 +32,7 @@ public:
 	UFUNCTION()
 	virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy", ReplicatedUsing = OnRep_ExpBounty)
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy")
 	FGameplayAttributeData ExpBounty;
 	ATTRIBUTE_ACCESSORS(UAttributeSetEnemy, ExpBounty);
-	UFUNCTION()
-	virtual void OnRep_ExpBounty(const FGameplayAttributeData& OldExpBounty);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy", ReplicatedUsing = OnRep_GilBounty)
-	FGameplayAttributeData GilBounty;
-	ATTRIBUTE_ACCESSORS(UAttributeSetEnemy, GilBounty);
-	UFUNCTION()
-	virtual void OnRep_GilBounty(const FGameplayAttributeData& OldGilBounty);
-
 };

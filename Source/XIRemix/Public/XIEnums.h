@@ -136,15 +136,15 @@ enum class EXIMagicType : uint8
 UENUM(BlueprintType, Category="XIRemix")
 enum class EXISkillRank : uint8
 {
-	APlus UMETA(DisplayName = "A+"),
+	APlus UMETA(DisplayName = "APlus"),
 	A UMETA(DisplayName = "A"),
-	AMinus UMETA(DisplayName = "A-"),
-	BPlus UMETA(DisplayName = "B+"),
+	AMinus UMETA(DisplayName = "AMinus"),
+	BPlus UMETA(DisplayName = "BPlus"),
 	B UMETA(DisplayName = "B"),
-	BMinus UMETA(DisplayName = "B-"),
-	CPlus UMETA(DisplayName = "C+"),
+	BMinus UMETA(DisplayName = "BMinus"),
+	CPlus UMETA(DisplayName = "CPlus"),
 	C UMETA(DisplayName = "C"),
-	CMinus UMETA(DisplayName = "C-"),
+	CMinus UMETA(DisplayName = "CMinus"),
 	D UMETA (DisplayName = "D"),
 	E UMETA (DisplayName = "E"),
 	F UMETA (DisplayName = "F"),

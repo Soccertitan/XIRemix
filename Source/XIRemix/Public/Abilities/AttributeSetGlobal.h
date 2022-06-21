@@ -158,6 +158,12 @@ public:
 	UFUNCTION()
 	virtual void OnRep_Attack(const FGameplayAttributeData& OldAttack);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_AttackSubHand)
+	FGameplayAttributeData AttackSubHand;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, AttackSubHand);
+	UFUNCTION()
+	virtual void OnRep_AttackSubHand(const FGameplayAttributeData& OldAttackSubHand);
+
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_RangedAttack)
 	FGameplayAttributeData RangedAttack;
 	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, RangedAttack);
@@ -193,6 +199,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, Accuracy);
 	UFUNCTION()
 	virtual void OnRep_Accuracy(const FGameplayAttributeData& OldAccuracy);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_AccuracySubHand)
+	FGameplayAttributeData AccuracySubHand;
+	ATTRIBUTE_ACCESSORS(UAttributeSetGlobal, AccuracySubHand);
+	UFUNCTION()
+	virtual void OnRep_AccuracySubHand(const FGameplayAttributeData& OldAccuracySubHand);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Physical", ReplicatedUsing = OnRep_RangedAccuracy)
 	FGameplayAttributeData RangedAccuracy;

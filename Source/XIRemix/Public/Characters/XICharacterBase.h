@@ -57,6 +57,8 @@ public:
 	virtual UXIStatsGrowthRank* GetXIStatsGrowthRank() const override;
 	virtual UXIStatsGrowthData* GetXIStatsGrowthData() const override;
 
+	FORCEINLINE UCurveTable* GetSkillRankCurveTable() const {return SkillRankCurveTable;}
+
 	// /**
 	// * Getters for attributes from GlobalAttributeSet
 	// **/
@@ -143,6 +145,10 @@ protected:
 	//Referenced by StatsGrowthRank to get the value for calculating Stat Growth
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
 	UXIStatsGrowthData* StatsGrowthData;
+
+	//For Heros; a curve table that maps a Skill Rank to max combat skill. For Enemies, maps the combat skills to level.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "XICharacter|Abilities")
+	UCurveTable* SkillRankCurveTable;
 
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
 	virtual void AddCharacterAbilities();

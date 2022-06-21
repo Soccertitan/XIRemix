@@ -70,6 +70,62 @@ void UAttributeSetGlobal::PostGameplayEffectExecute(const FGameplayEffectModCall
             SetHitPoints(FMath::Clamp(OldHealth - LocalDamageDone, 0.f, GetHitPointsMax()));
         }
     }
+    else if(Data.EvaluatedData.Attribute == GetRecoverHPAttribute())
+    {
+		const float LocalRecoveryDone = GetRecoverHP();
+		SetRecoverHP(0.f);
+
+        if(LocalRecoveryDone > 0)
+        {
+            // Apply the health change and then clamp it.
+            const float OldHealth = GetHitPoints();
+            SetHitPoints(FMath::Clamp(OldHealth + LocalRecoveryDone, 0.f, GetHitPointsMax()));
+        }
+    }
+    else if (Data.EvaluatedData.Attribute == GetDamageMPAttribute())
+    {
+        const float LocalDamageDone = GetDamageMP();
+        SetDamageMP(0.f);
+
+        if(LocalDamageDone > 0)
+        {
+            const float OldMP = GetManaPoints();
+            SetManaPoints(FMath::Clamp(OldMP - LocalDamageDone, 0.f, GetManaPointsMax()));
+        }
+    }
+    else if (Data.EvaluatedData.Attribute == GetRecoverMPAttribute())
+    {
+        const float LocalRecoveryDone = GetRecoverMP();
+        SetRecoverMP(0.f);
+
+        if(LocalRecoveryDone > 0)
+        {
+            const float OldMP = GetManaPoints();
+            SetManaPoints(FMath::Clamp(OldMP + LocalRecoveryDone, 0.f, GetManaPointsMax()));
+        }
+    }
+    else if (Data.EvaluatedData.Attribute == GetDamageTPAttribute())
+    {
+        const float LocalDamageDone = GetDamageTP();
+        SetDamageTP(0.f);
+
+        if(LocalDamageDone > 0)
+        {
+            const float OldTP = GetTacticalPoints();
+            SetTacticalPoints(FMath::Clamp(OldTP - LocalDamageDone, 0.f, GetTacticalPointsMax()));
+        }
+    }
+    else if (Data.EvaluatedData.Attribute == GetRecoverTPAttribute())
+    {
+        const float LocalRecoveryDone = GetRecoverTP();
+        SetRecoverTP(0.f);
+
+        if(LocalRecoveryDone > 0)
+        {
+            const float OldTP = GetTacticalPoints();
+            SetTacticalPoints(FMath::Clamp(OldTP + LocalRecoveryDone, 0.f, GetTacticalPointsMax()));
+        }
+    }
     else if (Data.EvaluatedData.Attribute == GetHitPointsAttribute())
 	{
 		// Handle other health changes.
@@ -120,10 +176,12 @@ void UAttributeSetGlobal::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
     // Physical Sub Attributes
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Attack, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, AttackSubHand, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedAttack, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Defense, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Evasion, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, Accuracy, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, AccuracySubHand, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, RangedAccuracy, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CriticalHitRate, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetGlobal, CriticalHitBonus, COND_None, REPNOTIFY_Always);
@@ -338,6 +396,11 @@ void UAttributeSetGlobal::OnRep_Attack(const FGameplayAttributeData& OldAttack)
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Attack, OldAttack);
 }
 
+void UAttributeSetGlobal::OnRep_AttackSubHand(const FGameplayAttributeData& OldAttackSubHand) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, AttackSubHand, OldAttackSubHand);
+}
+
 void UAttributeSetGlobal::OnRep_RangedAttack(const FGameplayAttributeData& OldRangedAttack) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, RangedAttack, OldRangedAttack);
@@ -356,6 +419,11 @@ void UAttributeSetGlobal::OnRep_Evasion(const FGameplayAttributeData& OldEvasion
 void UAttributeSetGlobal::OnRep_Accuracy(const FGameplayAttributeData& OldAccuracy) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, Accuracy, OldAccuracy);
+}
+
+void UAttributeSetGlobal::OnRep_AccuracySubHand(const FGameplayAttributeData& OldAccuracySubHand) 
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetGlobal, AccuracySubHand, OldAccuracySubHand);
 }
 
 void UAttributeSetGlobal::OnRep_RangedAccuracy(const FGameplayAttributeData& OldRangedAccuracy) 

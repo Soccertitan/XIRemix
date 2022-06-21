@@ -21,6 +21,33 @@ void AXICharacterBaseEnemy::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AXICharacterBaseEnemy::InitializeAttributes()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	if (!DefaultAttributes)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	// Can run on Server and Client
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, 1, EffectContext);
+	FGameplayEffectSpec* GES = NewHandle.Data.Get();
+	GES->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("SetByCaller.Potency"), Level);
+
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+	}
+}
+
 // Server only
 void AXICharacterBaseEnemy::PossessedBy(AController * NewController)
 {

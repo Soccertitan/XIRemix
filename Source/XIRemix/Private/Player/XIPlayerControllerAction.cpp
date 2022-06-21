@@ -2,6 +2,7 @@
 
 
 #include "Player/XIPlayerControllerAction.h"
+#include "Characters/XICharacterBaseHero.h"
 #include "Interfaces/XICharacterInterface.h"
 #include "UI/XIPlayerHudWidget.h"
 #include "UI/XITargetPlateWidget.h"
@@ -36,7 +37,7 @@ void AXIPlayerControllerAction::AcknowledgePossession(class APawn* P)
 {
     Super::AcknowledgePossession(P);
 
-    PlayerPawn = AcknowledgedPawn.Get();
+    PlayerPawn = Cast<AXICharacterBaseHero>(AcknowledgedPawn.Get());
     
     CreateHUD();
     InitializeTargetSystem();
@@ -100,6 +101,10 @@ void AXIPlayerControllerAction::SetupInputComponent()
         {
             EnhancedInputComponent->BindAction(IACamera, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedCamera);
         }
+        if(IAInteract)
+        {
+            EnhancedInputComponent->BindAction(IAInteract, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedInteract);
+        }
         if(IATargetCycle)
         {
             EnhancedInputComponent->BindAction(IATargetCycle, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedTargetCycle);
@@ -133,6 +138,21 @@ void AXIPlayerControllerAction::EnhancedCamera(const FInputActionValue& Value)
     {
         PlayerPawn->AddControllerPitchInput(Value[1]);
         PlayerPawn->AddControllerYawInput(Value[0]);
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedInteract(const FInputActionValue& Value)
+{
+    if(PlayerPawn)
+    {
+        if(Value.Get<bool>())
+        {
+            PlayerPawn->BeginInteract();
+        }
+        else
+        {
+            PlayerPawn->EndInteract();
+        }
     }
 }
 

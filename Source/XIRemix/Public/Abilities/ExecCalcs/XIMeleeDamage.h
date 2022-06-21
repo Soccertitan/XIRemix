@@ -19,4 +19,5 @@ public:
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 
+	float GetWeaponBaseDamage(AActor* Actor, FGameplayTag OutWeaponTag) const;
 };

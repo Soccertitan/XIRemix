@@ -10,11 +10,16 @@ UXIEvasionAggr::UXIEvasionAggr()
     EvasionDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
     EvasionDef.bSnapshot = false;
 
+    EvasionMaxDef.AttributeToCapture = UAttributeSetGlobal::GetEvasionSkillMaxAttribute();
+    EvasionMaxDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+    EvasionMaxDef.bSnapshot = false;
+
     AgiDef.AttributeToCapture = UAttributeSetGlobal::GetAgilityAttribute();
     AgiDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
     AgiDef.bSnapshot = false;
 
     RelevantAttributesToCapture.Add(EvasionDef);
+    RelevantAttributesToCapture.Add(EvasionMaxDef);
     RelevantAttributesToCapture.Add(AgiDef);
 }
 
@@ -23,9 +28,13 @@ float UXIEvasionAggr::CalculateBaseMagnitude_Implementation(const FGameplayEffec
     FAggregatorEvaluateParameters EvaluationParameters;
 
     float EvasionSkill;
+    float EvasionSkillMax;
     float Agility;
     GetCapturedAttributeMagnitude(EvasionDef, Spec, EvaluationParameters, EvasionSkill);
+    GetCapturedAttributeMagnitude(EvasionMaxDef, Spec, EvaluationParameters, EvasionSkillMax);
     GetCapturedAttributeMagnitude(AgiDef, Spec, EvaluationParameters, Agility);
 
-    return FMath::Floor(Agility / 2.f) + FMath::Min(EvasionSkill, 200.f) + FMath::Floor(FMath::Max((EvasionSkill - 200), 0.f) * 0.9f);
+    float cEvasionSkill = FMath::Min(EvasionSkill, EvasionSkillMax);
+
+    return FMath::Floor(Agility / 2.f) + FMath::Min(cEvasionSkill, 200.f) + FMath::Floor(FMath::Max((cEvasionSkill - 200), 0.f) * 0.9f);
 }

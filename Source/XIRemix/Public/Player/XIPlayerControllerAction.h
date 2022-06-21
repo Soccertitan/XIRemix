@@ -67,8 +67,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "TargetSystem")
 	class UXITargetSystemComponent* XITargetSystemCompRef;
 
-	UPROPERTY(BlueprintReadWrite)
-	APawn* PlayerPawn;
+	UPROPERTY(BlueprintReadOnly)
+	class AXICharacterBaseHero* PlayerPawn;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bCanMove = true;
@@ -89,6 +89,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
 	UInputAction* IACamera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
+	UInputAction* IAInteract;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
 	UInputAction* IATargetCycle;
@@ -119,6 +122,7 @@ protected:
 	// Input Functions
 	void EnhancedMovement(const FInputActionValue& Value);
 	void EnhancedCamera(const FInputActionValue& Value);
+	void EnhancedInteract(const FInputActionValue& Value);
 	void EnhancedTargetCycle(const FInputActionValue& Value);
 	void EnhancedTargetLock(const FInputActionValue& Value);
 	void EnhancedMenuToggle(const FInputActionValue& Value);

@@ -21,5 +21,6 @@ public:
 	float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 
 	FGameplayEffectAttributeCaptureDefinition EvasionDef;
+	FGameplayEffectAttributeCaptureDefinition EvasionMaxDef;
 	FGameplayEffectAttributeCaptureDefinition AgiDef;
 };

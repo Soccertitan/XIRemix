@@ -33,6 +33,8 @@ public:
 	//Implements IXICharacterInterface
 	virtual float GetCharacterLevel() const override;
 
+	FORCEINLINE void SetCharacterLevel(float InLevel) {Level = InLevel;};
+
 protected:
 	
 	UPROPERTY()
@@ -40,6 +42,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "XICharacter", meta = (ExposeOnSpawn = true))
 	float Level = 1;
+
+	virtual void InitializeAttributes() override;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

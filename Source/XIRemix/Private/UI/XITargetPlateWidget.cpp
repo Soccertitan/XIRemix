@@ -17,5 +17,6 @@ void UXITargetPlateWidget::SetupXITargetPlateWidget(AActor* Actor)
     if(TargetedActor)
     {
         TargetName->SetText(UXIGameplayFunctionLibrary::GetCharacterName(TargetedActor));
+        TargetLevel->SetText(FText::AsNumber(UXIGameplayFunctionLibrary::GetCharacterLevel(TargetedActor)));
     }
 }

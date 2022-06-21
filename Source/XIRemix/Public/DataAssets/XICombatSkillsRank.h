@@ -55,9 +55,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defensive")
 	EXISkillRank Evasion = EXISkillRank::H;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defensive")
-	EXISkillRank Guarding = EXISkillRank::H;
+	EXISkillRank Guard = EXISkillRank::H;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defensive")
-	EXISkillRank Parrying = EXISkillRank::H;
+	EXISkillRank Parry = EXISkillRank::H;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defensive")
 	EXISkillRank Shield = EXISkillRank::H;
 

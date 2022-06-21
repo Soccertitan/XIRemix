@@ -58,7 +58,7 @@ public:
 	void RemoveTargetActor(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
-	void ApplyDamageEnmity(AActor* TargetActor, float EnemyLevel, float Damage, float EnmityRate);
+	void ApplyDamageEnmity(AActor* TargetActor, float Damage, float EnmityRate);
 
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
 	void ApplyHealEnmity(AActor* TargetActor, float HealedTargetLevel, float Heal, float EnmityRate);
@@ -69,6 +69,9 @@ public:
 	// Returns true if actor is found and has enmity.
 	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
 	bool GetTargetActorEnmity(AActor* TargetActor, float& OutVolatileEnmity, float& OutCumulativeEnmity) const;
+
+	UFUNCTION(BlueprintCallable, Category = "XIRemix|XIThreatTable")
+	void SetCharacterLevel(float Level);
 
 protected:
 	// Called when the game starts
@@ -91,6 +94,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float VolatileEnimtyDecayRate = 60;
+
+	// Level of the character that owns this component.
+	UPROPERTY()
+	float CharacterLevel;
 
 public:	
 	// Called every frame

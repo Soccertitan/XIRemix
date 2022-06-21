@@ -9,13 +9,19 @@ UXIThreatTableComponent::UXIThreatTableComponent()
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.TickInterval = 1.0f;
-}
 
+	CharacterLevel = 1.f;
+}
 
 // Called when the game starts
 void UXIThreatTableComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UXIThreatTableComponent::SetCharacterLevel(float Level)
+{
+	CharacterLevel = Level;
 }
 
 // Adds threat for the specified target actor.
@@ -123,18 +129,18 @@ void UXIThreatTableComponent::RemoveTargetActor(AActor* TargetActor)
 	CheckHighestEnmity();
 }
 
-void UXIThreatTableComponent::ApplyDamageEnmity(AActor* TargetActor, float EnemyLevel, float Damage, float EnmityRate)
+void UXIThreatTableComponent::ApplyDamageEnmity(AActor* TargetActor, float Damage, float EnmityRate)
 {
 	// **
 	// Formula for calculating CumulativeEnmity [CE] and VolatileEnmity [VE] from dealing damage.
-	// [CE Modifier] = 80 / {floor(31 * [EnemyLevel] / 50) + 6 }
-	// [EnemyLvScaleFactor] = -0.01428 * [EnemyLevel] + 1.71428
+	// [CE Modifier] = 80 / {floor(31 * [CharacterLevel] / 50) + 6 }
+	// [EnemyLvScaleFactor] = -0.01428 * [CharacterLevel] + 1.71428
 	// [CE] = [CE Modifier] * [Damage] * EnmityRate * [EnemyLvScaleFactor]
 	// [VE] = [CE] * 3
 	// **
 	
-	float CEMod = 80 / (FMath::Floor(31 * EnemyLevel / 50) + 6);
-	float EnemyLvScaleFactor = FMath::Clamp(-0.01428f * EnemyLevel + 1.71428f, 0.3f, 1.0f);
+	float CEMod = 80 / (FMath::Floor(31 * CharacterLevel / 50) + 6);
+	float EnemyLvScaleFactor = FMath::Clamp(-0.01428f * CharacterLevel + 1.71428f, 0.3f, 1.0f);
 
 	float CE = CEMod * Damage * EnmityRate * EnemyLvScaleFactor;
 	float VE = CE * 3;

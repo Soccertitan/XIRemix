@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget", meta = (BindWidget))
 	class UTextBlock* TargetName;
 
+	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget", meta = (BindWidget))
+	class UTextBlock* TargetLevel;
+
 	UPROPERTY(BlueprintReadOnly, Category = "TargetPlateWidget")
 	AActor* TargetedActor;
 

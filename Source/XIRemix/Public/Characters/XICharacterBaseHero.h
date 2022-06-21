@@ -171,19 +171,20 @@ public:
 	//Get the time till we interact witht he current interactable
 	float GetRemainingInteractTime() const;
 
+	UFUNCTION(BlueprintCallable)
+	void BeginInteract();
+	UFUNCTION(BlueprintCallable)
+	void EndInteract();
+
 protected:
 
 	void PerformInteractionCheck();
 	void CouldntFindInteractable();
 	void FoundNewInteractable(UXIInteractionComponent* Interactable);
 
-	UFUNCTION(BlueprintCallable)
-	void BeginInteract();
 	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
 	void Server_BeginInteract();
 
-	UFUNCTION(BlueprintCallable)
-	void EndInteract();
 	UFUNCTION(Server, WithValidation, Reliable, Category = "Interaction")
 	void Server_EndInteract();
 
