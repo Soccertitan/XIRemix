@@ -100,6 +100,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
 	ECombatStyle CombatStyle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item|Equipment|Animation", meta = (EditCondition="ItemType == EItemType::WeaponMelee", EditConditionHides))
+	EXISheatheStyle SheatheStyle;
+
 	/**The Equipment component that has this item equipped*/
 	UPROPERTY()
 	class UXIEquipmentManagerComponent* OwningEquipmentManager;

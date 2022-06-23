@@ -19,3 +19,63 @@ const FGameplayAbilitySingleTargetData& UXIAbilityFunctionLibrary::GetGameplayAb
     static FGameplayAbilitySingleTargetData dummy;
     return dummy;
 }
+
+bool UXIAbilityFunctionLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsCriticalHit();
+    }
+    return false;
+}
+
+bool UXIAbilityFunctionLibrary::IsBlocked(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsBlocked();
+    }
+    return false;
+}
+
+bool UXIAbilityFunctionLibrary::IsParried(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsParried();
+    }
+    return false;
+}
+
+bool UXIAbilityFunctionLibrary::IsGuarded(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsGuarded();
+    }
+    return false;
+}
+
+bool UXIAbilityFunctionLibrary::IsEvaded(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsEvaded();
+    }
+    return false;
+}
+
+bool UXIAbilityFunctionLibrary::IsResisted(const FGameplayEffectContextHandle& EffectContext)
+{
+    const FXIGameplayEffectContext* XIEffectContext = static_cast<const FXIGameplayEffectContext*>(EffectContext.Get());
+    if (XIEffectContext)
+    {
+        return XIEffectContext->IsResisted();
+    }
+    return false;
+}

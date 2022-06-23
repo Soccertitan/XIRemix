@@ -169,7 +169,7 @@ UAnimMontage* AXICharacterBase::GetCombatStartMontage()
 		return nullptr;
 	}
 
-	return AnimMontages->DefaultStartCombat;
+	return AnimMontages->GetDefaultDrawWeaponMontage();
 }
 
 UAnimMontage* AXICharacterBase::GetCombatExitMontage()
@@ -179,7 +179,7 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 		return nullptr;
 	}
 
-	return AnimMontages->DefaultExitCombat;
+	return AnimMontages->GetDefaultSheatheWeaponMontage();
 }
 
 #pragma region XICharacterInterfaceFunctions

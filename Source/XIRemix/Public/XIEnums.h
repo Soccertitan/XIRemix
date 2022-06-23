@@ -151,3 +151,20 @@ enum class EXISkillRank : uint8
 	G UMETA (DisplayName = "G"),
 	H UMETA (DisplayName = "H")
 };
+
+UENUM(BlueprintType, Category="XIRemix")
+enum class EXISheatheStyle : uint8
+{
+	A UMETA(DisplayName = "A"),
+	B UMETA(DisplayName = "B"),
+	C UMETA(DisplayName = "C"),
+	D UMETA (DisplayName = "D"),
+	E UMETA (DisplayName = "E"),
+	F UMETA (DisplayName = "F"),
+	G UMETA (DisplayName = "G"),
+	H UMETA (DisplayName = "H"),
+	I UMETA (DisplayName = "I"),
+	J UMETA (DisplayName = "J"),
+	K UMETA (DisplayName = "K"),
+	L UMETA (DisplayName = "L")
+};

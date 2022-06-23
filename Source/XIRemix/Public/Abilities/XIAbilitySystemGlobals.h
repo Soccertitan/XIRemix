@@ -23,4 +23,6 @@ public:
 		return dynamic_cast<UXIAbilitySystemGlobals&>(Get());
 	}
 
+	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
+
 };

@@ -6,6 +6,7 @@
 #include "Abilities/AttributeSetGlobal.h"
 #include "Abilities/Hero/AttributeSetHero.h"
 #include "Abilities/Enemy/AttributeSetEnemy.h"
+#include "Abilities/XIAbilityTypes.h"
 #include "Interfaces/XIThreatTableInterface.h"
 #include "AIController.h"
 #include "Components/XIThreatTableComponent.h"
@@ -85,17 +86,20 @@ UXIMeleeDamage::UXIMeleeDamage()
 
 void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
+    OutExecutionOutput.MarkGameplayCuesHandledManually();
+
     UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
 	UAbilitySystemComponent* SourceAbilitySystemComponent = ExecutionParams.GetSourceAbilitySystemComponent();
 
 	AActor* SourceActor = SourceAbilitySystemComponent ? SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
 	AActor* TargetActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor() : nullptr;
 
-	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	FGameplayEffectSpec* Spec = ExecutionParams.GetOwningSpecForPreExecuteMod();
+    FXIGameplayEffectContext* XIContext = static_cast<FXIGameplayEffectContext*>(Spec->GetContext().Get());
 
 	// Gather the tags from the source and target as that can affect which buffs should be used
-	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
-	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	const FGameplayTagContainer* SourceTags = Spec->CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* TargetTags = Spec->CapturedTargetTags.GetAggregatedTags();
 
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
@@ -176,6 +180,16 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
         }
 
         OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(MeleeStatics().DamageHPProperty, EGameplayModOp::Additive, Damage));
+        
+        if(XIContext)
+        {
+            XIContext->SetIsCriticalHit(bIsCriticalHit);
+        }
+
+        FGameplayCueParameters GCParam;
+        GCParam.EffectContext = ExecutionParams.GetOwningSpec().GetEffectContext();
+        GCParam.RawMagnitude = Damage;
+        TargetAbilitySystemComponent->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Damage.Melee"), GCParam);
         
         if (Damage > 0)
         {

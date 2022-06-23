@@ -3,6 +3,8 @@
 
 #include "Abilities/XIAbilitySystemComponent.h"
 #include "GameplayTagsManager.h"
+#include "AbilitySystemGlobals.h"
+#include "GameplayCueManager.h"
 
 UXIAbilitySystemComponent::UXIAbilitySystemComponent()
 {
@@ -54,4 +56,20 @@ void UXIAbilitySystemComponent::GetXIJobTagRelationship(const FGameplayTag JobTa
     }
 
     JobTagRelationship->GetXIJobTagRelationship(JobTag, JobTagRelationshipItem);
+}
+
+void UXIAbilitySystemComponent::ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+{
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Executed, GameplayCueParameters);
+}
+
+void UXIAbilitySystemComponent::AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+{
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::OnActive, GameplayCueParameters);
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::WhileActive, GameplayCueParameters);
+}
+
+void UXIAbilitySystemComponent::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+{
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);
 }

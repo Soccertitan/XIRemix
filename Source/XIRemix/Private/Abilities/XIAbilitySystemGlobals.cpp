@@ -9,3 +9,7 @@ UXIAbilitySystemGlobals::UXIAbilitySystemGlobals()
 
 }
 
+FGameplayEffectContext* UXIAbilitySystemGlobals::AllocGameplayEffectContext() const
+{
+    return new FXIGameplayEffectContext();
+}

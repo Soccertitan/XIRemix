@@ -83,3 +83,29 @@ UAnimMontage* UXICharacterAnimMontages::GetJobAbilityMontage(bool bIsWeaponOut) 
         return JobAbility;
     }
 }
+
+UAnimMontage* UXICharacterAnimMontages::GetSheatheWeaponMontage(EXISheatheStyle SheatheStyle) const
+{
+    for(auto& Montage : SheatheMontages)
+    {
+        if(Montage.SheatheStyle == SheatheStyle)
+        {
+            return Montage.SheatheWeapon;
+        }
+    }
+
+    return DefaultSheatheWeapon;
+}
+
+UAnimMontage* UXICharacterAnimMontages::GetDrawWeaponMontage(EXISheatheStyle SheatheStyle) const
+{
+    for(auto& Montage : SheatheMontages)
+    {
+        if(Montage.SheatheStyle == SheatheStyle)
+        {
+            return Montage.DrawWeapon;
+        }
+    }
+
+    return DefaultDrawWeapon;
+}

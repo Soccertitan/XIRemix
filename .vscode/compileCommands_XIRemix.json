@@ -20,11 +20,6 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Abilities\\ExecCalcs\\XICharacterStats.cpp",
-		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
-	},
-	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Abilities\\ExecCalcs\\XIEnemyStats.cpp",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
@@ -141,6 +136,11 @@
 	},
 	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Abilities\\XIGameplayAbilityMagicBase.cpp",
+		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Private\\Abilities\\XIGameplayCueManager.cpp",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
@@ -485,11 +485,6 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Abilities\\ExecCalcs\\XICharacterStats.h",
-		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
-	},
-	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Abilities\\ExecCalcs\\XIEnemyStats.h",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
@@ -606,6 +601,11 @@
 	},
 	{
 		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Abilities\\XIGameplayAbilityMagicBase.h",
+		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\Source\\XIRemix\\Public\\Abilities\\XIGameplayCueManager.h",
 		"command": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe\" @C:\\Users\\trist\\OneDrive\\Documents\\GitHub\\XIRemix\\.vscode\\compileCommands_XIRemix\\XIRemix.207.rsp",
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.0\\Engine\\Source"
 	},

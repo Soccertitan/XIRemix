@@ -35,6 +35,16 @@ public:
 	
 	virtual void GetXIJobTagRelationship(const FGameplayTag JobTag, FXIJobTagRelationshipItem& JobTagRelationshipItem) const;
 
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+	// Called by ExecCalc XIJobEXP
 	void LevelUp();
 
 	FORCEINLINE UXIStatsGrowthRank* GetXIStatsGrowthRank() const {return StatsGrowthRank;}

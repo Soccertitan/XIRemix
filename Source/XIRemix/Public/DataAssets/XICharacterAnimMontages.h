@@ -30,6 +30,22 @@ struct FCharacterCombatMontages
 	UAnimMontage* AtkRight;
 };
 
+/*
+* Maps a struct to the the weapon (un)sheathe Animation mongates.
+*/
+USTRUCT(BlueprintType)
+struct FWeaponSheatheMontages
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EXISheatheStyle SheatheStyle;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DrawWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* SheatheWeapon;
+};
+
 // Maps a Gameplay Tag to a ranged anim montage
 USTRUCT(BlueprintType)
 struct FCharacterRangedMontages
@@ -78,15 +94,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
 	UAnimMontage* GetJobAbilityMontage(bool bIsWeaponOut) const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* JobAbility;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* JobAbilityCombat;
+	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
+	UAnimMontage* GetSheatheWeaponMontage(EXISheatheStyle SheatheStyle) const;
+	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
+	UAnimMontage* GetDrawWeaponMontage(EXISheatheStyle SheatheStyle) const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* DefaultStartCombat;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* DefaultExitCombat;
+	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
+	FORCEINLINE UAnimMontage* GetDefaultSheatheWeaponMontage() const { return DefaultSheatheWeapon; }
+	UFUNCTION(BlueprintPure, Category = "XICharacterMontages")
+	FORCEINLINE UAnimMontage* GetDefaultDrawWeaponMontage() const { return DefaultDrawWeapon; }
 
 protected:
 
@@ -97,12 +113,25 @@ protected:
 	TArray<FCharacterRangedMontages> RangedMontages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FCharacterMagicMontages> MagicMontages;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FWeaponSheatheMontages> SheatheMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimMontage* DefaultRanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FCharacterMagicMontages> MagicMontages;
+	UAnimMontage* DefaultMagic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimMontage* DefaultMagic;
+	UAnimMontage* DefaultDrawWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DefaultSheatheWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* JobAbility;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* JobAbilityCombat;
 
 };

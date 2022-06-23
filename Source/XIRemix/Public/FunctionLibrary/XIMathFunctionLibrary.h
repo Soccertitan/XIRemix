@@ -27,7 +27,7 @@ public:
 
 	// The ratio of Attack/Defense affected by the difference level between the Target's Level - Attacker's level.
 	UFUNCTION(BlueprintPure, Category = "XIMathFunctionLibrary")
-	static float pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster, bool OutbIsCriticalHit);
+	static float pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster, bool& OutbIsCriticalHit);
 
 	// The percent chance to hit a target with an attack. Which is further affected by the Targets Level - Attackers Level.
 	// Returns a value between 0.2 and 0.95.

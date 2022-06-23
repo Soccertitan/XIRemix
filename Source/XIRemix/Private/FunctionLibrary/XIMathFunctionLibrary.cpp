@@ -50,7 +50,7 @@ float UXIMathFunctionLibrary::fSTRRange(float STR, float VIT, float WeaponDamage
     return FMath::Clamp(fSTR, FMath::Min((-WeaponRank * 2), -2.f), (WeaponRank + 8.f) * 2.f);
 }
 
-float UXIMathFunctionLibrary::pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster, bool OutbIsCriticalHit)
+float UXIMathFunctionLibrary::pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster, bool& OutbIsCriticalHit)
 {
     float pDIFCap;
     float cRatio;

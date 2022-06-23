@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
+#include "XIEnums.h"
 #include "XIHeroStats.generated.h"
 
 /**
@@ -25,5 +26,5 @@ protected:
 	float CalculateBasicAttribute(float MainJobLevel, float SubJobLevel, float RaceScale, float RaceBase, float MJScale, float MJBase, float SJScale, float SJBase) const;
 	float GetSkillRankValue(UCurveTable* CurveTable, float Level, FName RowName) const;
 
-	static const TMap<EXISkillRank, FName> SkillRankNameMap;	
+	static const TMap<EXISkillRank, FName> SkillRankNameMap;
 };

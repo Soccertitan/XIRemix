@@ -18,6 +18,24 @@ class XIREMIX_API UXIAbilityFunctionLibrary : public UBlueprintFunctionLibrary
 public:
 
 	/** Returns the Targeted Actor if it was in Range to be hit. */
-	UFUNCTION(BlueprintPure, Category = "XIAbility|TargetData")
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|TargetData")
 	static const FGameplayAbilitySingleTargetData& GetGameplayAbilitySingleTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsCriticalHit(const FGameplayEffectContextHandle& EffectContext);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsBlocked(const FGameplayEffectContextHandle& EffectContext);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsParried(const FGameplayEffectContextHandle& EffectContext);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsGuarded(const FGameplayEffectContextHandle& EffectContext);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsEvaded(const FGameplayEffectContextHandle& EffectContext);
+
+	UFUNCTION(BlueprintPure, Category = "XIAbilityFunctionLibrary|Effects")
+	static bool IsResisted(const FGameplayEffectContextHandle& EffectContext);
 };
