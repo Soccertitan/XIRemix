@@ -33,6 +33,14 @@ public:
 	virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy")
+	FGameplayAttributeData WeaponDamage;
+	ATTRIBUTE_ACCESSORS(UAttributeSetEnemy, WeaponDamage);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy")
+	FGameplayAttributeData RangedWeaponDamage;
+	ATTRIBUTE_ACCESSORS(UAttributeSetEnemy, RangedWeaponDamage);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Enemy")
 	FGameplayAttributeData ExpBounty;
 	ATTRIBUTE_ACCESSORS(UAttributeSetEnemy, ExpBounty);
 };

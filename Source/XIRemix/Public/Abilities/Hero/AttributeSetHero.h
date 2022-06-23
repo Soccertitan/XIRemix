@@ -47,12 +47,6 @@ public:
 	UFUNCTION()
 	virtual void OnRep_WarriorEXP(const FGameplayAttributeData& OldWarriorEXP);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|Warrior", ReplicatedUsing = OnRep_WarriorEXPRequired)
-	FGameplayAttributeData WarriorEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, WarriorEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_WarriorEXPRequired(const FGameplayAttributeData& OldWarriorEXPRequired);
-
 #pragma endregion WarriorJob
 
 #pragma region MonkJob
@@ -74,12 +68,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UAttributeSetHero, MonkEXP);
 	UFUNCTION()
 	virtual void OnRep_MonkEXP(const FGameplayAttributeData& OldMonkEXP);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|Monk", ReplicatedUsing = OnRep_MonkEXPRequired)
-	FGameplayAttributeData MonkEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, MonkEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_MonkEXPRequired(const FGameplayAttributeData& OldMonkEXPRequired);
 
 #pragma endregion MonkJob
 
@@ -103,12 +91,6 @@ public:
 	UFUNCTION()
 	virtual void OnRep_ThiefEXP(const FGameplayAttributeData& OldThiefEXP);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|Thief", ReplicatedUsing = OnRep_ThiefEXPRequired)
-	FGameplayAttributeData ThiefEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, ThiefEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_ThiefEXPRequired(const FGameplayAttributeData& OldThiefEXPRequired);
-
 #pragma endregion ThiefJob
 
 #pragma region RedMageJob
@@ -130,12 +112,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UAttributeSetHero, RedMageEXP);
 	UFUNCTION()
 	virtual void OnRep_RedMageEXP(const FGameplayAttributeData& OldRedMageEXP);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|RedMage", ReplicatedUsing = OnRep_RedMageEXPRequired)
-	FGameplayAttributeData RedMageEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, RedMageEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_RedMageEXPRequired(const FGameplayAttributeData& OldRedMageEXPRequired);
 
 #pragma endregion RedMageJob
 
@@ -159,12 +135,6 @@ public:
 	UFUNCTION()
 	virtual void OnRep_WhiteMageEXP(const FGameplayAttributeData& OldWhiteMageEXP);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|WhiteMage", ReplicatedUsing = OnRep_WhiteMageEXPRequired)
-	FGameplayAttributeData WhiteMageEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, WhiteMageEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_WhiteMageEXPRequired(const FGameplayAttributeData& OldWhiteMageEXPRequired);
-
 #pragma endregion WhiteMageJob
 
 #pragma region BlackMageJob
@@ -186,12 +156,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UAttributeSetHero, BlackMageEXP);
 	UFUNCTION()
 	virtual void OnRep_BlackMageEXP(const FGameplayAttributeData& OldBlackMageEXP);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Job|BlackMage", ReplicatedUsing = OnRep_BlackMageEXPRequired)
-	FGameplayAttributeData BlackMageEXPRequired;
-	ATTRIBUTE_ACCESSORS(UAttributeSetHero, BlackMageEXPRequired);
-	UFUNCTION()
-	virtual void OnRep_BlackMageEXPRequired(const FGameplayAttributeData& OldBlackMageEXPRequired);
 
 #pragma endregion BlackMageJob
 

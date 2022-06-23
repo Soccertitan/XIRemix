@@ -48,6 +48,5 @@ void UXIAttributeTextBlock::ValueChanged(const FOnAttributeChangeData& Data)
 
 void UXIAttributeTextBlock::SetValueText()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Value: %f"), Value);
     this->SetText(FText::AsNumber(Value, &FormatOptions));
 }

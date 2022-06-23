@@ -41,9 +41,9 @@ void UXIAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTa
     Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, AbilityBlockTags, bExecuteCancelTags, AbilityCancelTags);
 }
 
-void UXIAbilitySystemComponent::ReceiveCombatExp(float ExpGained)
+void UXIAbilitySystemComponent::LevelUp()
 {
-    ReceivedCombatExp.Broadcast(ExpGained);
+    OnLevelUp.Broadcast();
 }
 
 void UXIAbilitySystemComponent::GetXIJobTagRelationship(const FGameplayTag JobTag, FXIJobTagRelationshipItem& JobTagRelationshipItem) const

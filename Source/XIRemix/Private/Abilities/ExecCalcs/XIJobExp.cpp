@@ -34,7 +34,6 @@ UXIJobExp::UXIJobExp()
 void UXIJobExp::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
     UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
-	UAbilitySystemComponent* SourceAbilitySystemComponent = ExecutionParams.GetSourceAbilitySystemComponent();
 
 	AActor* TargetActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor() : nullptr;
 
@@ -48,95 +47,113 @@ void UXIJobExp::Execute_Implementation(const FGameplayEffectCustomExecutionParam
 
 	UXIAbilitySystemComponent* TargetASC = Cast<UXIAbilitySystemComponent>(TargetAbilitySystemComponent);
 	AXICharacterBaseHero* TargetHero = Cast<AXICharacterBaseHero>(TargetActor);
-	if (TargetASC && TargetHero)
-	{	
-		FXIJobTagRelationshipItem JobTagRelationshipItem;
-		FXICharacterHeroActiveJobsLevels HeroCharacterJobs;
+	if (!TargetASC || !TargetHero)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Actor or ASC is not of type XICharacterBaseHero/XIAbilitySystemComponent"));
+		return;
+	}
+	UCurveTable* ExpForNextLevelCT = TargetASC->GetExpToNextLevelCurveTable();
 
-		float ExpBounty = 0.f;
-		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(JobExpStatics().ExpBountyDef, EvaluationParameters, ExpBounty);
-		float EnemyLevel = 0.f;
-		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(JobExpStatics().LevelDef, EvaluationParameters, EnemyLevel);
+	if(!ExpForNextLevelCT)
+	{
+		UE_LOG(LogTemp, Error, TEXT("The EXPToNextLevelCurveTable is empty on the ASC blueprint. %s"), *TargetHero->GetName());
+		return;
+	}
 
-		HeroCharacterJobs = TargetHero->GetCharacterActiveJobsAndLevels();
+	FXIJobTagRelationshipItem JobTagRelationshipItem;
+	FXICharacterHeroActiveJobsLevels HeroCharacterJobs;
 
-		/*
-		// Formula for calculating EXP earned. Will need some more refinement for LevelDif < 0.
-		// TODO: Add Multiplier for chain kills.
-		*/
-		float LevelDif = EnemyLevel - HeroCharacterJobs.MainJobLevel;
-		if(LevelDif < 0)
+	static const FString ContextString(TEXT("Getting EXP Required for Next Level"));
+    float RequiredExp = 0.f;
+
+    FCurveTableRowHandle RequiredExpHandle;
+    RequiredExpHandle.CurveTable = ExpForNextLevelCT;
+    RequiredExpHandle.RowName = FName::FName("ExpToNextLevel");
+
+	float ExpBounty = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(JobExpStatics().ExpBountyDef, EvaluationParameters, ExpBounty);
+	float EnemyLevel = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(JobExpStatics().LevelDef, EvaluationParameters, EnemyLevel);
+
+	HeroCharacterJobs = TargetHero->GetCharacterActiveJobsAndLevels();
+
+	/*
+	// Formula for calculating EXP earned. Will need some more refinement for LevelDif < 0.
+	// TODO: Add Multiplier for chain kills.
+	*/
+	float LevelDif = EnemyLevel - HeroCharacterJobs.MainJobLevel;
+	if(LevelDif < 0)
+	{
+		ExpBounty = FMath::Floor(ExpBounty * FMath::Clamp(1.f + (LevelDif * 0.3f), 0.f, 1.f));
+	}
+	else
+	{
+		ExpBounty = FMath::Floor(ExpBounty * FMath::Clamp((1.f + (LevelDif * 0.2f)), 0.f, 4.f));
+	}
+
+	/*
+	//Add Exp to Main Job
+	*/
+	TargetASC->GetXIJobTagRelationship(HeroCharacterJobs.MainJobTag, JobTagRelationshipItem);
+			
+	if(!JobTagRelationshipItem.JobExpAttribute.IsValid() || !JobTagRelationshipItem.JobLevelAttribute.IsValid() || !JobTagRelationshipItem.JobLevelMaxAttribute.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The JobTagRelationshipItem for Job Experience/Level defined in the ASC is invalid: %s"), *HeroCharacterJobs.MainJobTag.ToString());
+		return;
+	}
+	else
+	{
+		float CurrentExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpAttribute);
+		float MaxLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelMaxAttribute);
+		RequiredExpHandle.Eval(HeroCharacterJobs.MainJobLevel, &RequiredExp,ContextString);
+
+		if(HeroCharacterJobs.MainJobLevel >= MaxLevel)
 		{
-			ExpBounty = FMath::Floor(ExpBounty * FMath::Clamp(1.f + (LevelDif * 0.3f), 0.f, 1.f));
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, FMath::Min(ExpBounty, RequiredExp - CurrentExp)));
 		}
 		else
 		{
-			ExpBounty = FMath::Floor(ExpBounty * FMath::Clamp((1.f + (LevelDif * 0.2f)), 0.f, 4.f));
-		}
-
-		/*
-		//Add Exp to Main Job
-		*/
-		TargetASC->GetXIJobTagRelationship(HeroCharacterJobs.MainJobTag, JobTagRelationshipItem);
-				
-		if(!JobTagRelationshipItem.JobExpAttribute.IsValid() || !JobTagRelationshipItem.JobExpRequiredAttribute.IsValid() || !JobTagRelationshipItem.JobLevelAttribute.IsValid() || !JobTagRelationshipItem.JobLevelMaxAttribute.IsValid())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("The JobTagRelationshipItem for Job Experience/Level defined in the ASC is invalid: %s"), *HeroCharacterJobs.MainJobTag.ToString());
-			return;
-		}
-		else
-		{
-			float CurrentExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpAttribute);
-			float RequiredExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpRequiredAttribute);
-			float MaxLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelMaxAttribute);
-
-			if(HeroCharacterJobs.MainJobLevel >= MaxLevel)
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, ExpBounty));
+			if(CurrentExp + ExpBounty > RequiredExp)
 			{
-				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, FMath::Min(ExpBounty, RequiredExp - CurrentExp)));
+				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
+				HeroCharacterJobs.MainJobLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
+				TargetASC->LevelUp();
 			}
-			else
-			{
-				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, ExpBounty));
-				if(CurrentExp + ExpBounty > RequiredExp)
-				{
-					//TODO: Notify the character that a level up has occured
-					OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
-					HeroCharacterJobs.MainJobLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
-				}
-			}
-		}
-
-		/*
-		//Add Exp to Sub Job
-		*/
-		TargetASC->GetXIJobTagRelationship(HeroCharacterJobs.SubJobTag, JobTagRelationshipItem);
-
-		if(!JobTagRelationshipItem.JobExpAttribute.IsValid() || !JobTagRelationshipItem.JobExpRequiredAttribute.IsValid() || !JobTagRelationshipItem.JobLevelAttribute.IsValid() || !JobTagRelationshipItem.JobLevelMaxAttribute.IsValid())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("The JobTagRelationshipItem for Job Experience/Level defined in the ASC is invalid or there is no SubJob: %s"), *HeroCharacterJobs.SubJobTag.ToString());
-			return;
-		}
-		else
-		{
-			float CurrentExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpAttribute);
-			float RequiredExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpRequiredAttribute);
-			float MaxLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelMaxAttribute);
-
-			float SubJobGainedExp = FMath::Floor(ExpBounty / 5.f);
-
-			if(HeroCharacterJobs.SubJobLevel >= FMath::Floor(HeroCharacterJobs.MainJobLevel / 2.f) || HeroCharacterJobs.SubJobLevel >= MaxLevel)
-			{
-				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, FMath::Min(SubJobGainedExp, RequiredExp - CurrentExp)));
-			}
-			else
-			{
-				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, SubJobGainedExp));
-				if(CurrentExp + SubJobGainedExp > RequiredExp)
-				{
-					//TODO: Notify the character that a level up has occured
-					OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
-				}
-			}			
 		}
 	}
+
+	/*
+	//Add Exp to Sub Job
+	*/
+	TargetASC->GetXIJobTagRelationship(HeroCharacterJobs.SubJobTag, JobTagRelationshipItem);
+
+	if(!JobTagRelationshipItem.JobExpAttribute.IsValid() || !JobTagRelationshipItem.JobLevelAttribute.IsValid() || !JobTagRelationshipItem.JobLevelMaxAttribute.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The JobTagRelationshipItem for Job Experience/Level defined in the ASC is invalid or there is no SubJob: %s"), *HeroCharacterJobs.SubJobTag.ToString());
+		return;
+	}
+	else
+	{
+		float CurrentExp = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobExpAttribute);
+		float MaxLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelMaxAttribute);
+		RequiredExpHandle.Eval(HeroCharacterJobs.SubJobLevel, &RequiredExp,ContextString);
+
+		float SubJobGainedExp = FMath::Floor(ExpBounty / 5.f);
+
+		if(HeroCharacterJobs.SubJobLevel >= FMath::Floor(HeroCharacterJobs.MainJobLevel / 2.f) || HeroCharacterJobs.SubJobLevel >= MaxLevel)
+		{
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, FMath::Min(SubJobGainedExp, RequiredExp - CurrentExp)));
+		}
+		else
+		{
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobExpAttribute, EGameplayModOp::Additive, SubJobGainedExp));
+			if(CurrentExp + SubJobGainedExp > RequiredExp)
+			{
+				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
+				TargetASC->LevelUp();
+			}
+		}			
+	}
+
 }

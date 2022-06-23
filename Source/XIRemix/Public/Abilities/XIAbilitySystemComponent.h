@@ -6,9 +6,11 @@
 #include "AbilitySystemComponent.h"
 #include "DataAssets/XIAbilityTagRelationship.h"
 #include "DataAssets/XIJobTagRelationship.h"
+#include "DataAssets/XIStatsGrowthRank.h"
+#include "DataAssets/XIStatsGrowthData.h"
 #include "XIAbilitySystemComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceivedCombatExpDelegate, float, ExpGained);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelUp);
 
 /**
  * 
@@ -25,12 +27,20 @@ public:
 	bool CharacterAbilitiesGiven = false;
 	bool StartupEffectsApplied = false;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnLevelUp OnLevelUp;
+
 	void GetRelationshipActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const;
 	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
 	
-	FReceivedCombatExpDelegate ReceivedCombatExp;
-	virtual void ReceiveCombatExp(float ExpGained);
 	virtual void GetXIJobTagRelationship(const FGameplayTag JobTag, FXIJobTagRelationshipItem& JobTagRelationshipItem) const;
+
+	void LevelUp();
+
+	FORCEINLINE UXIStatsGrowthRank* GetXIStatsGrowthRank() const {return StatsGrowthRank;}
+	FORCEINLINE UXIStatsGrowthData* GetXIStatsGrowthData() const {return StatsGrowthData;}
+	FORCEINLINE UCurveTable* GetAttributesCurveTable() const {return AttributesCurveTable;}
+	FORCEINLINE UCurveTable* GetExpToNextLevelCurveTable() const {return ExpToNextLevelCurveTable;}
 
 protected:
     /* Mapping of Ability Tag to block and cancel tags. */
@@ -40,4 +50,20 @@ protected:
 	/* Mapping of Job Tags to Attributes*/
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities|GameplayTags")
 	UXIJobTagRelationship* JobTagRelationship;
+
+	//Stats Growth Ranking data to determine stats. Typicall for XICharacterHeros.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities|Stats")
+	UXIStatsGrowthRank* StatsGrowthRank;
+
+	//Referenced by StatsGrowthRank to get the value for calculating Stat Growth
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities|Stats")
+	UXIStatsGrowthData* StatsGrowthData;
+
+	//For Heros; Maps Skill Rankings to Attribute Values based on Job Level. For Enemies, directly maps attributes to values.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities|Stats")
+	UCurveTable* AttributesCurveTable;
+
+	//A lookup curve table to check how much EXP is required to reach the next level.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities|Stats")
+	UCurveTable* ExpToNextLevelCurveTable;
 };

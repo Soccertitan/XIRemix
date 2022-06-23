@@ -3,7 +3,7 @@
 
 #include "Abilities/ExecCalcs/XIEnemyStats.h"
 #include "Abilities/Enemy/AttributeSetEnemy.h"
-#include "Characters/XICharacterBaseEnemy.h"
+#include "Abilities/XIAbilitySystemComponent.h"
 
 struct XIEnemyAttributesStatics
 {
@@ -20,6 +20,9 @@ struct XIEnemyAttributesStatics
     DECLARE_ATTRIBUTE_CAPTUREDEF(Intelligence);
     DECLARE_ATTRIBUTE_CAPTUREDEF(Mind);
     DECLARE_ATTRIBUTE_CAPTUREDEF(Charisma);
+
+    DECLARE_ATTRIBUTE_CAPTUREDEF(WeaponDamage);
+    DECLARE_ATTRIBUTE_CAPTUREDEF(RangedWeaponDamage);
 
     DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
     DECLARE_ATTRIBUTE_CAPTUREDEF(RangedAttack);
@@ -96,6 +99,9 @@ struct XIEnemyAttributesStatics
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Intelligence, Target, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Mind, Target, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Charisma, Target, false);
+
+        DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetEnemy, WeaponDamage, Target, false);
+        DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetEnemy, RangedWeaponDamage, Target, false);
 
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Attack, Target, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, RangedAttack, Target, false);
@@ -181,6 +187,9 @@ UXIEnemyStats::UXIEnemyStats()
     RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().MindDef);
     RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().CharismaDef);
 
+    RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().WeaponDamageDef);
+    RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().RangedWeaponDamageDef);
+
     RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().AttackDef);
     RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().RangedAttackDef);
     RelevantAttributesToCapture.Add(XIEnemyAttributesStatics().DefenseDef);
@@ -250,17 +259,18 @@ void UXIEnemyStats::Execute_Implementation(const FGameplayEffectCustomExecutionP
     const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
     FAggregatorEvaluateParameters EvaluationParameters;
 
-	AXICharacterBaseEnemy* XICharacter = Cast<AXICharacterBaseEnemy>(TargetActor);
-    if(!XICharacter)
+	UXIAbilitySystemComponent* XIASC = Cast<UXIAbilitySystemComponent>(TargetAbilitySystemComponent);
+    if(!XIASC)
     {
-        UE_LOG(LogTemp, Error, TEXT("XIEnemyStats Exec Calc: Target actor is not an XICharacterEnemy."));
+        UE_LOG(LogTemp, Error, TEXT("XIEnemyStats: The AbilitySystemComponent is not of type XIAbilitySystemComponent."));
         return;
     }
-    UCurveTable* SkillRankCT = XICharacter->GetSkillRankCurveTable();
+
+    UCurveTable* SkillRankCT = XIASC->GetAttributesCurveTable();
 
     if(!SkillRankCT)
     {
-        UE_LOG(LogTemp, Error, TEXT("SKillRank Curve Table is missing from Blueprint. %s"), *XICharacter->GetName());
+        UE_LOG(LogTemp, Error, TEXT("The AttributesCurveTable on the actors ASC is missing! %s"), *TargetActor->GetName());
         return;
     }
 
@@ -297,6 +307,11 @@ void UXIEnemyStats::Execute_Implementation(const FGameplayEffectCustomExecutionP
     /*
     // Sets physicial Attributes
     */
+    Value = GetSkillRankValue(SkillRankCT, Level, FName::FName("WeaponDamage"));
+    OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(EnemyAttributesStatics().WeaponDamageProperty, EGameplayModOp::Override, Value));
+    Value = GetSkillRankValue(SkillRankCT, Level, FName::FName("RangedWeaponDamage"));
+    OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(EnemyAttributesStatics().RangedWeaponDamageProperty, EGameplayModOp::Override, Value));
+
     Value = GetSkillRankValue(SkillRankCT, Level, FName::FName("Attack"));
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(EnemyAttributesStatics().AttackProperty, EGameplayModOp::Override, Value));
     Value = GetSkillRankValue(SkillRankCT, Level, FName::FName("RangedAttack"));

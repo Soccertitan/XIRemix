@@ -50,10 +50,11 @@ float UXIMathFunctionLibrary::fSTRRange(float STR, float VIT, float WeaponDamage
     return FMath::Clamp(fSTR, FMath::Min((-WeaponRank * 2), -2.f), (WeaponRank + 8.f) * 2.f);
 }
 
-float UXIMathFunctionLibrary::pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster)
+float UXIMathFunctionLibrary::pDIF(float Attack, float Defense, float LevelDif, float CritChance, float CritBonus, FGameplayTag WeaponType, bool bIsMonster, bool OutbIsCriticalHit)
 {
     float pDIFCap;
     float cRatio;
+    OutbIsCriticalHit = false;
     
     // Calculates the corrected attack/defense ratio based on the difference in levels. Only monsters get a bonus attacking characters at a lower level.
     if(bIsMonster)
@@ -92,6 +93,7 @@ float UXIMathFunctionLibrary::pDIF(float Attack, float Defense, float LevelDif, 
             pDIFCap = pDIFCap + 1 + CritBonus;
             cRatio = cRatio + 1 + CritBonus;
         }
+        OutbIsCriticalHit = true;
     }
 
     float qRatio = FMath::Clamp(FMath::RandRange(cRatio - 0.375, cRatio + 0.375), 0, pDIFCap);

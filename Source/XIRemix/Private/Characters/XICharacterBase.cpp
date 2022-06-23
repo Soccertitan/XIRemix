@@ -184,11 +184,6 @@ UAnimMontage* AXICharacterBase::GetCombatExitMontage()
 
 #pragma region XICharacterInterfaceFunctions
 
-AXICharacterBase * AXICharacterBase::GetXICharacterBase()
-{
-	return this;
-}
-
 FText AXICharacterBase::GetCharacterName() const
 {
 	return CharacterName;
@@ -354,16 +349,6 @@ float AXICharacterBase::GetCharacterLevel() const
 }
 
 #pragma endregion AttributeGetters
-
-UXIStatsGrowthRank* AXICharacterBase::GetXIStatsGrowthRank() const
-{
-	return StatsGrowthRank;
-}
-
-UXIStatsGrowthData* AXICharacterBase::GetXIStatsGrowthData() const
-{
-	return StatsGrowthData;
-}
 
 #pragma endregion XICharacterInterfaceFunctions
 

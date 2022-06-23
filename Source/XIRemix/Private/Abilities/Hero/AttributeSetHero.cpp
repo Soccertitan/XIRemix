@@ -40,32 +40,26 @@ void UAttributeSetHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WarriorLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WarriorMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WarriorEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WarriorEXPRequired, COND_None, REPNOTIFY_Always);
 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, MonkLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, MonkMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, MonkEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, MonkEXPRequired, COND_None, REPNOTIFY_Always);
 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, ThiefLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, ThiefMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, ThiefEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, ThiefEXPRequired, COND_None, REPNOTIFY_Always);
 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, RedMageLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, RedMageMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, RedMageEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, RedMageEXPRequired, COND_None, REPNOTIFY_Always);
 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WhiteMageLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WhiteMageMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WhiteMageEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, WhiteMageEXPRequired, COND_None, REPNOTIFY_Always);
 
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageMaxLevel, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageEXP, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, BlackMageEXPRequired, COND_None, REPNOTIFY_Always);
 
     //OtherAttributes
     DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetHero, EnmityRate, COND_None, REPNOTIFY_Always);
@@ -85,10 +79,6 @@ void UAttributeSetHero::OnRep_WarriorEXP(const FGameplayAttributeData& OldWarrio
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, WarriorEXP, OldWarriorEXP);
 }
-void UAttributeSetHero::OnRep_WarriorEXPRequired(const FGameplayAttributeData& OldWarriorEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, WarriorEXPRequired, OldWarriorEXPRequired);
-}
 
 
 void UAttributeSetHero::OnRep_MonkLevel(const FGameplayAttributeData& OldMonkLevel) 
@@ -102,10 +92,6 @@ void UAttributeSetHero::OnRep_MonkMaxLevel(const FGameplayAttributeData& OldMonk
 void UAttributeSetHero::OnRep_MonkEXP(const FGameplayAttributeData& OldMonkEXP) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, MonkEXP, OldMonkEXP);
-}
-void UAttributeSetHero::OnRep_MonkEXPRequired(const FGameplayAttributeData& OldMonkEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, MonkEXPRequired, OldMonkEXPRequired);
 }
 
 
@@ -121,10 +107,6 @@ void UAttributeSetHero::OnRep_ThiefEXP(const FGameplayAttributeData& OldThiefEXP
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, ThiefEXP, OldThiefEXP);
 }
-void UAttributeSetHero::OnRep_ThiefEXPRequired(const FGameplayAttributeData& OldThiefEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, ThiefEXPRequired, OldThiefEXPRequired);
-}
 
 
 void UAttributeSetHero::OnRep_RedMageLevel(const FGameplayAttributeData& OldRedMageLevel) 
@@ -138,10 +120,6 @@ void UAttributeSetHero::OnRep_RedMageMaxLevel(const FGameplayAttributeData& OldR
 void UAttributeSetHero::OnRep_RedMageEXP(const FGameplayAttributeData& OldRedMageEXP) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, RedMageEXP, OldRedMageEXP);
-}
-void UAttributeSetHero::OnRep_RedMageEXPRequired(const FGameplayAttributeData& OldRedMageEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, RedMageEXPRequired, OldRedMageEXPRequired);
 }
 
 
@@ -157,10 +135,6 @@ void UAttributeSetHero::OnRep_WhiteMageEXP(const FGameplayAttributeData& OldWhit
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, WhiteMageEXP, OldWhiteMageEXP);
 }
-void UAttributeSetHero::OnRep_WhiteMageEXPRequired(const FGameplayAttributeData& OldWhiteMageEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, WhiteMageEXPRequired, OldWhiteMageEXPRequired);
-}
 
 
 void UAttributeSetHero::OnRep_BlackMageLevel(const FGameplayAttributeData& OldBlackMageLevel) 
@@ -174,10 +148,6 @@ void UAttributeSetHero::OnRep_BlackMageMaxLevel(const FGameplayAttributeData& Ol
 void UAttributeSetHero::OnRep_BlackMageEXP(const FGameplayAttributeData& OldBlackMageEXP) 
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, BlackMageEXP, OldBlackMageEXP);
-}
-void UAttributeSetHero::OnRep_BlackMageEXPRequired(const FGameplayAttributeData& OldBlackMageEXPRequired) 
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetHero, BlackMageEXPRequired, OldBlackMageEXPRequired);
 }
 
 #pragma endregion BasicJobs

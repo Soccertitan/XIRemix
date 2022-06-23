@@ -24,9 +24,6 @@ class XIREMIX_API IXICharacterInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	// Get the XICharacterBase Object Reference for Binding to delegates.
-	virtual class AXICharacterBase* GetXICharacterBase() PURE_VIRTUAL(IXICharacterInterface::GetXICharacterBase(), return nullptr;);
-
 	// Getter for combat montage Data Asset.
 	virtual class UXICharacterAnimMontages* GetXICharacterAnimMontages() const PURE_VIRTUAL(IXICharacterInterface::GetXICharacterAnimMontages(), return nullptr;);
 	virtual UAnimMontage* GetAutoAttackMontage() const PURE_VIRTUAL(IXICharacterInterface::GetAutoAttackMontage(), return nullptr;);
@@ -68,8 +65,5 @@ public:
 
 	// Gets the current level of the character.
 	virtual float GetCharacterLevel() const PURE_VIRTUAL(IXICharacterInterface::GetCharacterLevel(), return 0.f;);
-
-	virtual class UXIStatsGrowthRank* GetXIStatsGrowthRank() const PURE_VIRTUAL(IXICharacterInterface::GetXIStatsGrowthRank(), return nullptr;);
-	virtual class UXIStatsGrowthData* GetXIStatsGrowthData() const PURE_VIRTUAL(IXICharacterInterface::GetXIStatsGrowthData(), return nullptr;);
 	
 };

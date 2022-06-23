@@ -186,12 +186,13 @@ void UXIHeroStats::Execute_Implementation(const FGameplayEffectCustomExecutionPa
         return;
     }
 
-    UXIStatsGrowthData* RaceStatsGrowthData = XICharacter->GetXIStatsGrowthData();
-    UXIStatsGrowthRank* RaceStatsGrowthRank = XICharacter->GetXIStatsGrowthRank();
-    UCurveTable* SkillRankCT = XICharacter->GetSkillRankCurveTable();
+    UXIStatsGrowthData* RaceStatsGrowthData = XIASC->GetXIStatsGrowthData();
+    UXIStatsGrowthRank* RaceStatsGrowthRank = XIASC->GetXIStatsGrowthRank();
+    UCurveTable* SkillRankCT = XIASC->GetAttributesCurveTable();
 
     if(!RaceStatsGrowthData || !RaceStatsGrowthRank || !SkillRankCT)
     {
+        UE_LOG(LogTemp, Error, TEXT("XIHeroStats: The AbilitySystemComponent is missing objects defined in BP 'Ability|Stats'"));
         return;
     }
 

@@ -64,10 +64,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "XIGameplayFunctionLibrary")
 	static bool IsAlive(AActor* OwnerActor);
 
-	//XICharacter Interface Function
-	UFUNCTION(BlueprintPure, Category = "XIGameplayFunctionLibrary")
-	static class AXICharacterBase* GetXICharacterBase(AActor* OwnerActor);
-
 	//XIAI Controller Interface Function
 	UFUNCTION(BlueprintPure, Category = "XIGameplayFunctionLibrary")
 	static class UXIThreatTableComponent* GetXIThreatTableComponent(AController* AIController);

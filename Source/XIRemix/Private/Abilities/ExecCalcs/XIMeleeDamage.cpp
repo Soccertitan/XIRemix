@@ -5,6 +5,7 @@
 #include "Abilities/XIAbilitySystemComponent.h"
 #include "Abilities/AttributeSetGlobal.h"
 #include "Abilities/Hero/AttributeSetHero.h"
+#include "Abilities/Enemy/AttributeSetEnemy.h"
 #include "Interfaces/XIThreatTableInterface.h"
 #include "AIController.h"
 #include "Components/XIThreatTableComponent.h"
@@ -17,6 +18,8 @@ struct XIMeleeStatics
 {
     DECLARE_ATTRIBUTE_CAPTUREDEF(DamageHP);
     DECLARE_ATTRIBUTE_CAPTUREDEF(RecoverTP);
+
+    DECLARE_ATTRIBUTE_CAPTUREDEF(WeaponDamage);
 
     DECLARE_ATTRIBUTE_CAPTUREDEF(HitPointsMax);
     DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
@@ -35,6 +38,8 @@ struct XIMeleeStatics
     {
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, DamageHP, Target, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, RecoverTP, Target, false);
+
+        DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetEnemy, WeaponDamage, Source, false);
 
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, HitPointsMax, Source, true);
         DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetGlobal, Attack, Source, true);
@@ -61,6 +66,8 @@ UXIMeleeDamage::UXIMeleeDamage()
 {
     RelevantAttributesToCapture.Add(MeleeStatics().DamageHPDef);
     RelevantAttributesToCapture.Add(MeleeStatics().RecoverTPDef);
+
+    RelevantAttributesToCapture.Add(MeleeStatics().WeaponDamageDef);
 
     RelevantAttributesToCapture.Add(MeleeStatics().HitPointsMaxDef);
     RelevantAttributesToCapture.Add(MeleeStatics().AttackDef);
@@ -126,7 +133,12 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
     if (FMath::RandRange(0.f, 1.f) < HitRate)
     {
         //True we hit the target!
-        float WeaponDamage = GetWeaponBaseDamage(SourceActor, WeaponType);
+        float WeaponDamage = 0.f;
+        ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(MeleeStatics().WeaponDamageDef, EvaluationParameters, WeaponDamage);
+        if(WeaponDamage == 0.f)
+        {
+            WeaponDamage = GetWeaponBaseDamage(SourceActor, WeaponType);
+        }
 
         if(SourceTags->HasTag(FGameplayTag::RequestGameplayTag("Weapon.Melee.HandToHand")))
         {
@@ -137,13 +149,14 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
             Damage = (WeaponDamage + UXIMathFunctionLibrary::fSTRMelee(Strength, Vitality, WeaponDamage, false));
         }
 
+        bool bIsCriticalHit = false;
         if(SourceTags->HasTag(FGameplayTag::RequestGameplayTag("State.Const.Monster")))
         {
-            Damage = FMath::Max(FMath::Floor(Damage * UXIMathFunctionLibrary::pDIF(Attack, Defense, LevelDif, CritChance, CritBonus, WeaponType, true)), 0.f);
+            Damage = FMath::Max(FMath::Floor(Damage * UXIMathFunctionLibrary::pDIF(Attack, Defense, LevelDif, CritChance, CritBonus, WeaponType, true, bIsCriticalHit)), 0.f);
         }
         else
         {
-            Damage = FMath::Max(FMath::Floor(Damage * UXIMathFunctionLibrary::pDIF(Attack, Defense, LevelDif, CritChance, CritBonus, WeaponType, false)), 0.f);
+            Damage = FMath::Max(FMath::Floor(Damage * UXIMathFunctionLibrary::pDIF(Attack, Defense, LevelDif, CritChance, CritBonus, WeaponType, false, bIsCriticalHit)), 0.f);
         }
 
         if(XIThreatIntTarget)

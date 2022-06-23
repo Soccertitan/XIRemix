@@ -33,9 +33,6 @@ struct FXIJobTagRelationshipItem
 	FGameplayAttribute JobExpAttribute;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)
-	FGameplayAttribute JobExpRequiredAttribute;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)
 	UXIJobAbilityData* JobAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Job)

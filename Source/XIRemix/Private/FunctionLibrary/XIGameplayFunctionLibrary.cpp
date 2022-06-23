@@ -141,16 +141,6 @@ bool UXIGameplayFunctionLibrary::IsAlive(AActor* OwnerActor)
     return false;
 }
 
-AXICharacterBase* UXIGameplayFunctionLibrary::GetXICharacterBase(AActor* OwnerActor)
-{
-    IXICharacterInterface* XICharacterInt = Cast<IXICharacterInterface>(OwnerActor);
-    if(XICharacterInt)
-    {
-        return XICharacterInt->GetXICharacterBase();
-    }
-    return nullptr;
-}
-
 #pragma region AnimMontages
 
 UAnimMontage* UXIGameplayFunctionLibrary::GetAutoAttackMontage(AActor* OwnerActor)

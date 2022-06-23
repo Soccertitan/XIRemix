@@ -69,7 +69,6 @@ void UXIThreatTableComponent::AddEnmity(AActor* TargetActor, float InVolatileEnm
 				}
 			}
 		}
-
 		ThreatTable.AddUnique(Threat);
 		CheckHighestEnmity();
 		return;
@@ -82,6 +81,7 @@ void UXIThreatTableComponent::CheckHighestEnmity()
 	if(!ThreatTable.IsValidIndex(0))
 	{
 		OnHighestThreat.Broadcast(nullptr);
+		return;
 	}
 
 	float ThreatAmount = 0;
@@ -91,7 +91,7 @@ void UXIThreatTableComponent::CheckHighestEnmity()
 	for(FThreatTableStruct ThreatEntry : ThreatTable)
 	{
 		ThreatComparison = ThreatEntry.VolatileEnmity + ThreatEntry.CumulativeEnmity;
-		if (ThreatComparison > ThreatAmount)
+		if (ThreatComparison >= ThreatAmount)
 		{
 			ThreatAmount = ThreatComparison;
 			TargetActor = ThreatEntry.Actor;
@@ -107,7 +107,7 @@ void UXIThreatTableComponent::CheckHighestEnmity()
 
 void UXIThreatTableComponent::RemoveTargetActor(AActor* TargetActor)
 {
-	if(!(ThreatTable.IsValidIndex(0)) || !TargetActor)
+	if(!(ThreatTable.IsValidIndex(0)))
 	{	
 		CheckHighestEnmity();
 		return;
