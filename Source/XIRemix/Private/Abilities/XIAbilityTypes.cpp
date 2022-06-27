@@ -72,7 +72,7 @@ bool FXIGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool
       }
    }
  
-   Ar.SerializeBits(&RepBits, 10);
+   Ar.SerializeBits(&RepBits, 12);
  
    if (RepBits & (1 << 0))
    {

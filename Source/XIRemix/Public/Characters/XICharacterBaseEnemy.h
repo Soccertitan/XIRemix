@@ -49,5 +49,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 	// Client only
-	virtual void OnRep_PlayerState() override;	
+	virtual void OnRep_PlayerState() override;
+
+	virtual void Die() override;
 };

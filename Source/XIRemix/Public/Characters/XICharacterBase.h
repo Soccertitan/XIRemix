@@ -140,5 +140,5 @@ protected:
 	virtual void InitializeAttributes();
 
 	//Default Death Event. Should be overridden by child classes.
-	void Die();
+	virtual void Die();
 };

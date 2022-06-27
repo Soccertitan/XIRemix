@@ -17,6 +17,8 @@ AXICharacterBaseHero::AXICharacterBaseHero(const class FObjectInitializer& Objec
 {
 	AttributeSetHero = CreateDefaultSubobject<UAttributeSetHero>("AttributeSetHero");
 
+	AbilitySystemComponent->OnLevelUp.AddDynamic(this, &AXICharacterBaseHero::LevelUp);
+
 	// XI Targeting system for players
 	XITargetSystem = CreateDefaultSubobject<UXITargetSystemComponent>("XITargetSystem");
 	XITargetSystem->SphereComponent->SetupAttachment(RootComponent);
@@ -166,14 +168,22 @@ FXICharacterHeroActiveJobsLevels AXICharacterBaseHero::GetCharacterActiveJobsAnd
 
 #pragma endregion AttributeGetters
 
-#pragma region AttributeChangeCallbacks
+void AXICharacterBaseHero::LevelUp()
+{
+	FXICharacterHeroActiveJobsLevels CharacterLevels = GetCharacterActiveJobsAndLevels();
+	FGameplayTagContainer MJTagContainer;
+	FGameplayTagContainer SJTagContainer;
+	MJTagContainer.AddTag(CharacterLevels.MainJobTag);
+	SJTagContainer.AddTag(CharacterLevels.SubJobTag);
+	
+	AbilitySystemComponent->TryActivateAbilitiesByTag(MJTagContainer, true);
+	AbilitySystemComponent->TryActivateAbilitiesByTag(SJTagContainer, true);
+}
 
 void AXICharacterBaseHero::HitPointsChanged(const FOnAttributeChangeData & Data)
 {
 	Super::HitPointsChanged(Data);
 }
-
-#pragma endregion AttributeChangeCallbacks
 
 UXITargetSystemComponent* AXICharacterBaseHero::GetXITargetSystemComponent() const
 {

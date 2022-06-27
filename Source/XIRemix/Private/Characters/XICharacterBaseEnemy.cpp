@@ -5,6 +5,7 @@
 #include "Abilities/Enemy/AttributeSetEnemy.h"
 #include "Abilities/XIAbilitySystemComponent.h"
 #include "Abilities/XIGameplayAbility.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AXICharacterBaseEnemy::AXICharacterBaseEnemy(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -76,4 +77,11 @@ UXIAggroComponent* AXICharacterBaseEnemy::GetXIAggroComponent() const
 float AXICharacterBaseEnemy::GetCharacterLevel() const
 {
 	return AttributeSetEnemy->GetLevel();
+}
+
+void AXICharacterBaseEnemy::Die()
+{
+	Super::Die();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

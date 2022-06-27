@@ -104,6 +104,9 @@ public:
 	void SetCharacterMesh(UXIItemEquipment* Item, ESkeletalMeshMergeType SKMeshMergeType);
 
 protected:
+
+	UFUNCTION()
+	void LevelUp();
 	
 	UPROPERTY()
 	class UAttributeSetHero* AttributeSetHero;

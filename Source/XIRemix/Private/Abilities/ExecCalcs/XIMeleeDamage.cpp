@@ -87,6 +87,7 @@ UXIMeleeDamage::UXIMeleeDamage()
 void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
     OutExecutionOutput.MarkGameplayCuesHandledManually();
+    FGameplayCueParameters GCParam;
 
     UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
 	UAbilitySystemComponent* SourceAbilitySystemComponent = ExecutionParams.GetSourceAbilitySystemComponent();
@@ -134,7 +135,7 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
 
     float HitRate = UXIMathFunctionLibrary::HitRate(Accuracy, Evasion, LevelDif);
 
-    if (FMath::RandRange(0.f, 1.f) < HitRate)
+    if (FMath::RandRange(0.f, 1.f) <= HitRate)
     {
         //True we hit the target!
         float WeaponDamage = 0.f;
@@ -181,15 +182,9 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
 
         OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(MeleeStatics().DamageHPProperty, EGameplayModOp::Additive, Damage));
         
-        if(XIContext)
-        {
-            XIContext->SetIsCriticalHit(bIsCriticalHit);
-        }
-
-        FGameplayCueParameters GCParam;
-        GCParam.EffectContext = ExecutionParams.GetOwningSpec().GetEffectContext();
+        XIContext->SetIsCriticalHit(bIsCriticalHit);
         GCParam.RawMagnitude = Damage;
-        TargetAbilitySystemComponent->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Damage.Melee"), GCParam);
+        
         
         if (Damage > 0)
         {
@@ -207,7 +202,11 @@ void UXIMeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecution
     else
     {
         // WE missed :(
+        XIContext->SetIsEvaded(true);
     }
+    
+    GCParam.EffectContext = ExecutionParams.GetOwningSpec().GetEffectContext();
+    TargetAbilitySystemComponent->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Attack.Melee"), GCParam);
 }
 
 float UXIMeleeDamage::GetWeaponBaseDamage(AActor* Actor, FGameplayTag OutWeaponTag) const

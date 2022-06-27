@@ -356,7 +356,6 @@ void AXICharacterBase::Die()
 {
 	OnCharacterDied.Broadcast(this);
 	
-	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 

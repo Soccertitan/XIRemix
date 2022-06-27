@@ -91,6 +91,10 @@ void UXIJobExp::Execute_Implementation(const FGameplayEffectCustomExecutionParam
 		ExpBounty = FMath::Floor(ExpBounty * FMath::Clamp((1.f + (LevelDif * 0.2f)), 0.f, 4.f));
 	}
 
+	FGameplayCueParameters GCParam;
+	GCParam.RawMagnitude = ExpBounty;
+	TargetASC->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Exp"), GCParam);
+
 	/*
 	//Add Exp to Main Job
 	*/
@@ -119,6 +123,7 @@ void UXIJobExp::Execute_Implementation(const FGameplayEffectCustomExecutionParam
 				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
 				HeroCharacterJobs.MainJobLevel = TargetASC->GetNumericAttribute(JobTagRelationshipItem.JobLevelAttribute);
 				TargetASC->LevelUp();
+				TargetASC->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.LevelUp"), Spec.GetContext());
 			}
 		}
 	}
@@ -152,6 +157,7 @@ void UXIJobExp::Execute_Implementation(const FGameplayEffectCustomExecutionParam
 			{
 				OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(JobTagRelationshipItem.JobLevelAttribute, EGameplayModOp::Additive, 1.f));
 				TargetASC->LevelUp();
+				TargetASC->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.LevelUp"), Spec.GetContext());
 			}
 		}			
 	}
