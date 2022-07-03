@@ -11,6 +11,7 @@
 #include "XIAbilitySystemComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelUp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXICycleTarget, float, Direction);
 
 /**
  * 
@@ -29,6 +30,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnLevelUp OnLevelUp;
+	UPROPERTY(BlueprintAssignable)
+	FXICycleTarget OnXICycleTarget;
 
 	void GetRelationshipActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const;
 	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
@@ -46,6 +49,9 @@ public:
 
 	// Called by ExecCalc XIJobEXP
 	void LevelUp();
+
+	//Used for callbacks for Ability Tasks
+	virtual void XICycleTarget(float Direction);
 
 	FORCEINLINE UXIStatsGrowthRank* GetXIStatsGrowthRank() const {return StatsGrowthRank;}
 	FORCEINLINE UXIStatsGrowthData* GetXIStatsGrowthData() const {return StatsGrowthData;}

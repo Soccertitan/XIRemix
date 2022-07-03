@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "UINavPCComponent.h"
 #include "UINavPCReceiver.h"
+#include "DataAssets/XIActionBarEnhancedInputActions.h"
 #include "XIPlayerControllerAction.generated.h"
 
 class UInputAction;
@@ -64,14 +65,20 @@ protected:
 
 #pragma endregion
 
-	UPROPERTY(BlueprintReadWrite, Category = "TargetSystem")
+	UPROPERTY(BlueprintReadOnly, Category = "TargetSystem")
 	class UXITargetSystemComponent* XITargetSystemCompRef;
 
 	UPROPERTY(BlueprintReadOnly)
 	class AXICharacterBaseHero* PlayerPawn;
 
+	UPROPERTY(BlueprintReadOnly)
+	class UXIAbilitySystemComponent* ASC;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bCanMove = true;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bShoulderButtonHeld = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EXITeamAttitude XITeamAttitude;
@@ -94,6 +101,12 @@ protected:
 	UInputAction* IAInteract;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
+	UInputAction* IAConfirm;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
+	UInputAction* IACancel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
 	UInputAction* IATargetCycle;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
@@ -102,12 +115,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
 	UInputAction* IAMenuToggle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Actions")
+	UXIActionBarEnhancedInputActions* ActionBarEnhancedInputs;
+
 	//Input Mappings
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
-	UInputMappingContext* ICMovement;
+	UInputMappingContext* ICExploration;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
-	int32 ICMovementPriority = 0;
+	int32 ICExplorationPriority = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
 	UInputMappingContext* ICCamera;
@@ -119,13 +135,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
 	int32 ICTargetPriority = 0;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
+	UInputMappingContext* ICActionBar;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Input Mappings")
+	int32 ICActionBarPriority = 0;
+
 	// Input Functions
 	void EnhancedMovement(const FInputActionValue& Value);
 	void EnhancedCamera(const FInputActionValue& Value);
 	void EnhancedInteract(const FInputActionValue& Value);
+	void EnhancedConfirm(const FInputActionValue& Value);
+	void EnhancedCancel(const FInputActionValue& Value);
 	void EnhancedTargetCycle(const FInputActionValue& Value);
 	void EnhancedTargetLock(const FInputActionValue& Value);
 	void EnhancedMenuToggle(const FInputActionValue& Value);
+
+	void EnhancedActionBarShoulderHeld(const FInputActionValue& Value);
+	void EnhancedActionBarShoulderReleased(const FInputActionValue& Value);
 
 #pragma endregion
 

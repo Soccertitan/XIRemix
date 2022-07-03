@@ -8,7 +8,6 @@
 #include "GameplayTagContainer.h"
 #include "GameplayEffectTypes.h"
 #include "XIEnums.h"
-#include "XIRemix/XIRemix.h"
 #include "Interfaces/XICharacterInterface.h"
 #include "DataAssets/XICharacterAnimMontages.h"
 #include "DataAssets/XIAbilitySet.h"

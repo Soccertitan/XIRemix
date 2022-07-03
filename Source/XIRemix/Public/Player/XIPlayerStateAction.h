@@ -43,5 +43,8 @@ protected:
 	class UXIInventoryComponent* InventoryMaterials;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+	class UXIInventoryComponent* InventoryAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
 	class UXIInventoryComponent* InventoryKeyItems;
 };

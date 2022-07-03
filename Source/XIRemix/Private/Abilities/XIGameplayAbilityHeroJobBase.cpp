@@ -33,7 +33,6 @@ void UXIGameplayAbilityHeroJobBase::ActivateAbility(const FGameplayAbilitySpecHa
     {
         if(Item.XIAbility->Ability && (Item.Level <= Level))
         {
-            //TODO: Add check if character is appropriate level to gain ability + proper override starting attributes.
             UE_LOG(LogTemp, Warning, TEXT("Adding Ability: %s"), *Item.XIAbility->Ability->GetName());
             GiveXIGameplayAbility(GetAbilitySystemComponentFromActorInfo(), Item.XIAbility->Ability, GetAvatarActorFromActorInfo());
         }

@@ -18,12 +18,6 @@ class XIREMIX_API UXIAbilityData : public UDataAsset
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString Description;
-
 	// The class reference for this ability data.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class UXIGameplayAbility> Ability;
@@ -85,8 +79,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enmity")
 	float VolatileEnmity;
-
-	/** The thumbnail for the Ability*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	class UTexture2D* Thumbnail;
 };

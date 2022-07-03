@@ -30,6 +30,9 @@ public:
 
 	UXIItem();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUse(class AXICharacterBaseHero* Character);
+
 	virtual void Use(class AXICharacterBaseHero* Character);
 	virtual void AddedToInventory(class UXIInventoryComponent* Inventory);
 

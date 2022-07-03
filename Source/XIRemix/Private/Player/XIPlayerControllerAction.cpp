@@ -12,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/XITargetSystemComponent.h"
 #include "Interfaces/XITargetSystemInterface.h"
+#include "Abilities/XIAbilitySystemComponent.h"
 
 AXIPlayerControllerAction::AXIPlayerControllerAction()
 {
@@ -26,9 +27,10 @@ void AXIPlayerControllerAction::BeginPlay()
 
     if (EnhancedInputSubsystem)
     {
-        EnhancedInputSubsystem->AddMappingContext(ICMovement, ICMovementPriority);
+        EnhancedInputSubsystem->AddMappingContext(ICExploration, ICExplorationPriority);
         EnhancedInputSubsystem->AddMappingContext(ICCamera, ICCameraPriority);
         EnhancedInputSubsystem->AddMappingContext(ICTarget, ICTargetPriority);
+        EnhancedInputSubsystem->AddMappingContext(ICActionBar, ICActionBarPriority);
     }
 
 }
@@ -38,6 +40,11 @@ void AXIPlayerControllerAction::AcknowledgePossession(class APawn* P)
     Super::AcknowledgePossession(P);
 
     PlayerPawn = Cast<AXICharacterBaseHero>(AcknowledgedPawn.Get());
+    
+    if(PlayerPawn)
+    {
+        ASC = Cast<UXIAbilitySystemComponent>(PlayerPawn->GetAbilitySystemComponent());
+    }
     
     CreateHUD();
     InitializeTargetSystem();
@@ -105,6 +112,14 @@ void AXIPlayerControllerAction::SetupInputComponent()
         {
             EnhancedInputComponent->BindAction(IAInteract, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedInteract);
         }
+        if(IAConfirm)
+        {
+            EnhancedInputComponent->BindAction(IAConfirm, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedConfirm);
+        }
+        if(IACancel)
+        {
+            EnhancedInputComponent->BindAction(IACancel, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedCancel);
+        }
         if(IATargetCycle)
         {
             EnhancedInputComponent->BindAction(IATargetCycle, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedTargetCycle);
@@ -116,6 +131,19 @@ void AXIPlayerControllerAction::SetupInputComponent()
         if(IAMenuToggle)
         {
             EnhancedInputComponent->BindAction(IAMenuToggle, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedMenuToggle);
+        }
+        if(ActionBarEnhancedInputs)
+        {
+            if(ActionBarEnhancedInputs->LeftShoulderHold)
+            {
+                EnhancedInputComponent->BindAction(ActionBarEnhancedInputs->LeftShoulderHold, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedActionBarShoulderHeld);
+                EnhancedInputComponent->BindAction(ActionBarEnhancedInputs->LeftShoulderHold, ETriggerEvent::Completed, this, &AXIPlayerControllerAction::EnhancedActionBarShoulderReleased);  
+            }
+            if(ActionBarEnhancedInputs->RightShoulderHold)
+            {
+                EnhancedInputComponent->BindAction(ActionBarEnhancedInputs->RightShoulderHold, ETriggerEvent::Triggered, this, &AXIPlayerControllerAction::EnhancedActionBarShoulderHeld);
+                EnhancedInputComponent->BindAction(ActionBarEnhancedInputs->RightShoulderHold, ETriggerEvent::Completed, this, &AXIPlayerControllerAction::EnhancedActionBarShoulderReleased);
+            }
         }
     }
 }
@@ -156,11 +184,42 @@ void AXIPlayerControllerAction::EnhancedInteract(const FInputActionValue& Value)
     }
 }
 
+void AXIPlayerControllerAction::EnhancedConfirm(const FInputActionValue& Value)
+{
+    if(bShoulderButtonHeld)
+    {
+        return;
+    }
+
+    if(ASC)
+    {
+        ASC->LocalInputConfirm();
+    }
+}
+
+void AXIPlayerControllerAction::EnhancedCancel(const FInputActionValue& Value)
+{
+    if(bShoulderButtonHeld)
+    {
+        return;
+    }
+
+    if(ASC)
+    {
+        ASC->LocalInputCancel();
+    }
+}
+
 void AXIPlayerControllerAction::EnhancedTargetCycle(const FInputActionValue& Value)
 {
     if(XITargetSystemCompRef)
     {
         XITargetSystemCompRef->TargetActor(XITeamAttitude, Value.GetMagnitude());
+    }
+
+    if(ASC)
+    {
+        ASC->XICycleTarget(Value.GetMagnitude());
     }
 }
 
@@ -188,6 +247,7 @@ void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Valu
             if(EnhancedInputSubsystem)
             {
                 EnhancedInputSubsystem->AddMappingContext(ICTarget, ICTargetPriority);
+                EnhancedInputSubsystem->AddMappingContext(ICActionBar, ICActionBarPriority);
             }
 
             FInputModeGameOnly InputMode;
@@ -199,6 +259,7 @@ void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Valu
             if(EnhancedInputSubsystem)
             {
                 EnhancedInputSubsystem->RemoveMappingContext(ICTarget);
+                EnhancedInputSubsystem->RemoveMappingContext(ICActionBar);
             }
             
             MainMenuWidget->AddToViewport();
@@ -208,6 +269,18 @@ void AXIPlayerControllerAction::EnhancedMenuToggle(const FInputActionValue& Valu
             bShowMouseCursor = true;
         }
     }
+}
+
+void AXIPlayerControllerAction::EnhancedActionBarShoulderHeld(const FInputActionValue& Value)
+{
+    bShoulderButtonHeld = true;
+    EnhancedInputSubsystem->RemoveMappingContext(ICTarget);
+}
+
+void AXIPlayerControllerAction::EnhancedActionBarShoulderReleased(const FInputActionValue& Value)
+{
+    bShoulderButtonHeld = false;
+    EnhancedInputSubsystem->AddMappingContext(ICTarget, ICTargetPriority);
 }
 
 #pragma endregion

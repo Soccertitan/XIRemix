@@ -5,6 +5,17 @@
 #include "CoreMinimal.h"
 #include "XIEnums.generated.h"
 
+UENUM(BlueprintType)
+enum class EXIAbilityInputID : uint8
+{
+	// 0 None
+	None			UMETA(DisplayName = "None"),
+	// 1 Confirm
+	Confirm			UMETA(DisplayName = "Confirm"),
+	// 2 Cancel
+	Cancel			UMETA(DisplayName = "Cancel"),
+};
+
 UENUM(BlueprintType, Category="XIRemix")
 enum class ECombatStyle : uint8
 {
@@ -65,6 +76,7 @@ enum class EInventoryType : uint8
 	Accessory UMETA(DisplayName = "Accessory"),
 	Consumable UMETA(DisplayName = "Consumable"),
 	Material UMETA(DisplayName = "Material"),
+	Ability UMETA(DisplayName = "Ability"),
 	KeyItem UMETA(DisplayName = "KeyItem")
 };
 

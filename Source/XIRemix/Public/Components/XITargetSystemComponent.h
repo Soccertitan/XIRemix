@@ -55,7 +55,7 @@ public:
 	//
 	// Set it to None to attach the Widget Component to the Root Component instead of the Mesh.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FName LockedOnWidgetParentSocket = FName("spine_03");
+	FName LockedOnWidgetParentSocket = FName("target");
 
 	// // The Relative Location to apply on Target LockedOn Widget when attached to a target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
@@ -89,6 +89,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float PawnInterpSpeed = 25.0f;
 
+	// Line of sight checks.
 	UPROPERTY(EditAnywhere, Category = "Target System|Sphere")
 	USphereComponent* SphereComponent;
 

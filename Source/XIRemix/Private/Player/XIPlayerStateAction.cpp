@@ -11,6 +11,7 @@ AXIPlayerStateAction::AXIPlayerStateAction()
     InventoryAccessories = CreateDefaultSubobject<UXIInventoryComponent>("AccessoryItems");
     InventoryConsumables = CreateDefaultSubobject<UXIInventoryComponent>("ConsumableItems");
     InventoryMaterials = CreateDefaultSubobject<UXIInventoryComponent>("MaterialsItems");
+    InventoryAbilities = CreateDefaultSubobject<UXIInventoryComponent>("Abilities");
     InventoryKeyItems = CreateDefaultSubobject<UXIInventoryComponent>("KeyItems");
 }
 
@@ -22,6 +23,7 @@ UXIInventoryComponent* AXIPlayerStateAction::GetInventory(EInventoryType Invento
     if(InventoryType == EInventoryType::Accessory) return InventoryAccessories;
     if(InventoryType == EInventoryType::Consumable) return InventoryConsumables;
     if(InventoryType == EInventoryType::Material) return InventoryMaterials;
+    if(InventoryType == EInventoryType::Ability) return InventoryAbilities;
     if(InventoryType == EInventoryType::KeyItem) return InventoryKeyItems;
 
     return nullptr;

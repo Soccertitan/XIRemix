@@ -2,6 +2,7 @@
 
 
 #include "Abilities/XIAbilitySystemComponent.h"
+#include "Abilities/XIGameplayAbility.h"
 #include "GameplayTagsManager.h"
 #include "AbilitySystemGlobals.h"
 #include "GameplayCueManager.h"
@@ -72,4 +73,9 @@ void UXIAbilitySystemComponent::AddGameplayCueLocal(const FGameplayTag GameplayC
 void UXIAbilitySystemComponent::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
 {
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);
+}
+
+void UXIAbilitySystemComponent::XICycleTarget(float Direction)
+{
+    OnXICycleTarget.Broadcast(Direction);
 }
