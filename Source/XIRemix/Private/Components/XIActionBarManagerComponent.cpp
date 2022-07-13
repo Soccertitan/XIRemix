@@ -6,11 +6,7 @@
 // Sets default values for this component's properties
 UXIActionBarManagerComponent::UXIActionBarManagerComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 
@@ -18,8 +14,32 @@ UXIActionBarManagerComponent::UXIActionBarManagerComponent()
 void UXIActionBarManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 	
+	XICharacter = Cast<AXICharacterBase>(GetOwner());
+
+	if(!XICharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UXIActionBarManagerComponent: %s is not AXICharacterBase!"), *GetNameSafe(GetOwner()));
+	}
+
+	if(!GetOwner()->HasAuthority())
+	{
+		ActionBarInfo.ActionBars.SetNum(3);
+		for(auto& Action : ActionBarInfo.ActionBars)
+		{
+			Action.Items.SetNum(16);
+		}
+	}
 }
 
+void UXIActionBarManagerComponent::ActivateAction(int32 ActionBarIndex, int32 ActionIndex)
+{
+	if(ActionBarInfo.ActionBars.IsValidIndex(ActionBarIndex) && ActionBarInfo.ActionBars[ActionBarIndex].Items.IsValidIndex(ActionIndex))
+	{
+		UXIItem* Item = ActionBarInfo.ActionBars[ActionBarIndex].Items[ActionIndex];
+		if(Item)
+		{
+			Item->Use(XICharacter);
+		}
+	}
+}

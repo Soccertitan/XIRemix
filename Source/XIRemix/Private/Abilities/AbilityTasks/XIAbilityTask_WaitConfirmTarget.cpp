@@ -36,7 +36,7 @@ void UXIAbilityTask_WaitConfirmTarget::OnCancelCallback()
 		XIASC->ConsumeGenericReplicatedEvent(EAbilityGenericReplicatedEvent::GenericCancel, GetAbilitySpecHandle(), GetActivationPredictionKey());
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
-			OnCancel.Broadcast(nullptr);
+			OnCancel.Broadcast(TargetedActor);
 		}
 		EndTask();
 	}
@@ -98,12 +98,13 @@ void UXIAbilityTask_WaitConfirmTarget::Activate()
 			XIASC->GenericLocalConfirmCallbacks.AddDynamic(this, &UXIAbilityTask_WaitConfirmTarget::OnLocalConfirmCallback);	// Tell me if the confirm input is pressed
 			XIASC->GenericLocalCancelCallbacks.AddDynamic(this, &UXIAbilityTask_WaitConfirmTarget::OnLocalCancelCallback);	// Tell me if the cancel input is pressed
             XIASC->OnXICycleTarget.AddDynamic(this, &UXIAbilityTask_WaitConfirmTarget::TargetActor); // Tell me if the input to switch targets is pressed.
+            XIASC->XIStartAbilityTargeting();
 
 			RegisteredCallbacks = true;
-
 			Ability->OnWaitingForConfirmInputBegin();
-            OwnerPawn = Cast<APawn>(Info->AvatarActor);
             
+            OwnerPawn = Cast<APawn>(Info->AvatarActor);
+            SetupLocalPlayerController();
             CameraComponent = OwnerPawn->FindComponentByClass<UCameraComponent>();
 
             if(XITeamAttitude == UXIGameplayFunctionLibrary::GetAttitudeTowardsActor(OwnerPawn, TargetedActor))
@@ -114,6 +115,11 @@ void UXIAbilityTask_WaitConfirmTarget::Activate()
             {
                 TargetedActor = nullptr;
                 TargetActor(1.f);
+
+                if(TargetedActor == nullptr)
+                {
+                    OnCancelCallback();
+                }
             }
 		}
 		else
@@ -139,6 +145,7 @@ void UXIAbilityTask_WaitConfirmTarget::OnDestroy(bool AbilityEnding)
 		XIASC->GenericLocalConfirmCallbacks.RemoveDynamic(this, &UXIAbilityTask_WaitConfirmTarget::OnLocalConfirmCallback);
 		XIASC->GenericLocalCancelCallbacks.RemoveDynamic(this, &UXIAbilityTask_WaitConfirmTarget::OnLocalCancelCallback);
         XIASC->OnXICycleTarget.RemoveDynamic(this, &UXIAbilityTask_WaitConfirmTarget::TargetActor);
+        XIASC->XIEndAbilityTargeting();
 
 		if (Ability)
 		{
@@ -191,7 +198,6 @@ AActor* UXIAbilityTask_WaitConfirmTarget::FindNearestTarget(TArray<AActor*> Acto
 
 void UXIAbilityTask_WaitConfirmTarget::TargetActor(float Direction)
 {
-    UE_LOG(LogTemp, Error, TEXT("Targeting an Actor: XIAbilityTask"));
 	TArray<AActor *> Actors;
 	Actors = GetTargetableActorsFromTrace();
 	SwitchTargetActor(Actors, Direction);
@@ -311,7 +317,7 @@ void UXIAbilityTask_WaitConfirmTarget::CreateAndAttachTargetSelectedWidgetCompon
 {
 	if (!TargetWidgetClass)
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent: Cannot get TargetWidgetClass, please ensure it is a valid reference in the Component Properties."));
+		UE_LOG(LogTemp, Error, TEXT("UXIAbilityTask_WaitConfirmTarget: Cannot get TargetWidgetClass, please ensure it is a valid reference."));
 		return;
 	}
 
@@ -319,8 +325,6 @@ void UXIAbilityTask_WaitConfirmTarget::CreateAndAttachTargetSelectedWidgetCompon
 	{
 		TargetWidgetComponent->DestroyComponent();
 	}
-
-    UE_LOG(LogTemp, Error, TEXT("Trying to create TargetWidgetComponent: XIAbilityTask"));
 
 	TargetWidgetComponent = NewObject<UWidgetComponent>(TargetActor, MakeUniqueObjectName(TargetActor, UWidgetComponent::StaticClass(), FName("TargetLockOn")));
 	TargetWidgetComponent->SetWidgetClass(TargetWidgetClass);

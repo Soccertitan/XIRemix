@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "XIEnums.h"
+#include "GameplayTagContainer.h"
 #include "XIItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnItemModified);
@@ -31,10 +32,12 @@ public:
 	UXIItem();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnUse(class AXICharacterBaseHero* Character);
+	void OnUse(class AXICharacterBase* Character);
 
-	virtual void Use(class AXICharacterBaseHero* Character);
+	virtual void Use(class AXICharacterBase* Character);
 	virtual void AddedToInventory(class UXIInventoryComponent* Inventory);
+	virtual FGameplayTagContainer GetCooldownTag();
+	virtual float GetCost();
 
 	UFUNCTION(BlueprintCallable, Category = "Item")
 	void SetQuantity(const int32 NewQuantity);

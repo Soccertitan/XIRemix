@@ -19,4 +19,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability")
 	UXIAbilityData* AbilityData;
+
+	virtual FGameplayTagContainer GetCooldownTag() override;
+	virtual float GetCost() override;
 };

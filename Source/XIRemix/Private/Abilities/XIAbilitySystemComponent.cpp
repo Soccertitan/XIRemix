@@ -79,3 +79,11 @@ void UXIAbilitySystemComponent::XICycleTarget(float Direction)
 {
     OnXICycleTarget.Broadcast(Direction);
 }
+void UXIAbilitySystemComponent::XIStartAbilityTargeting()
+{
+    OnXIStartAbilityTargeting.Broadcast();
+}
+void UXIAbilitySystemComponent::XIEndAbilityTargeting()
+{
+    OnXIEndAbilityTargeting.Broadcast();
+}

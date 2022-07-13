@@ -160,6 +160,15 @@ protected:
 	UFUNCTION()
 	void TargetRemoved(AActor* Actor);
 
+	//Ability task targeting callback.
+	UFUNCTION()
+	void OnXIStartAbilityTargeting();
+	UFUNCTION()
+	void OnXIEndAbilityTargeting();
+
+	UPROPERTY()
+	bool bIsAbilityTargeting = false;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

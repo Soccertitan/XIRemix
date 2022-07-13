@@ -10,7 +10,7 @@
 #include "DataAssets/XIStatsGrowthData.h"
 #include "XIAbilitySystemComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelUp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FXIGenericDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXICycleTarget, float, Direction);
 
 /**
@@ -29,7 +29,12 @@ public:
 	bool StartupEffectsApplied = false;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnLevelUp OnLevelUp;
+	FXIGenericDelegate OnLevelUp;
+	
+	UPROPERTY(BlueprintAssignable)
+	FXIGenericDelegate OnXIStartAbilityTargeting;
+	UPROPERTY(BlueprintAssignable)
+	FXIGenericDelegate OnXIEndAbilityTargeting;
 	UPROPERTY(BlueprintAssignable)
 	FXICycleTarget OnXICycleTarget;
 
@@ -51,6 +56,8 @@ public:
 	void LevelUp();
 
 	//Used for callbacks for Ability Tasks
+	virtual void XIStartAbilityTargeting();
+	virtual void XIEndAbilityTargeting();
 	virtual void XICycleTarget(float Direction);
 
 	FORCEINLINE UXIStatsGrowthRank* GetXIStatsGrowthRank() const {return StatsGrowthRank;}

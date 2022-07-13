@@ -51,7 +51,7 @@ void UXIItem::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChang
 }
 #endif
 
-void UXIItem::Use(class AXICharacterBaseHero* Character)
+void UXIItem::Use(class AXICharacterBase* Character)
 {
 
 }
@@ -59,6 +59,16 @@ void UXIItem::Use(class AXICharacterBaseHero* Character)
 void UXIItem::AddedToInventory(class UXIInventoryComponent* Inventory)
 {
 
+}
+
+FGameplayTagContainer UXIItem::GetCooldownTag()
+{
+	return FGameplayTagContainer::FGameplayTagContainer();
+}
+
+float UXIItem::GetCost()
+{
+	return 0.f;
 }
 
 void UXIItem::SetQuantity(const int32 NewQuantity)

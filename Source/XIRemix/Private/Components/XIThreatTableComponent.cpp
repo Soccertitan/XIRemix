@@ -7,16 +7,9 @@
 UXIThreatTableComponent::UXIThreatTableComponent()
 {
 	PrimaryComponentTick.bStartWithTickEnabled = false;
-	PrimaryComponentTick.bCanEverTick = true;
-	PrimaryComponentTick.TickInterval = 1.0f;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	CharacterLevel = 1.f;
-}
-
-// Called when the game starts
-void UXIThreatTableComponent::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void UXIThreatTableComponent::SetCharacterLevel(float Level)
@@ -44,7 +37,7 @@ void UXIThreatTableComponent::AddEnmity(AActor* TargetActor, float InVolatileEnm
 
 		ThreatTable.AddUnique(Threat);
 		HighestThreatActor = TargetActor;
-		SetComponentTickEnabled(true);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_EnmityDecay, this, &UXIThreatTableComponent::ApplyEnmityDecay, DecayFrequency, true);
 		OnHighestThreat.Broadcast(TargetActor);
 	}
 	else
@@ -196,13 +189,11 @@ bool UXIThreatTableComponent::GetTargetActorEnmity(AActor* TargetActor, float& O
 	return false;
 }
 
-void UXIThreatTableComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UXIThreatTableComponent::ApplyEnmityDecay()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	if (!ThreatTable.IsValidIndex(0))
 	{
-		SetComponentTickEnabled(false);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_EnmityDecay);
 		return;
 	}
 

@@ -15,7 +15,8 @@ public class XIRemix : ModuleRules
 			"InputCore", 
 			"HeadMountedDisplay", 
 			"EnhancedInput", 
-			"UINavigation"
+			"UINavigation",
+			"Paper2D"
 			});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
@@ -24,7 +25,7 @@ public class XIRemix : ModuleRules
 			"UMG",
 			"GameplayAbilities",
             "GameplayTags",
-            "GameplayTasks"
+            "GameplayTasks",
         });
 	}
 }

@@ -44,6 +44,12 @@ void AXIPlayerControllerAction::AcknowledgePossession(class APawn* P)
     if(PlayerPawn)
     {
         ASC = Cast<UXIAbilitySystemComponent>(PlayerPawn->GetAbilitySystemComponent());
+
+        if(ASC)
+        {
+            ASC->OnXIStartAbilityTargeting.AddDynamic(this, &AXIPlayerControllerAction::OnXIStartAbilityTargeting);
+            ASC->OnXIEndAbilityTargeting.AddDynamic(this, &AXIPlayerControllerAction::OnXIEndAbilityTargeting);
+        }
     }
     
     CreateHUD();
@@ -191,7 +197,7 @@ void AXIPlayerControllerAction::EnhancedConfirm(const FInputActionValue& Value)
         return;
     }
 
-    if(ASC)
+    if(bIsAbilityTargeting && ASC)
     {
         ASC->LocalInputConfirm();
     }
@@ -204,22 +210,31 @@ void AXIPlayerControllerAction::EnhancedCancel(const FInputActionValue& Value)
         return;
     }
 
-    if(ASC)
+    if(bIsAbilityTargeting && ASC)
     {
         ASC->LocalInputCancel();
+    }
+    else
+    {
+        if(XITargetSystemCompRef)
+        {
+            XITargetSystemCompRef->RemoveTargetedActor();
+        }
     }
 }
 
 void AXIPlayerControllerAction::EnhancedTargetCycle(const FInputActionValue& Value)
 {
-    if(XITargetSystemCompRef)
-    {
-        XITargetSystemCompRef->TargetActor(XITeamAttitude, Value.GetMagnitude());
-    }
-
-    if(ASC)
+    if(bIsAbilityTargeting && ASC)
     {
         ASC->XICycleTarget(Value.GetMagnitude());
+    }
+    else
+    {
+        if(XITargetSystemCompRef)
+        {
+            XITargetSystemCompRef->TargetActor(XITeamAttitude, Value.GetMagnitude());
+        }
     }
 }
 
@@ -329,4 +344,14 @@ void AXIPlayerControllerAction::InitializeTargetSystem()
             XITargetSystemCompRef->OnTargetRemoved.AddDynamic(this, &AXIPlayerControllerAction::TargetRemoved);
         }
     }
+}
+
+void AXIPlayerControllerAction::OnXIStartAbilityTargeting()
+{
+    bIsAbilityTargeting = true;
+}
+
+void AXIPlayerControllerAction::OnXIEndAbilityTargeting()
+{
+    bIsAbilityTargeting = false;
 }

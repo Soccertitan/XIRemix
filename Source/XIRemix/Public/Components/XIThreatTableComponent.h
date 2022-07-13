@@ -74,33 +74,35 @@ public:
 	void SetCharacterLevel(float Level);
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;	
+
+	UFUNCTION()
+	void ApplyEnmityDecay();
 
 	UFUNCTION()
 	void CheckHighestEnmity();
 
-	UPROPERTY(BlueprintReadWrite, Category = "XIRemix|XIThreatTable")
+	UPROPERTY(BlueprintReadOnly, Category = "XIRemix|XIThreatTable")
 	TArray <FThreatTableStruct> ThreatTable;
 
 	UPROPERTY()
 	AActor* HighestThreatActor;
 
+	FTimerHandle TimerHandle_EnmityDecay;
+
 	UPROPERTY()
 	float ClampMin = 0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, meta = (ClampMin="1"))
 	float ClampMax = 30000;
 
 	UPROPERTY(EditAnywhere)
 	float VolatileEnimtyDecayRate = 60;
 
+	// The frequency in seconds of how often to apply the enmity Decay rate.
+	UPROPERTY(EditAnywhere, meta = (ClampMin="0"))
+	float DecayFrequency = 1.f;
+
 	// Level of the character that owns this component.
 	UPROPERTY()
 	float CharacterLevel;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
 };
